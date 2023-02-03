@@ -16,6 +16,8 @@ namespace Core
                 Console.Write(">>> ");
                 string input = Console.ReadLine();
 
+                if (input == "exit" || input == "exit()")
+                    return;
                 context.Evaluate(input);
             }
         }
