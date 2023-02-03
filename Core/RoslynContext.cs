@@ -126,6 +126,19 @@ namespace Core
         #region Routine
         private string SyntacWrap(string input)
         {
+            // Numerical array data
+            var match = Regex.Match(input, @"^var ([^ ]+?) *= *\[(.*?)\] *$");
+            if (match.Success)
+            {
+                string varName = match.Groups[1].Value;
+                string[] values = match.Groups[2].Value
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(v => v.Trim())
+                    .Where(v => !string.IsNullOrWhiteSpace(v))
+                    .ToArray();
+                if (values.All(v => double.TryParse(v, out _)))
+                    input = $"var {varName} = new double[] {{{string.Join(",", values)}}}";
+            }
             // Single line assignment
             if (Regex.IsMatch(input, @"^.*?=.*[^;]$"))
                 return $"{input};";
