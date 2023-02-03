@@ -10,7 +10,7 @@ namespace Core
             if (welcomeMessage != null)
                 Console.WriteLine(welcomeMessage);
 
-            var context = new RoslynContext(ScriptOptions.Default.WithImports("System.Math"));
+            var context = new RoslynContext(true);
             while (true)
             {
                 Console.Write(">>> ");
