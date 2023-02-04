@@ -1,5 +1,11 @@
 # Pure
 
+(Definition) Pure is the scripting version of C# with:
+
+1. Default global scope Math functions
+2. Minimal syntactic sugar for more friendly REPL usage
+3. Native 1D "Vector" for numerical data processing
+
 Features:
 
 * Single-word package names.
