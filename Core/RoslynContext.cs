@@ -1,12 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using System.Drawing;
 using Microsoft.CodeAnalysis.Scripting;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using System.Text;
-using System.Net.WebSockets;
 
 namespace Core
 {
@@ -29,7 +26,8 @@ namespace Core
                 // Remark-cz: Use Add* instead of With* to add stuff instead of replacing stuff
                 .WithReferences(typeof(RoslynContext).Assembly)
                 .AddReferences(typeof(Enumerable).Assembly)
-                .AddImports("System.Collections.Generic", "System.Linq");
+                .AddImports("System.Collections.Generic", "System.Linq")
+                .AddImports("Core.Math");
             if (importAdditional)
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
@@ -137,7 +135,7 @@ namespace Core
                     .Where(v => !string.IsNullOrWhiteSpace(v))
                     .ToArray();
                 if (values.All(v => double.TryParse(v, out _)))
-                    input = $"var {varName} = new double[] {{{string.Join(",", values)}}}";
+                    input = $"var {varName} = new Vector(new double[] {{{string.Join(",", values)}}})";
             }
             // Single line assignment
             if (Regex.IsMatch(input, @"^.*?=.*[^;]$"))
