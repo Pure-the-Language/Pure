@@ -27,7 +27,8 @@ namespace Core
                 .WithReferences(typeof(RoslynContext).Assembly)
                 .AddReferences(typeof(Enumerable).Assembly)
                 .AddImports("System.Collections.Generic", "System.Linq")
-                .AddImports("Core.Math");
+                .AddImports("Core.Math")
+                .AddImports("Core.Utilities");
             if (importAdditional)
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
