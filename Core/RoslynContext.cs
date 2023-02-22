@@ -202,6 +202,18 @@ namespace Core
         }
         public static void PrintType(Type type)
         {
+            var publicFields = type
+                .GetFields()
+                .Select(m => m.Name)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
+            var publicProperties = type
+                .GetProperties()
+                .Select(m => m.Name)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
             var publicMethods = type
                 .GetMethods()
                 .Select(m =>
@@ -215,35 +227,23 @@ namespace Core
                 .Distinct()
                 .OrderBy(t => t)
                 .ToArray();
-            var publicProperties = type
-                .GetProperties()
-                .Select(m => m.Name)
-                .Distinct()
-                .OrderBy(t => t)
-                .ToArray();
-            var publicFields = type
-                .GetFields()
-                .Select(m => m.Name)
-                .Distinct()
-                .OrderBy(t => t)
-                .ToArray();
             Console.WriteLine($"""
                 Type: {type.Name}
                 """);
-            if (publicMethods.Length > 0)
+            if (publicFields.Length > 0)
                 Console.WriteLine($"""
-                    Methods: 
-                      {string.Join(Environment.NewLine + "  ", publicMethods)}
+                    Fields: 
+                      {string.Join(Environment.NewLine + "  ", publicFields)}
                     """);
             if (publicProperties.Length > 0)
                 Console.WriteLine($"""
                     Properties: 
                       {string.Join(Environment.NewLine + "  ", publicProperties)}
                     """);
-            if (publicFields.Length > 0)
+            if (publicMethods.Length > 0)
                 Console.WriteLine($"""
-                    Fields: 
-                      {string.Join(Environment.NewLine + "  ", publicFields)}
+                    Methods: 
+                      {string.Join(Environment.NewLine + "  ", publicMethods)}
                     """);
         }
         #endregion
