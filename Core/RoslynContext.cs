@@ -178,7 +178,7 @@ namespace Core
                 Console.WriteLine($"""
                         Namespace: {name}
                         Types: 
-                        {string.Join(Environment.NewLine + "  ", publicTypes)}
+                          {string.Join(Environment.NewLine + "  ", publicTypes)}
                         """);
                 return true;
             }
