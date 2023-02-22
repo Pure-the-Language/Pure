@@ -13,8 +13,11 @@ Features:
 * Syntactic sugars.
 * Package management (Aurora).
 
-## Syntax
+## Syntax & Special Commands
 
+* Use `Import()` to import modules from PATH
+* Use `Help(name)` to get help about namespaces, types, and specific variables
+* Create 2D arrays of doubles directly using the syntax `var name = [<elements>]`
 * For single line assignment and variable creation, no need to append `;` at end of line
 
 ## Limits

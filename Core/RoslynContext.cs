@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Core
 {
-    public class RoslynContext
+    public partial class RoslynContext
     {
         #region Private States
         private ScriptState<object> State { get; set; }
@@ -28,7 +28,8 @@ namespace Core
                 .AddReferences(typeof(Enumerable).Assembly)
                 .AddImports("System.Collections.Generic", "System.Linq")
                 .AddImports("Core.Math")
-                .AddImports("Core.Utilities");
+                .AddImports("Core.Utilities")
+                .WithImports("Core.Construct");
             if (importAdditional)
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
@@ -40,10 +41,10 @@ namespace Core
         #region Method
         internal void Evaluate(string input)
         {
-            // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
-            var match = Regex.Match(input, @"^Import\((.*?)(, ?(.*?))?\);?$");
-            if (match.Success)
+            if (ImportModuleRegex().IsMatch(input))
             {
+                // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
+                var match = ImportModuleRegex().Match(input);
                 string dllName = match.Groups[1].Value.Trim('"');
                 bool importNamespaces = !string.IsNullOrWhiteSpace(match.Groups[2].Value)
                     ? bool.Parse(match.Groups[4].Value.ToLower())
@@ -70,6 +71,14 @@ namespace Core
                 else Console.WriteLine($"WriteLine(\"Cannot find package: {dllName}\")");
 
                 return;
+            }
+            else if (HelpItemRegex().IsMatch(input))
+            {
+                var match = HelpItemRegex().Match(input);
+                string name = match.Groups[1].Value;
+                bool isPrintMetaData = PrintName(name);
+                if (!isPrintMetaData)
+                    EvaluateSingle(input);
             }
             else EvaluateSingle(input);
 
@@ -123,10 +132,10 @@ namespace Core
         #endregion
 
         #region Routine
-        private string SyntacWrap(string input)
+        private static string SyntacWrap(string input)
         {
             // Numerical array data
-            var match = Regex.Match(input, @"^var ([^ ]+?) *= *\[(.*?)\] *$");
+            var match = VariableCreationRegex().Match(input);
             if (match.Success)
             {
                 string varName = match.Groups[1].Value;
@@ -139,10 +148,115 @@ namespace Core
                     input = $"var {varName} = new Vector(new double[] {{{string.Join(",", values)}}})";
             }
             // Single line assignment
-            if (Regex.IsMatch(input, @"^.*?=.*[^;]$"))
+            if (LineAssignmentRegex().IsMatch(input))
                 return $"{input};";
             return input;
         }
+        #endregion
+
+        #region Helpers
+        public static bool PrintName(string name)
+        {
+            string[] nameSpaces = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.Namespace)).Distinct().ToArray();
+            string[] types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.Name)).Distinct().ToArray();
+            string[] typesFullname = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.FullName)).Distinct().ToArray();
+
+            if (nameSpaces.Contains(name))
+            {
+                var publicTypes = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .SelectMany(a =>
+                        a.GetTypes()
+                        .Where(t => t.Namespace == name)
+                        .Select(t => t.Name)
+                        .Where(n => !n.StartsWith("<>")) // Skip internal names
+                        .Distinct()
+                        .OrderBy(t => t)
+                        .ToArray()
+                    )
+                    .ToArray();
+                Console.WriteLine($"""
+                        Namespace: {name}
+                        Types: 
+                        {string.Join(Environment.NewLine + "  ", publicTypes)}
+                        """);
+                return true;
+            }
+            else if (types.Contains(name))
+            {
+                var type = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .SelectMany(a => a.GetTypes().Where(t => t.Name == name)).Single();
+                PrintType(type);
+                return true;
+            }
+            else if (typesFullname.Contains(name))
+            {
+                var type = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .SelectMany(a => a.GetTypes().Where(t => t.FullName == name)).Single();
+                PrintType(type);
+                return true;
+            }
+            return false;
+        }
+        public static void PrintType(Type type)
+        {
+            var publicMethods = type
+                .GetMethods()
+                .Select(m =>
+                {
+                    string name = m.Name;
+                    string[] arguments = m.GetParameters()
+                        .Select(p => $"{p.ParameterType.Name} {p.Name}")
+                        .ToArray();
+                    return $"{name}({string.Join(", ", arguments)})";
+                })
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
+            var publicProperties = type
+                .GetProperties()
+                .Select(m => m.Name)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
+            var publicFields = type
+                .GetFields()
+                .Select(m => m.Name)
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
+            Console.WriteLine($"""
+                Type: {type.Name}
+                """);
+            if (publicMethods.Length > 0)
+                Console.WriteLine($"""
+                    Methods: 
+                      {string.Join(Environment.NewLine + "  ", publicMethods)}
+                    """);
+            if (publicProperties.Length > 0)
+                Console.WriteLine($"""
+                    Properties: 
+                      {string.Join(Environment.NewLine + "  ", publicProperties)}
+                    """);
+            if (publicFields.Length > 0)
+                Console.WriteLine($"""
+                    Fields: 
+                      {string.Join(Environment.NewLine + "  ", publicFields)}
+                    """);
+        }
+        #endregion
+
+        #region Regex
+        [GeneratedRegex(@"^Import\((.*?)(, ?(.*?))?\);?$")]
+        private static partial Regex ImportModuleRegex();
+        [GeneratedRegex(@"^Help\((.*?)\)$")]
+        private static partial Regex HelpItemRegex();
+        [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
+        private static partial Regex VariableCreationRegex();
+        [GeneratedRegex("^.*?=.*[^;]$")]
+        private static partial Regex LineAssignmentRegex();
         #endregion
     }
 }

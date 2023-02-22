@@ -14,7 +14,7 @@ namespace Core
             while (true)
             {
                 Console.Write(">>> ");
-                string input = Console.ReadLine();
+                string input = Console.ReadLine().Trim();
 
                 if (input == "exit" || input == "exit()")
                     return;
