@@ -19,6 +19,7 @@ Features:
 * Use `Help(name)` to get help about namespaces, types, and specific variables
 * Create 2D arrays of doubles directly using the syntax `var name = [<elements>]`
 * For single line assignment and variable creation, no need to append `;` at end of line
+* Use `#` add the beginning of line for line-style comment
 
 ## Limits
 

@@ -41,7 +41,9 @@ namespace Core
         #region Method
         internal void Evaluate(string input)
         {
-            if (ImportModuleRegex().IsMatch(input))
+            if (input.TrimStart().StartsWith('#'))
+                return; // Skip line-style comment
+            else if (ImportModuleRegex().IsMatch(input))
             {
                 // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
                 var match = ImportModuleRegex().Match(input);
