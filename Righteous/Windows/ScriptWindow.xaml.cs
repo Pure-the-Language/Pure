@@ -1,7 +1,9 @@
 ﻿using ICSharpCode.AvalonEdit;
+using Righteous.PopUps;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -33,6 +35,12 @@ namespace Righteous.Windows
         private void ExecuteButton_Click(object sender, RoutedEventArgs e)
         {
             (App.Current.MainWindow as MainWindow).Evaluate(Model.Scripts);
+        }
+        private void ReorderButton_Click(object sender, RoutedEventArgs e)
+        {
+            string response = ListChoiceDialog.Prompt("Select Order", "Click \"Confirm\" to select new order for the step", Model.ID.ToString(), (App.Current.MainWindow as MainWindow).Data.Steps.Select(s => s.ID.ToString()).ToArray(), null, "Confirm");
+            if (response != null)
+                (App.Current.MainWindow as MainWindow).Data.Reorder(Model, int.Parse(response));
         }
         #endregion
 

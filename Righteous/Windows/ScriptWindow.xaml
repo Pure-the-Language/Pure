@@ -6,26 +6,32 @@
         xmlns:local="clr-namespace:Righteous.Windows"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
-        Title="Righteous" MinHeight="250" MinWidth="300" ResizeMode="CanResizeWithGrip"
+        Title="{Binding Model.Name}" Height="250" MinWidth="300" ResizeMode="CanResizeWithGrip"
+        WindowStyle="ToolWindow"
         SizeToContent="Width" ShowInTaskbar="False" WindowStartupLocation="CenterScreen"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         LocationChanged="Window_LocationChanged">
     <DockPanel LastChildFill="True">
-        <DockPanel DockPanel.Dock="Top">
-            <Label Content="ID"/>
-            <Label Content="{Binding Model.ID}"/>
-        </DockPanel>
-        <DockPanel DockPanel.Dock="Top">
-            <Label Content="Name"/>
-            <TextBox Text="{Binding Model.Name, UpdateSourceTrigger=PropertyChanged}"/>
-        </DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0">
+                <Label Content="Name"/>
+                <TextBox Text="{Binding Model.Name, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel Grid.Column="1" LastChildFill="True">
+                <Label Content="ID"/>
+                <Button DockPanel.Dock="Right" Content="Execute" Click="ExecuteButton_Click" Margin="2"/>
+                <Button DockPanel.Dock="Right" Content="Reorder" Click="ReorderButton_Click" Margin="2"/>
+                <Label Content="{Binding Model.ID}"/>
+            </DockPanel>
+        </Grid>
         <DockPanel DockPanel.Dock="Top">
             <Label Content="Description"/>
             <TextBox Text="{Binding Model.Description, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
-        <StackPanel DockPanel.Dock="Bottom">
-            <Button Content="Execute" Click="ExecuteButton_Click"/>
-        </StackPanel>
         <avalonEdit:TextEditor 
             DockPanel.Dock="Bottom" Margin="5"
             BorderThickness="2" BorderBrush="Beige"

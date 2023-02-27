@@ -91,7 +91,10 @@ namespace Righteous
         #region Events
         private void NewStepButton_Click(object sender, RoutedEventArgs e)
         {
-            DataModel model = new DataModel();
+            DataModel model = new DataModel(Data.Steps.Count)
+            {
+                Name = $"Step {Data.Steps.Count}"
+            };
             Data.Steps.Add(model);
             new ScriptWindow(model)
             {

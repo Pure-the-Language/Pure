@@ -4,6 +4,13 @@ namespace Righteous
 {
     public class DataModel: BaseNotifyPropertyChanged
     {
+        #region Constructor
+        public DataModel(int id)
+        {
+            ID = id;
+        }
+        #endregion
+
         #region Properties
         private int _Id;
         private string _Name;

@@ -27,13 +27,32 @@ namespace Righteous
 
     public class ApplicationData : BaseNotifyPropertyChanged
     {
+        #region Fields
         private string _Name = string.Empty;
         private string _Description = string.Empty;
-        private ObservableCollection<DataModel> _Steps = new ();
+        private ObservableCollection<DataModel> _Steps = new();
+        #endregion
 
+        #region Data Binding
         public string Name { get => _Name; set => SetField(ref _Name, value); }
         public string Description { get => _Description; set => SetField(ref _Description, value); }
         public ObservableCollection<DataModel> Steps { get => _Steps; set => SetField(ref _Steps, value); }
+        #endregion
+
+        #region Methods
+        internal void Reorder(DataModel model, int order)
+        {
+            if (!_Steps.Contains(model))
+                throw new ApplicationException("Step doesn't exist.");
+            _Steps.Remove(model);
+            _Steps.Insert(order, model);
+            for (int i = 0; i < _Steps.Count; i++)
+            {
+                DataModel item = _Steps[i];
+                item.ID = i;
+            }
+        }
+        #endregion
     }
 
     public static class ApplicationDataSerializer
@@ -100,7 +119,7 @@ namespace Righteous
                 var stepsCount = reader.ReadInt32();
                 for (int i = 0; i < stepsCount; i++)
                 {
-                    DataModel model = new()
+                    DataModel model = new(i)
                     {
                         ID = reader.ReadInt32(),
                         Name = reader.ReadString(),

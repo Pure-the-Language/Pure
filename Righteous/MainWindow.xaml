@@ -19,7 +19,7 @@
         <CommandBinding Command="Save" CanExecute="FileSaveCommand_CanExecute" Executed="FileSaveCommand_Executed" />
     </Window.CommandBindings>
     <DockPanel LastChildFill="True">
-        <Menu>
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="New Process..." Click="NewFileMenuItem_Click"/>
                 <MenuItem Header="Save Process..." Click="SaveFileMenuItem_Click"/>
@@ -31,7 +31,7 @@
             <Button Content="New" Click="NewStepButton_Click"/>
             <Button Content="Show All" Click="ShowAllStepsButton_Click"/>
             <Button Content="Close All" Click="CloseAllStepsButton_Click"/>
-            <Button Content="Run All" Click="RunAllWindowsButton_Click"/>
+            <Button Content="Run All" Click="RunAllStepsButton_Click"/>
         </StackPanel>
         <TextBox IsEnabled="False" Text="{Binding DisplayText}" MinHeight="200"></TextBox>
     </DockPanel>
