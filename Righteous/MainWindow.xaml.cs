@@ -75,8 +75,21 @@ namespace Righteous
         }
         #endregion
 
+        #region Menu Items
+        private void NewFileMenuItem_Click(object sender, RoutedEventArgs e)
+            => CreateNewFile();
+        private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
+            => OpenFile();
+
+        private void SaveFileAsMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveFile(true);
+
+        private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveFile();
+        #endregion
+
         #region Events
-        private void NewWindowButton_Click(object sender, RoutedEventArgs e)
+        private void NewStepButton_Click(object sender, RoutedEventArgs e)
         {
             DataModel model = new DataModel();
             Data.Steps.Add(model);
@@ -86,7 +99,7 @@ namespace Righteous
             }.Show();
         }
 
-        private void ShowAllWindowsButton_Click(object sender, RoutedEventArgs e)
+        private void ShowAllStepsButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)
             {
@@ -104,13 +117,18 @@ namespace Righteous
                 }.Show();
             }
         }
-        private void CloseAllWindowsButton_Click(object sender, RoutedEventArgs e)
+        private void CloseAllStepsButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)
             {
                 if (window != this)
                     window.Close();
             }
+        }
+        private void RunAllStepsButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (DataModel step in Data.Steps)
+                Evaluate(step.Scripts);
         }
         #endregion
 
@@ -148,11 +166,9 @@ namespace Righteous
                 Title = $"Righteous - {CurrentFilePath}";
             }
         }
-        private void SaveFile()
+        private void SaveFile(bool saveNewFile = false)
         {
-            if (CurrentFilePath != null)
-                ApplicationDataSerializer.Save(CurrentFilePath, Data);
-            else
+            if (saveNewFile || CurrentFilePath == null)
             {
                 SaveFileDialog saveFileDialog = new()
                 {
@@ -167,6 +183,8 @@ namespace Righteous
                     Title = $"Righteous - {CurrentFilePath}";
                 }
             }
+            else
+                ApplicationDataSerializer.Save(CurrentFilePath, Data);
         }
         #endregion
 
