@@ -22,6 +22,9 @@
             <Label Content="Description"/>
             <TextBox Text="{Binding Model.Description, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
+        <StackPanel DockPanel.Dock="Bottom">
+            <Button Content="Execute" Click="ExecuteButton_Click"/>
+        </StackPanel>
         <TextBox DockPanel.Dock="Bottom" Text="{Binding Model.Scripts, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="True"/>
     </DockPanel>
 </Window>

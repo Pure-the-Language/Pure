@@ -14,7 +14,7 @@ namespace Core.Utilities
         {
             Timer.Stop();
             TimeSpan timeTaken = Timer.Elapsed;
-            Console.WriteLine("Time taken: " + timeTaken.ToString(@"m\:ss\.fff"));
+            RoslynContext.OutputHandler("Time taken: " + timeTaken.ToString(@"m\:ss\.fff"));
         }
     }
 }

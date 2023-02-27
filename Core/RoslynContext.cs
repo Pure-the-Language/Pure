@@ -1,26 +1,190 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using System.Drawing;
 using Microsoft.CodeAnalysis.Scripting;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Core
 {
+    public sealed class RedirectedTextWriter : TextWriter
+    {
+        public override Encoding Encoding => Encoding.UTF8;
+        public override void Write(bool value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(char value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(char[] buffer, int index, int count)
+        {
+            RoslynContext.OutputHandler.Invoke(new string(buffer.Skip(index).Take(count).ToArray()));
+        }
+        public override void Write(char[] buffer)
+        {
+            RoslynContext.OutputHandler.Invoke(new string(buffer));
+        }
+        public override void Write(decimal value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(double value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(float value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(int value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(long value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(object value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(ReadOnlySpan<char> buffer)
+        {
+            RoslynContext.OutputHandler.Invoke(buffer.ToString());
+        }
+        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0));
+        }
+        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0, arg1));
+        }
+        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0, arg1, arg2));
+        }
+        public override void Write([StringSyntax("CompositeFormat")] string format, params object[] arg)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg));
+        }
+        public override void Write(string value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(StringBuilder value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(uint value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void Write(ulong value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine()
+        {
+            RoslynContext.OutputHandler.Invoke(Environment.NewLine);
+        }
+        public override void WriteLine(bool value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(char value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(char[] buffer, int index, int count)
+        {
+            RoslynContext.OutputHandler.Invoke(new string(buffer.Skip(index).Take(count).ToArray()));
+        }
+        public override void WriteLine(char[] buffer)
+        {
+            RoslynContext.OutputHandler.Invoke(new string(buffer));
+        }
+        public override void WriteLine(decimal value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(double value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(float value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(int value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(long value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(object value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(ReadOnlySpan<char> buffer)
+        {
+            RoslynContext.OutputHandler.Invoke(buffer.ToString());
+        }
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0));
+        }
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0, arg1));
+        }
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg0, arg1, arg2));
+        }
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, params object[] arg)
+        {
+            RoslynContext.OutputHandler.Invoke(string.Format(format, arg));
+        }
+        public override void WriteLine(string value)
+        {
+            RoslynContext.OutputHandler.Invoke(value);
+        }
+        public override void WriteLine(StringBuilder value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(uint value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+        public override void WriteLine(ulong value)
+        {
+            RoslynContext.OutputHandler.Invoke(value.ToString());
+        }
+    }
     public partial class RoslynContext
     {
         #region Private States
         private ScriptState<object> State { get; set; }
         private static RoslynContext _Singleton;
         public static RoslynContext Singleton => _Singleton;
+        public static Action<string> OutputHandler;
         #endregion
 
         #region Construction
-        public RoslynContext(bool importAdditional)
+        public RoslynContext(bool importAdditional, Action<string> outputHandler)
         {
             if (_Singleton != null)
                 throw new InvalidOperationException("Roslyn Context is already initialized.");
             _Singleton = this;
+            OutputHandler = outputHandler;
+            Console.SetOut(new RedirectedTextWriter());
 
             ScriptOptions options = ScriptOptions.Default
                 // Remark-cz: Use Add* instead of With* to add stuff instead of replacing stuff
@@ -70,7 +234,7 @@ namespace Core
                     if (mainType != null)
                         AddImport($"{mainType.Namespace}.Main");
                 }
-                else Console.WriteLine($"WriteLine(\"Cannot find package: {dllName}\")");
+                else OutputHandler($"WriteLine(\"Cannot find package: {dllName}\")");
 
                 return;
             }
@@ -93,12 +257,12 @@ namespace Core
                     // Basically, host functions cannot and should not have side-effects on the state object directly
                     State = State.ContinueWithAsync(SyntacWrap(singleEvaluation)).Result;
                     if (State.ReturnValue != null)
-                        Console.WriteLine(State.ReturnValue);
+                        OutputHandler(State.ReturnValue.ToString());
                 }
                 catch (Exception e)
                 {
                     e = e.InnerException ?? e;
-                    Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty), Color.Red);
+                    OutputHandler(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
                 }
             }
 
@@ -186,7 +350,7 @@ namespace Core
                     .Distinct()
                     .OrderBy(t => t)
                     .ToArray();
-                Console.WriteLine($"""
+                OutputHandler($"""
                         Namespace: {name}
                         Namespaces: 
                           {string.Join(Environment.NewLine + "  ", subNamespaces)}
@@ -220,7 +384,7 @@ namespace Core
                             if (method.Name == name)
                                 methodInfo = method;
                 if (methodInfo != null)
-                    Console.WriteLine(PrintMethod(methodInfo));
+                    OutputHandler(PrintMethod(methodInfo));
                 return true;
             }
             return false;
@@ -245,21 +409,21 @@ namespace Core
                 .Distinct()
                 .OrderBy(t => t)
                 .ToArray();
-            Console.WriteLine($"""
+            OutputHandler($"""
                 Type: {type.Name}
                 """);
             if (publicFields.Length > 0)
-                Console.WriteLine($"""
+                OutputHandler($"""
                     Fields: 
                       {string.Join(Environment.NewLine + "  ", publicFields)}
                     """);
             if (publicProperties.Length > 0)
-                Console.WriteLine($"""
+                OutputHandler($"""
                     Properties: 
                       {string.Join(Environment.NewLine + "  ", publicProperties)}
                     """);
             if (publicMethods.Length > 0)
-                Console.WriteLine($"""
+                OutputHandler($"""
                     Methods: 
                       {string.Join(Environment.NewLine + "  ", publicMethods)}
                     """);

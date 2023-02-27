@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Core;
+using Microsoft.Win32;
 using Righteous.Windows;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,29 @@ namespace Righteous
         public MainWindow()
         {
             InitializeComponent();
+
+            Interpreter = new Interpreter();
+            Interpreter.Start(OutputHandler, """
+                    Pure v0.0.1
+                    """);
         }
+        private Interpreter Interpreter;
         #endregion
 
         #region Data Binding Properties
         private string _DisplayText;
         public string DisplayText { get => _DisplayText; set => SetField(ref _DisplayText, value); }
         private string _CurrentFilePath;
-        public string CurrentFilePath { get => _CurrentFilePath; set => SetField(ref _CurrentFilePath, value); }
+        public string CurrentFilePath { get => _CurrentFilePath; 
+            set
+            {
+                SetField(ref _CurrentFilePath, value);
+                Interpreter = new Interpreter();
+                Interpreter.Start(OutputHandler, """
+                    Pure v0.0.1
+                    """);
+            }
+        }
         private ApplicationData _Data = new ();
         public ApplicationData Data { get => _Data; set => SetField(ref _Data, value); }
         #endregion
@@ -43,6 +59,20 @@ namespace Righteous
             => SaveFile();
         private void FileSaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
             => e.CanExecute = CurrentFilePath != null;
+        #endregion
+
+        #region Methods
+        internal void Evaluate(string scripts)
+        {
+            if (scripts.Contains(';'))
+                Interpreter.Evaluate(scripts);
+            else
+            {
+                // Intepret only lines
+                foreach (var parts in scripts.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                    Interpreter.Evaluate(parts);
+            }
+        }
         #endregion
 
         #region Events
@@ -155,6 +185,10 @@ namespace Righteous
         {
             var appData = ApplicationDataSerializer.Load(filePath);
             return appData;
+        }
+        private void OutputHandler(string message)
+        {
+            DisplayText = message;
         }
         #endregion
     }
