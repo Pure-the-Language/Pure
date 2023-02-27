@@ -211,6 +211,18 @@ namespace Core
                 PrintType(type);
                 return true;
             }
+            else if (AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetTypes().Any(t => t.GetMethods().Any(m => m.Name == name))))
+            {
+                MethodInfo methodInfo = null;
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                    foreach (var type in assembly.GetTypes())
+                        foreach (var method in type.GetMethods())
+                            if (method.Name == name)
+                                methodInfo = method;
+                if (methodInfo != null)
+                    Console.WriteLine(PrintMethod(methodInfo));
+                return true;
+            }
             return false;
         }
         public static void PrintType(Type type)
@@ -229,14 +241,7 @@ namespace Core
                 .ToArray();
             var publicMethods = type
                 .GetMethods()
-                .Select(m =>
-                {
-                    string name = m.Name;
-                    string[] arguments = m.GetParameters()
-                        .Select(p => $"{p.ParameterType.Name} {p.Name}")
-                        .ToArray();
-                    return $"{name}({string.Join(", ", arguments)})";
-                })
+                .Select(PrintMethod)
                 .Distinct()
                 .OrderBy(t => t)
                 .ToArray();
@@ -258,6 +263,14 @@ namespace Core
                     Methods: 
                       {string.Join(Environment.NewLine + "  ", publicMethods)}
                     """);
+        }
+        public static string PrintMethod(MethodInfo m)
+        {
+            string name = m.Name;
+            string[] arguments = m.GetParameters()
+                .Select(p => $"{p.ParameterType.Name} {p.Name}")
+                .ToArray();
+            return $"{name}({string.Join(", ", arguments)})";
         }
         #endregion
 
