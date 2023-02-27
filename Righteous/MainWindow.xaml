@@ -1,0 +1,29 @@
+﻿<Window x:Class="Righteous.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Righteous"
+        mc:Ignorable="d"
+        Title="Righteous" MinHeight="350" MinWidth="300" ResizeMode="CanResizeWithGrip"
+        SizeToContent="WidthAndHeight"
+        DataContext="{Binding RelativeSource={RelativeSource self}}">
+    <Window.InputBindings>
+        <KeyBinding Command="New" Key="N" Modifiers="Ctrl"/>
+        <KeyBinding Command="Open" Key="O" Modifiers="Ctrl"/>
+        <KeyBinding Command="Save" Key="S" Modifiers="Ctrl"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="New" CanExecute="FileNewCommand_CanExecute" Executed="FileNewCommand_Executed" />
+        <CommandBinding Command="Open" CanExecute="FileOpenCommand_CanExecute" Executed="FileOpenCommand_Executed" />
+        <CommandBinding Command="Save" CanExecute="FileSaveCommand_CanExecute" Executed="FileSaveCommand_Executed" />
+    </Window.CommandBindings>
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Content="New" Click="NewWindowButton_Click"/>
+            <Button Content="Show All" Click="ShowAllWindowsButton_Click"/>
+            <Button Content="Close All" Click="CloseAllWindowsButton_Click"/>
+        </StackPanel>
+        <TextBox IsEnabled="False" Text="{Binding DisplayText}" MinHeight="200"></TextBox>
+    </DockPanel>
+</Window>

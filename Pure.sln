@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pure", "Pure\Pure.csproj", "{6E7004E9-2D90-44C5-85B8-C4F89C34BA5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pure", "Pure\Pure.csproj", "{6E7004E9-2D90-44C5-85B8-C4F89C34BA5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entrances", "Entrances", "{69C4FF0E-BC56-439F-8BED-592E3A01EBBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purer", "Purer\Purer.csproj", "{268D009B-4F98-46FA-B41C-83F80C4BE6E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purer", "Purer\Purer.csproj", "{268D009B-4F98-46FA-B41C-83F80C4BE6E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virgin", "Virgin\Virgin.csproj", "{F70B36AE-F2E7-4C0E-8349-A20572F21239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Virgin", "Virgin\Virgin.csproj", "{F70B36AE-F2E7-4C0E-8349-A20572F21239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurora", "Aurora\Aurora.csproj", "{CCE0CE9E-06B8-4E1E-9F63-BBA349631020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aurora", "Aurora\Aurora.csproj", "{CCE0CE9E-06B8-4E1E-9F63-BBA349631020}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{495B342E-4B50-4C7B-8EDF-4C6E7D3F9A6B}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,7 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{193AD091-95BC-4B43-9C76-D5AFF7DEFB70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{774AB144-AE03-440C-91E9-890DD93146B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{774AB144-AE03-440C-91E9-890DD93146B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Righteous", "Righteous\Righteous.csproj", "{592669C4-2C39-4AC6-835A-4F26A38760BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{774AB144-AE03-440C-91E9-890DD93146B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{774AB144-AE03-440C-91E9-890DD93146B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{774AB144-AE03-440C-91E9-890DD93146B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{592669C4-2C39-4AC6-835A-4F26A38760BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592669C4-2C39-4AC6-835A-4F26A38760BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592669C4-2C39-4AC6-835A-4F26A38760BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592669C4-2C39-4AC6-835A-4F26A38760BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{F70B36AE-F2E7-4C0E-8349-A20572F21239} = {69C4FF0E-BC56-439F-8BED-592E3A01EBBD}
 		{CCE0CE9E-06B8-4E1E-9F63-BBA349631020} = {69C4FF0E-BC56-439F-8BED-592E3A01EBBD}
 		{774AB144-AE03-440C-91E9-890DD93146B4} = {193AD091-95BC-4B43-9C76-D5AFF7DEFB70}
+		{592669C4-2C39-4AC6-835A-4F26A38760BE} = {69C4FF0E-BC56-439F-8BED-592E3A01EBBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B113BF9D-0A5B-43D7-A132-D1CCD6AC46DA}
