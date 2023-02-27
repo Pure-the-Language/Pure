@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Righteous.Windows"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="Righteous" MinHeight="250" MinWidth="300" ResizeMode="CanResizeWithGrip"
-        SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterScreen"
+        SizeToContent="Width" ShowInTaskbar="False" WindowStartupLocation="CenterScreen"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         LocationChanged="Window_LocationChanged">
     <DockPanel LastChildFill="True">
@@ -25,6 +26,13 @@
         <StackPanel DockPanel.Dock="Bottom">
             <Button Content="Execute" Click="ExecuteButton_Click"/>
         </StackPanel>
-        <TextBox DockPanel.Dock="Bottom" Text="{Binding Model.Scripts, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="True"/>
+        <avalonEdit:TextEditor 
+            DockPanel.Dock="Bottom" Margin="5"
+            BorderThickness="2" BorderBrush="Beige"
+            ShowLineNumbers="True" SyntaxHighlighting="C#" 
+            FontSize="10pt" FontFamily="Consolas" WordWrap="True" 
+            DataContextChanged="AvalonTextEditor_DataContextChanged"
+            Initialized="AvalonTextEditor_Initialized"
+            TextChanged="AvalonTextEditor_OnTextChanged"/>
     </DockPanel>
 </Window>

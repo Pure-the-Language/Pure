@@ -58,7 +58,7 @@ namespace Righteous
         private void FileSaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
             => SaveFile();
         private void FileSaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = CurrentFilePath != null;
+            => e.CanExecute = true;
         #endregion
 
         #region Methods
@@ -80,10 +80,9 @@ namespace Righteous
         {
             DataModel model = new DataModel();
             Data.Steps.Add(model);
-            new ScriptWindow()
+            new ScriptWindow(model)
             {
-                Owner = this,
-                Model = model
+                Owner = this
             }.Show();
         }
 
@@ -96,10 +95,9 @@ namespace Righteous
             }
             foreach (var step in Data.Steps)
             {
-                new ScriptWindow()
+                new ScriptWindow(step)
                 {
                     Owner = this,
-                    Model = step,
                     WindowStartupLocation = WindowStartupLocation.Manual,
                     Left = step.Location.X,
                     Top = step.Location.Y
@@ -152,17 +150,22 @@ namespace Righteous
         }
         private void SaveFile()
         {
-            SaveFileDialog saveFileDialog = new()
-            {
-                Filter = "Righteous (*.prt)|*.prt|All (*.*)|*.*",
-                AddExtension = true,
-                Title = "Choose location to save file as"
-            };
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                CurrentFilePath = saveFileDialog.FileName;
+            if (CurrentFilePath != null)
                 ApplicationDataSerializer.Save(CurrentFilePath, Data);
-                Title = $"Righteous - {CurrentFilePath}";
+            else
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Filter = "Righteous (*.prt)|*.prt|All (*.*)|*.*",
+                    AddExtension = true,
+                    Title = "Choose location to save file as"
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    CurrentFilePath = saveFileDialog.FileName;
+                    ApplicationDataSerializer.Save(CurrentFilePath, Data);
+                    Title = $"Righteous - {CurrentFilePath}";
+                }
             }
         }
         #endregion

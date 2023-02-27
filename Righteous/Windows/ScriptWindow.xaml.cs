@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -12,8 +13,9 @@ namespace Righteous.Windows
     public partial class ScriptWindow : Window, INotifyPropertyChanged
     {
         #region Construction
-        public ScriptWindow()
+        public ScriptWindow(DataModel model)
         {
+            Model = model;
             InitializeComponent();
         }
         #endregion
@@ -44,6 +46,24 @@ namespace Righteous.Windows
             field = value;
             NotifyPropertyChanged(propertyName);
             return true;
+        }
+        #endregion
+
+        #region Text Editing
+        private void AvalonTextEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            editor.Text = Model.Scripts;
+        }
+        private void AvalonTextEditor_Initialized(object sender, EventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            editor.Text = Model.Scripts;
+        }
+        private void AvalonTextEditor_OnTextChanged(object sender, EventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            Model.Scripts = editor.Text;
         }
         #endregion
     }
