@@ -165,6 +165,16 @@ namespace Core
 
             if (nameSpaces.Contains(name))
             {
+                var subNamespaces = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .SelectMany(a =>
+                        a.GetTypes()
+                        .Where(t => t.Namespace?.StartsWith($"{name}.") ?? false)
+                        .Select(t => t.Namespace)
+                    )
+                    .Distinct()
+                    .OrderBy(t => t)
+                    .ToArray();
                 var publicTypes = AppDomain.CurrentDomain
                     .GetAssemblies()
                     .SelectMany(a =>
@@ -172,13 +182,14 @@ namespace Core
                         .Where(t => t.Namespace == name)
                         .Select(t => t.Name)
                         .Where(n => !n.StartsWith("<>")) // Skip internal names
-                        .Distinct()
-                        .OrderBy(t => t)
-                        .ToArray()
                     )
+                    .Distinct()
+                    .OrderBy(t => t)
                     .ToArray();
                 Console.WriteLine($"""
                         Namespace: {name}
+                        Namespaces: 
+                          {string.Join(Environment.NewLine + "  ", subNamespaces)}
                         Types: 
                           {string.Join(Environment.NewLine + "  ", publicTypes)}
                         """);
