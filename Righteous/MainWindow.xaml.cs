@@ -29,7 +29,7 @@ namespace Righteous
         #endregion
 
         #region Data Binding Properties
-        private string _DisplayText;
+        private string _DisplayText = string.Empty;
         public string DisplayText { get => _DisplayText; set => SetField(ref _DisplayText, value); }
         private string _CurrentFilePath;
         public string CurrentFilePath { get => _CurrentFilePath; 
@@ -214,7 +214,7 @@ namespace Righteous
         }
         private void OutputHandler(string message)
         {
-            DisplayText = message;
+            DisplayText += message + Environment.NewLine;
         }
         #endregion
     }

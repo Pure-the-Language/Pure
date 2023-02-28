@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Righteous"
         mc:Ignorable="d"
-        Title="Righteous" MinHeight="350" MinWidth="300" ResizeMode="CanResizeWithGrip"
-        SizeToContent="WidthAndHeight"
+        Title="Righteous" Height="350" MinWidth="300" ResizeMode="CanResizeWithGrip"
+        SizeToContent="Width"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Window.InputBindings>
         <KeyBinding Command="New" Key="N" Modifiers="Ctrl"/>
@@ -33,6 +33,6 @@
             <Button Content="Close All" Click="CloseAllStepsButton_Click"/>
             <Button Content="Run All" Click="RunAllStepsButton_Click"/>
         </StackPanel>
-        <TextBox IsEnabled="False" Text="{Binding DisplayText}" MinHeight="200"></TextBox>
+        <TextBox IsReadOnly="True" Text="{Binding DisplayText}" VerticalScrollBarVisibility="Auto"></TextBox>
     </DockPanel>
 </Window>
