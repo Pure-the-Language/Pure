@@ -196,7 +196,7 @@ namespace Core
                 .AddImports("System.Collections.Generic", "System.Linq")
                 .AddImports("Core.Math")
                 .AddImports("Core.Utilities")
-                .WithImports("Core.Construct");
+                .AddImports("Core.Construct");
             if (importAdditional)
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
