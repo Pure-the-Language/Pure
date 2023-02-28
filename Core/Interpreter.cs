@@ -14,7 +14,7 @@ namespace Core
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
 
-            Context = new RoslynContext(true, StandardOutputHandler);
+            Context = new RoslynContext(true, null);
             if (startingScripts != null)
                 foreach (var script in startingScripts)
                     Context.Evaluate(script);
@@ -23,25 +23,19 @@ namespace Core
                 return;
             while (true)
             {
-                Console.WriteLine(">>> ");
+                Console.Write(">>> ");
                 string input = Console.ReadLine().Trim();
 
                 if (input == "exit" || input == "exit()")
                     return;
                 Context.Evaluate(input);
             }
-
-            static void StandardOutputHandler(string message)
-            {
-                Console.WriteLine(message);
-            }
         }
         public void Start(Action<string> outputHandler, string welcomeMessage = null, string[] startingScripts = null)
         {
-            if (!string.IsNullOrWhiteSpace(welcomeMessage))
-                outputHandler(welcomeMessage);
-
             Context = new RoslynContext(true, outputHandler);
+            if (!string.IsNullOrWhiteSpace(welcomeMessage))
+                Console.WriteLine(welcomeMessage);
             if (startingScripts != null)
                 foreach (var script in startingScripts)
                     Context.Evaluate(script);

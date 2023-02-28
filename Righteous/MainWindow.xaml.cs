@@ -214,7 +214,7 @@ namespace Righteous
         }
         private void OutputHandler(string message)
         {
-            DisplayText += message + Environment.NewLine;
+            DisplayText += message;
         }
         #endregion
     }
