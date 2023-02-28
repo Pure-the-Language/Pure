@@ -64,6 +64,8 @@ namespace Righteous
         #region Methods
         internal void Evaluate(string scripts)
         {
+            if (string.IsNullOrWhiteSpace(scripts))
+                return;
             if (scripts.Contains(';'))
                 Interpreter.Evaluate(scripts);
             else

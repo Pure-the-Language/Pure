@@ -44,6 +44,16 @@ namespace Righteous.Windows
         }
         #endregion
 
+        #region Commands
+        private void ExecuteCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+        private void ExecuteCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            Model.Scripts = AvalonEdit.Text;
+            (App.Current.MainWindow as MainWindow).Evaluate(Model.Scripts);
+        }
+        #endregion
+
         #region Data Binding
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)

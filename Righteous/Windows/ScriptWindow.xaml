@@ -11,6 +11,12 @@
         SizeToContent="Width" ShowInTaskbar="False" WindowStartupLocation="CenterScreen"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         LocationChanged="Window_LocationChanged">
+    <Window.InputBindings>
+        <KeyBinding Command="Print" Key="F5"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="Print" CanExecute="ExecuteCommand_CanExecute" Executed="ExecuteCommand_Executed" />
+    </Window.CommandBindings>
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -33,6 +39,7 @@
             <TextBox Text="{Binding Model.Description, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
         <avalonEdit:TextEditor 
+            Name="AvalonEdit"
             DockPanel.Dock="Bottom" Margin="5"
             BorderThickness="2" BorderBrush="Beige"
             ShowLineNumbers="True" SyntaxHighlighting="C#" 
