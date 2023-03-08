@@ -13,6 +13,17 @@ Features:
 * Syntactic sugars.
 * Package management (Aurora).
 
+## URGENT
+
+Currently Pure has two main issues that stops it from being used for production use (but it's OK right now to use it for one-liners and quick REPL purpose):
+
+1. The REPL interpreter right now (along with the core engine) aka. Pure.exe cannot parse statements that span multiple lines, this makes stuff like defining functions or classes very inconvinient if not at all impossible.
+    * The Pure.exe program itself apparently needs work, along with tne engine code.
+    * We are yet to integrate and implement BaseRepl for Aurora from CSharpRepl.
+2. Importing and consuming Nuget packages is not fully implemented yet.
+
+As it goes, it is actually possible at the moment to use Righteous along with manually downloaded DLL packages to implement all the needed functions.
+
 ## Syntax & Special Commands
 
 * Use `Import()` to import modules from PATH
