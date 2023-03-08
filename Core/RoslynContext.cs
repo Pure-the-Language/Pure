@@ -241,6 +241,20 @@ namespace Core
 
                 return;
             }
+            else if (IncludeScriptRegex().IsMatch(input))
+            {
+                var match = IncludeScriptRegex().Match(input);
+                string scriptName = match.Groups[1].Value.Trim('"');
+                
+                string scriptPath = scriptName;
+                if (!File.Exists(scriptName))
+                    scriptPath = TryFindScriptFile(scriptName);
+
+                // Remark-cz: Notice this will NOT work with any of above non-standard statements because it's treated as a single-evlauation
+                // This is because at the moment we do not have parsing capabilities to determine whether certain lines are complete and we can only evaluate a single piece of "script" at a time - it doesn't matter whether we are calling EvaluateSingle() or Evaluate() below.
+                string content = File.ReadAllText(scriptPath);
+                EvaluateSingle(content);
+            }
             else if (HelpItemRegex().IsMatch(input))
             {
                 var match = HelpItemRegex().Match(input);
@@ -282,6 +296,32 @@ namespace Core
                             string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
                             string extension = Path.GetExtension(file).ToLower();
                             if (extension == ".dll" || extension == ".exe")
+                            {
+                                if (fileName == dllName || fileNameNoExtention == dllName)
+                                    return file;
+                            }
+                        }
+                    }
+                    // Remark-cz: Certain paths might NOT be enumerable due to access issues
+                    catch (Exception) { continue; }
+                }
+                return null;
+            }
+            static string TryFindScriptFile(string dllName)
+            {
+                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
+                    return null;
+                foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    try
+                    {
+                        foreach (var file in Directory.EnumerateFiles(path))
+                        {
+                            string fileName = Path.GetFileName(file);
+                            string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
+                            string extension = Path.GetExtension(file).ToLower();
+                            if (extension == ".pure")
                             {
                                 if (fileName == dllName || fileNameNoExtention == dllName)
                                     return file;
@@ -444,6 +484,8 @@ namespace Core
         #region Regex
         [GeneratedRegex(@"^Import\((.*?)(, ?(.*?))?\);?$")]
         private static partial Regex ImportModuleRegex();
+        [GeneratedRegex(@"^Include\((.*?)(, ?(.*?))?\);?$")]
+        private static partial Regex IncludeScriptRegex();
         [GeneratedRegex(@"^Help\((.*?)\)$")]
         private static partial Regex HelpItemRegex();
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
