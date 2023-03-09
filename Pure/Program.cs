@@ -19,7 +19,7 @@ namespace Pure
                     return; 
                 }
                 // TODO: Currently we are NOT properly parsing the file - we assume only line commands
-                new Interpreter().Start(string.Empty, false, true, File.ReadAllLines(file), true);
+                new Interpreter().Start(string.Empty, false, true, Parser.SplitScripts(File.ReadAllText(file)), true);
             }
         }
     }

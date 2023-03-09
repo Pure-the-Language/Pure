@@ -250,10 +250,9 @@ namespace Core
                 if (!File.Exists(scriptName))
                     scriptPath = TryFindScriptFile(scriptName);
 
-                // Remark-cz: Notice this will NOT work with any of above non-standard statements because it's treated as a single-evlauation
-                // This is because at the moment we do not have parsing capabilities to determine whether certain lines are complete and we can only evaluate a single piece of "script" at a time - it doesn't matter whether we are calling EvaluateSingle() or Evaluate() below.
-                string content = File.ReadAllText(scriptPath);
-                EvaluateSingle(content);
+                string text = File.ReadAllText(scriptPath);
+                foreach (var code in Parser.SplitScripts(text))
+                    Evaluate(code);
             }
             else if (HelpItemRegex().IsMatch(input))
             {
@@ -272,7 +271,7 @@ namespace Core
                 {
                     // Remark-cz: This will NOT work with actions that modifies state by calling host functions
                     // Basically, host functions cannot and should not have side-effects on the state object directly
-                    State = State.ContinueWithAsync(SyntacWrap(singleEvaluation)).Result;
+                    State = State.ContinueWithAsync(SyntaxWrap(singleEvaluation)).Result;
                     if (State.ReturnValue != null)
                         Console.WriteLine(State.ReturnValue.ToString());
                 }
@@ -347,7 +346,7 @@ namespace Core
         #endregion
 
         #region Routine
-        private static string SyntacWrap(string input)
+        private static string SyntaxWrap(string input)
         {
             // Numerical array data
             var match = VariableCreationRegex().Match(input);
@@ -489,15 +488,15 @@ namespace Core
 
         #region Regex
         [GeneratedRegex(@"^Import\((.*?)(, ?(.*?))?\);?$")]
-        private static partial Regex ImportModuleRegex();
+        public static partial Regex ImportModuleRegex();
         [GeneratedRegex(@"^Include\((.*?)(, ?(.*?))?\);?$")]
-        private static partial Regex IncludeScriptRegex();
+        public static partial Regex IncludeScriptRegex();
         [GeneratedRegex(@"^Help\((.*?)\)$")]
-        private static partial Regex HelpItemRegex();
+        public static partial Regex HelpItemRegex();
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
-        private static partial Regex VariableCreationRegex();
+        public static partial Regex VariableCreationRegex();
         [GeneratedRegex("^.*?=.*[^;]$")]
-        private static partial Regex LineAssignmentRegex();
+        public static partial Regex LineAssignmentRegex();
         #endregion
     }
 }
