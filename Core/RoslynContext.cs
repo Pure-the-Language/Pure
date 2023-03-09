@@ -285,6 +285,9 @@ namespace Core
 
             static string TryFindDLLFile(string dllName)
             {
+                string fullpath = Path.GetFullPath(dllName);
+                if (File.Exists(fullpath))
+                    return fullpath;
                 foreach (var path in Environment.GetEnvironmentVariable("PATH")
                 .Split(';', StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -307,8 +310,11 @@ namespace Core
                 }
                 return null;
             }
-            static string TryFindScriptFile(string dllName)
+            static string TryFindScriptFile(string scriptName)
             {
+                string fullpath = Path.GetFullPath(scriptName);
+                if (File.Exists(fullpath))
+                    return fullpath;
                 if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
                     return null;
                 foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")
@@ -323,7 +329,7 @@ namespace Core
                             string extension = Path.GetExtension(file).ToLower();
                             if (extension == ".pure")
                             {
-                                if (fileName == dllName || fileNameNoExtention == dllName)
+                                if (fileName == scriptName || fileNameNoExtention == scriptName)
                                     return file;
                             }
                         }
