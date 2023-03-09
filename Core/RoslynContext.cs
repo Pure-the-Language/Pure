@@ -250,6 +250,9 @@ namespace Core
                 if (!File.Exists(scriptName))
                     scriptPath = TryFindScriptFile(scriptName);
 
+                if (!File.Exists(scriptPath))
+                    throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
+
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Parser.SplitScripts(text))
                     Evaluate(code);
