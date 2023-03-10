@@ -6,8 +6,21 @@
         {
             var plt = new ScottPlot.Plot(400, 300);
             plt.AddScatter(x, y);
-            new ScottPlot.WpfPlotViewer(plt).ShowDialog();
-            // plt.SaveFig("quickstart.png");
+            if (settings.Length == 0)
+                new ScottPlot.WpfPlotViewer(plt).ShowDialog();
+            foreach (var setting in settings)
+            {
+                if (setting.EndsWith(".png"))
+                    plt.SaveFig(setting);
+                switch (setting)
+                {
+                    case "--interactive":
+                        new ScottPlot.WpfPlotViewer(plt).ShowDialog();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
