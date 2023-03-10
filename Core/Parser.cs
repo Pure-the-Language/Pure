@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Core
 {
@@ -10,7 +11,9 @@ namespace Core
         /// </summary>
         public static string[] SplitScripts(string text)
         {
-            string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => Regex.Replace(line, @"//.*$", string.Empty))    // Deal with line comments
+                .ToArray();
             List<string> scripts = new List<string>();
 
             bool inCodeBlock = false;
