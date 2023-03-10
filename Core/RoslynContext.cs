@@ -237,7 +237,7 @@ namespace Core
                     if (mainType != null)
                         AddImport($"{mainType.Namespace}.Main");
                 }
-                else Console.WriteLine($"WriteLine(\"Cannot find package: {dllName}\")");
+                else Console.WriteLine($"Cannot find package: {dllName}");
 
                 return;
             }
