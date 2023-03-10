@@ -43,6 +43,10 @@ ACTUALLY THIS IS NOT TRUE. THE RUNTIME IS INDEED 7.0.1 (within Roslyn), and CSha
 
 Alternatively, use CSharpREPL to find the correct DLL that we need (e.g. for ODBC, it should be `AppData\Roaming\.csharprepl\packages\System.Data.Odbc.7.0.0\runtimes\win\lib\net7.0\System.Data.Odbc.dll`).
 
+### Troubleshooting
+
+System.Drawing is not supported on this platform. Notice the scenario is like that when using ODBC libraries - likely because it has many runtime versions. This is because at the moment "Import" cannot properly make use of the likely-redirection dlls. One solution for this is to select specific runtime when build instead of target "Portable" runtime.
+
 ### Library Requirements
 
 Note that libraries CANNOT directly target (or indirectly target) .Net 7 Windows because the hosting environment (aka. Pure) target .Net 7.

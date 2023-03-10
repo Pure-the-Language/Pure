@@ -226,7 +226,9 @@ namespace Core
                 List<string> statements = new List<string>();
                 if (filePath != null && File.Exists(filePath))
                 {
-                    Assembly assembly = Assembly.LoadFrom(filePath); // Might load from within the Roslyn state's context//app domain?
+                    // Remark-cz: Add the moment this fails to deal with most scenarios when the package is NOT properly including the single runtime i.e. there is a "runtimes" folder which contains corresponding runtimes (The Target runtime is selected as "Portable" instead of specifc runtime). In this case it will say "<Some module> is not supported on this platform" when the module is actually available in the published build.
+                    // Potential reference: https://stackoverflow.com/questions/1373100/how-to-add-folder-to-assembly-search-path-at-runtime-in-net
+                    Assembly assembly = Assembly.LoadFrom(filePath); // Remark: Might load from within the Roslyn state's context//app domain?
                     AddReference(assembly);
 
                     if (importNamespaces)
