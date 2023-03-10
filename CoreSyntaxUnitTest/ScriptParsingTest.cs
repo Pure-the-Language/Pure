@@ -12,12 +12,13 @@ namespace CoreSyntaxUnitTest
                 Import(Module)
                 Include(Script.cs)
                 WriteLine("Hello World!");
+                var a = 5
                 void MyFunction()
                 {
                     WriteLine("Hello World!");
                 }
                 """).Length;
-            Asset.Equals(4, sections);
+            Asset.Equals(5, sections);
         }
     }
 }

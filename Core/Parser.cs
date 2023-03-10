@@ -18,7 +18,8 @@ namespace Core
             {
                 if (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
-                    || RoslynContext.HelpItemRegex().IsMatch(line))
+                    || RoslynContext.HelpItemRegex().IsMatch(line)
+                    || RoslynContext.LineAssignmentRegex().IsMatch(line))
                     scripts.Add(line);
                 else if (inCodeBlock)
                     codeBuilder.AppendLine(line);
