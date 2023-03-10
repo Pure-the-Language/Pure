@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text;
 
 namespace Core
 {
@@ -13,32 +14,57 @@ namespace Core
             List<string> scripts = new List<string>();
 
             bool inCodeBlock = false;
-            StringBuilder codeBuilder = new StringBuilder();
-            foreach (var line in lines)
+            bool inFluentAPI = false;
+            StringBuilder codeBuilder = new ();
+            for (int i = 0; i < lines.Length; i++)
             {
+                string line = lines[i];
                 if (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
-                    || RoslynContext.HelpItemRegex().IsMatch(line)
-                    || RoslynContext.LineAssignmentRegex().IsMatch(line))
+                    || RoslynContext.HelpItemRegex().IsMatch(line))
                     scripts.Add(line);
+                else if (RoslynContext.LineAssignmentRegex().IsMatch(line))
+                {
+                    if (i != lines.Length - 1 && !lines[i + 1].TrimStart().StartsWith('.'))
+                        scripts.Add(line);
+                    else
+                    {
+                        codeBuilder.AppendLine(line);
+                        inFluentAPI = true;
+                    }
+                }
                 else if (inCodeBlock)
                     codeBuilder.AppendLine(line);
                 else if (line.Trim() == "}")
                 {
                     inCodeBlock = false;
-                    scripts.Add(codeBuilder.ToString());
+                    scripts.Add(codeBuilder.ToString().TrimEnd());
                     codeBuilder.Clear();
                 }
                 else if (line.Trim().EndsWith(';'))
-                    scripts.Add(line);
+                {
+                    inCodeBlock = false;
+                    inFluentAPI = false;
+                    codeBuilder.AppendLine(line);
+                    scripts.Add(codeBuilder.ToString().TrimEnd());
+                    codeBuilder.Clear();
+                }
+                else if (inFluentAPI && i != lines.Length - 1 && !lines[i + 1].TrimStart().StartsWith('.'))
+                {
+                    inFluentAPI = false;
+                    codeBuilder.AppendLine(line);
+                    scripts.Add(codeBuilder.ToString().TrimEnd());
+                    codeBuilder.Clear();
+                }
                 else
                 {
                     codeBuilder.AppendLine(line);
-                    inCodeBlock = true;
+                    if (!inFluentAPI)
+                        inCodeBlock = true;
                 }
             }
             if (codeBuilder.Length > 0)
-                scripts.Add(codeBuilder.ToString());
+                scripts.Add(codeBuilder.ToString().TrimEnd());
 
             return scripts.ToArray();
         }

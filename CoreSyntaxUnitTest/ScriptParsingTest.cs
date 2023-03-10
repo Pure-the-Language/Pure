@@ -1,5 +1,4 @@
 using Core;
-using NuGet.ContentModel;
 
 namespace CoreSyntaxUnitTest
 {
@@ -8,7 +7,7 @@ namespace CoreSyntaxUnitTest
         [Fact]
         public void ShouldSplitTextIntoCorrespondingParseableScripts()
         {
-            int sections = Parser.SplitScripts("""
+            var sections = Parser.SplitScripts("""
                 Import(Module)
                 Include(Script.cs)
                 WriteLine("Hello World!");
@@ -17,8 +16,28 @@ namespace CoreSyntaxUnitTest
                 {
                     WriteLine("Hello World!");
                 }
-                """).Length;
-            Asset.Equals(5, sections);
+                """);
+            Assert.Equal(5, sections.Length);
+            Assert.Equal("var a = 5", sections[3]);
+            Assert.Equal("""
+                void MyFunction()
+                {
+                    WriteLine("Hello World!");
+                }
+                """, sections.Last());
+        }
+        [Fact]
+        public void ShouldHandleVariableDefinitionsProperly()
+        {
+            var sections = Parser.SplitScripts("""
+                var a = 5
+                var b = someObject
+                    .Action1()
+                    .Action2()
+                WriteLine(a)
+                """);
+            Assert.Equal(3, sections.Length);
+            Assert.Equal("WriteLine(a)", sections[2]);
         }
     }
 }
