@@ -42,3 +42,8 @@ Solution: All plugins should target Net Standard 2.0+ or Net Core 3.1+ or Net Fr
 ACTUALLY THIS IS NOT TRUE. THE RUNTIME IS INDEED 7.0.1 (within Roslyn), and CSharpREPL can consume System.Data.Odbc without problem.
 
 Alternatively, use CSharpREPL to find the correct DLL that we need (e.g. for ODBC, it should be `AppData\Roaming\.csharprepl\packages\System.Data.Odbc.7.0.0\runtimes\win\lib\net7.0\System.Data.Odbc.dll`).
+
+### Library Requirements
+
+Note that libraries CANNOT directly target (or indirectly target) .Net 7 Windows because the hosting environment (aka. Pure) target .Net 7.
+The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
