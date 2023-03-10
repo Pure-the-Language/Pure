@@ -284,76 +284,81 @@ namespace Core
                     Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
                 }
             }
-
-            static string TryFindDLLFile(string dllName)
-            {
-                string fullpath = Path.GetFullPath(dllName);
-                if (File.Exists(fullpath))
-                    return fullpath;
-                foreach (var path in Environment.GetEnvironmentVariable("PATH")
-                    .Split(';', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    try
-                    {
-                        if (!dllName.EndsWith(".dll") && !dllName.EndsWith(".exe") 
-                            && Directory.Exists(Path.Combine(path, dllName)))
-                        {
-                            string dllPath = Path.Combine(path, dllName, dllName);
-                            if (File.Exists(dllPath + ".exe"))
-                                return dllPath + ".exe";
-                            if (File.Exists(dllPath + ".dll"))
-                                return dllPath + ".dll";
-                        }
-                        foreach (var file in Directory.EnumerateFiles(path))
-                        {
-                            string fileName = Path.GetFileName(file);
-                            string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
-                            string extension = Path.GetExtension(file).ToLower();
-                            if (extension == ".dll" || extension == ".exe")
-                            {
-                                if (fileName == dllName || fileNameNoExtention == dllName)
-                                    return file;
-                            }
-                        }
-                    }
-                    // Remark-cz: Certain paths might NOT be enumerable due to access issues
-                    catch (Exception) { continue; }
-                }
-                return null;
-            }
-            static string TryFindScriptFile(string scriptName)
-            {
-                string fullpath = Path.GetFullPath(scriptName);
-                if (File.Exists(fullpath))
-                    return fullpath;
-                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
-                    return null;
-                foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")
-                    .Split(';', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    try
-                    {
-                        foreach (var file in Directory.EnumerateFiles(path))
-                        {
-                            string fileName = Path.GetFileName(file);
-                            string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
-                            string extension = Path.GetExtension(file).ToLower();
-                            if (extension == ".pure")
-                            {
-                                if (fileName == scriptName || fileNameNoExtention == scriptName)
-                                    return file;
-                            }
-                        }
-                    }
-                    // Remark-cz: Certain paths might NOT be enumerable due to access issues
-                    catch (Exception) { continue; }
-                }
-                return null;
-            }
             void AddReference(Assembly assembly)
                 => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;
             void AddImport(string import)
                 => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddImports(import)).Result;
+        }
+        #endregion
+
+        #region Helpers
+        public static string TryFindDLLFile(string dllName)
+        {
+            string fullpath = Path.GetFullPath(dllName);
+            if (File.Exists(fullpath))
+                return fullpath;
+            foreach (var path in Environment.GetEnvironmentVariable("PATH")
+                .Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
+                {
+                    if (!dllName.EndsWith(".dll") && !dllName.EndsWith(".exe")
+                        && Directory.Exists(Path.Combine(path, dllName)))
+                    {
+                        string dllPath = Path.Combine(path, dllName, dllName);
+                        if (File.Exists(dllPath + ".exe"))
+                            return dllPath + ".exe";
+                        if (File.Exists(dllPath + ".dll"))
+                            return dllPath + ".dll";
+                    }
+                    fullpath = Path.Combine(path, dllName);
+                    if (File.Exists(fullpath))
+                        return fullpath;
+                    foreach (var file in Directory.EnumerateFiles(path))
+                    {
+                        string fileName = Path.GetFileName(file);
+                        string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
+                        string extension = Path.GetExtension(file).ToLower();
+                        if (extension == ".dll" || extension == ".exe")
+                        {
+                            if (fileName == dllName || fileNameNoExtention == dllName)
+                                return file;
+                        }
+                    }
+                }
+                // Remark-cz: Certain paths might NOT be enumerable due to access issues
+                catch (Exception) { continue; }
+            }
+            return null;
+        }
+        public static string TryFindScriptFile(string scriptName)
+        {
+            string fullpath = Path.GetFullPath(scriptName);
+            if (File.Exists(fullpath))
+                return fullpath;
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
+                return null;
+            foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")
+                .Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
+                {
+                    foreach (var file in Directory.EnumerateFiles(path))
+                    {
+                        string fileName = Path.GetFileName(file);
+                        string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
+                        string extension = Path.GetExtension(file).ToLower();
+                        if (extension == ".pure")
+                        {
+                            if (fileName == scriptName || fileNameNoExtention == scriptName)
+                                return file;
+                        }
+                    }
+                }
+                // Remark-cz: Certain paths might NOT be enumerable due to access issues
+                catch (Exception) { continue; }
+            }
+            return null;
         }
         #endregion
 
