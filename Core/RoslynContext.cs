@@ -291,10 +291,19 @@ namespace Core
                 if (File.Exists(fullpath))
                     return fullpath;
                 foreach (var path in Environment.GetEnvironmentVariable("PATH")
-                .Split(';', StringSplitOptions.RemoveEmptyEntries))
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries))
                 {
                     try
                     {
+                        if (!dllName.EndsWith(".dll") && !dllName.EndsWith(".exe") 
+                            && Directory.Exists(Path.Combine(path, dllName)))
+                        {
+                            string dllPath = Path.Combine(path, dllName, dllName);
+                            if (File.Exists(dllPath + ".exe"))
+                                return dllPath + ".exe";
+                            if (File.Exists(dllPath + ".dll"))
+                                return dllPath + ".dll";
+                        }
                         foreach (var file in Directory.EnumerateFiles(path))
                         {
                             string fileName = Path.GetFileName(file);
