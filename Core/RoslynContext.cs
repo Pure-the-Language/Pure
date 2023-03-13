@@ -521,7 +521,7 @@ namespace Core
         public static partial Regex HelpItemRegex();
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
         public static partial Regex ArrayVariableCreationRegex();
-        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\W*?)+\]")]
+        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\W*?){3,}\]")]
         public static partial Regex LiteralArrayRegex();
         [GeneratedRegex("^.*?=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();
