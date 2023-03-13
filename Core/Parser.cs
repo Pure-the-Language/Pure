@@ -12,62 +12,30 @@ namespace Core
         public static string[] SplitScripts(string text)
         {
             string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(line => Regex.Replace(line, @"//.*$", string.Empty))    // Deal with line comments
                 .ToArray();
             List<string> scripts = new List<string>();
 
-            bool inCodeBlock = false;
-            bool inFluentAPI = false;
-            StringBuilder codeBuilder = new ();
+            StringBuilder scriptBuilder = new ();
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
+
                 if (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
                     || RoslynContext.HelpItemRegex().IsMatch(line))
-                    scripts.Add(line);
-                else if (RoslynContext.LineAssignmentRegex().IsMatch(line))
                 {
-                    if (i != lines.Length - 1 && !lines[i + 1].TrimStart().StartsWith('.'))
-                        scripts.Add(line);
-                    else
+                    if (scriptBuilder.Length != 0)
                     {
-                        codeBuilder.AppendLine(line);
-                        inFluentAPI = true;
+                        scripts.Add(scriptBuilder.ToString());
+                        scriptBuilder.Clear();
                     }
-                }
-                else if (inCodeBlock)
-                    codeBuilder.AppendLine(line);
-                else if (line.Trim() == "}")
-                {
-                    inCodeBlock = false;
-                    scripts.Add(codeBuilder.ToString().TrimEnd());
-                    codeBuilder.Clear();
-                }
-                else if (line.Trim().EndsWith(';'))
-                {
-                    inCodeBlock = false;
-                    inFluentAPI = false;
-                    codeBuilder.AppendLine(line);
-                    scripts.Add(codeBuilder.ToString().TrimEnd());
-                    codeBuilder.Clear();
-                }
-                else if (inFluentAPI && i != lines.Length - 1 && !lines[i + 1].TrimStart().StartsWith('.'))
-                {
-                    inFluentAPI = false;
-                    codeBuilder.AppendLine(line);
-                    scripts.Add(codeBuilder.ToString().TrimEnd());
-                    codeBuilder.Clear();
+                    scripts.Add(line);
                 }
                 else
-                {
-                    codeBuilder.AppendLine(line);
-                    if (!inFluentAPI)
-                        inCodeBlock = true;
-                }
+                    scriptBuilder.AppendLine(line);
             }
-            if (codeBuilder.Length > 0)
-                scripts.Add(codeBuilder.ToString().TrimEnd());
+            if (scriptBuilder.Length > 0)
+                scripts.Add(scriptBuilder.ToString().TrimEnd());
 
             return scripts.ToArray();
         }

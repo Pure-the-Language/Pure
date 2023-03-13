@@ -29,8 +29,8 @@ As it goes, it is actually possible at the moment to use Righteous along with ma
 * Use `Import()` to import modules from PATH
 * Use `Help(name)` to get help about namespaces, types, and specific variables
 * Create 2D arrays of doubles directly using the syntax `var name = [<elements>]`
-* For single line assignment and variable creation, no need to append `;` at end of line
-* Use `#` add the beginning of line for line-style comment
+* (Only applicable at REPL) For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted
+* (Deprecated) Use `#` add the beginning of line for line-style comment
 
 ## Limits
 
