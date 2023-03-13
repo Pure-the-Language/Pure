@@ -24,6 +24,8 @@ Currently Pure has two main issues that stops it from being used for production 
 
 As it goes, it is actually possible at the moment to use Righteous along with manually downloaded DLL packages to implement all the needed functions.
 
+Currently for simplifying parsing of scripts we require script C# syntaxes - however it's really NOT nice to have semi-colons in scripts. Ideally we can work around that but it's hard.
+
 ## Syntax & Special Commands
 
 * Use `Import()` to import modules from PATH
