@@ -9,10 +9,23 @@ namespace Core
         #endregion
 
         #region Methods
-        public void Start(string welcomeMessage = null, bool advancedInterpretingMode = false, bool defaultPackages = true, string[] startingScripts = null, bool skipInteractiveMode = false)
+        public void Start(string welcomeMessage = null, bool advancedInterpretingMode = false, bool defaultPackages = true, string[] startingScripts = null, bool skipInteractiveMode = false, string[] arguments = null)
         {
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
+            if (arguments != null && arguments.Length != 0)
+            {
+                Context.Evaluate($"""
+                    string[] Arguments = new string[{arguments.Length}];
+                    """);
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    string argument = arguments[i];
+                    Context.Evaluate($"""
+                        Arguments[{i}] = "{argument.Replace("\"", "\\\"")}";
+                        """);
+                }
+            }
 
             Context = new RoslynContext(true, null);
             if (startingScripts != null)
