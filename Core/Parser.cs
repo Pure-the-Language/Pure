@@ -11,10 +11,13 @@ namespace Core
         /// </summary>
         public static string[] SplitScripts(string text)
         {
-            string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+            string[] lines = text
+                .Replace("\r", string.Empty)
+                .Split('\n')
                 .ToArray();
             List<string> scripts = new List<string>();
 
+            int totalLineCounter = 0;
             StringBuilder scriptBuilder = new ();
             for (int i = 0; i < lines.Length; i++)
             {
@@ -26,16 +29,25 @@ namespace Core
                 {
                     if (scriptBuilder.Length != 0)
                     {
-                        scripts.Add(scriptBuilder.ToString());
+                        scripts.Add(new string('\n', totalLineCounter) + scriptBuilder.ToString().Trim());
+                        totalLineCounter += string.IsNullOrWhiteSpace(scriptBuilder.ToString()) ? 1 : scriptBuilder.ToString().Split('\n').Length;
                         scriptBuilder.Clear();
                     }
                     scripts.Add(line);
+                    totalLineCounter++;
                 }
                 else
-                    scriptBuilder.AppendLine(line);
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                        scriptBuilder.Append("\n");
+                    else if (scriptBuilder.Length == 0) 
+                        scriptBuilder.Append(line);
+                    else
+                        scriptBuilder.Append("\n" + line);
+                }
             }
             if (scriptBuilder.Length > 0)
-                scripts.Add(scriptBuilder.ToString().TrimEnd());
+                scripts.Add(new string('\n', totalLineCounter) + scriptBuilder.ToString().Trim());
 
             return scripts.ToArray();
         }

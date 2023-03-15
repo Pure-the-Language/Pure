@@ -50,5 +50,25 @@ namespace CoreSyntaxUnitTest
                 """);
             Assert.Single(sections);
         }
+        [Fact]
+        public void ShouldKeepProperLineNumber()
+        {
+            string script = """
+                // Imports
+                Import(ModuleA)
+
+                Import(ModuleB)
+                using System;
+                using System.IO;
+
+                Import(ModuleC)
+                using ModuleC;
+                using ModuleC.Namespace;
+
+                // Routines
+                """;
+            var sections = Parser.SplitScripts(script);
+            Assert.Equal(script.Split('\n').Length, sections.Last().Split('\n').Length);
+        }
     }
 }
