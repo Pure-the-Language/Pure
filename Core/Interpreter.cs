@@ -13,6 +13,8 @@ namespace Core
         {
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
+
+            Context = new RoslynContext(true, null);
             if (arguments != null && arguments.Length != 0)
             {
                 Context.Evaluate($"""
@@ -26,8 +28,6 @@ namespace Core
                         """);
                 }
             }
-
-            Context = new RoslynContext(true, null);
             if (startingScripts != null)
                 foreach (var script in startingScripts)
                     Context.Evaluate(script);
