@@ -12,7 +12,7 @@ namespace Pure
                     """);
             else if (args.Length >= 2 && (args[0] == "-m" || args[0] == "-mi"))
             {
-                new Interpreter().Start(string.Empty, false, true, new string[] { args[1] }, args[0] == "-mi", args.Skip(2).ToArray());
+                new Interpreter().Start(string.Empty, false, true, new string[] { args[1] }, args[0] == "-m", args.Skip(2).ToArray());
             }
             else if (args.Length >= 1) 
             {
