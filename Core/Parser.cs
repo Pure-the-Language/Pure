@@ -49,7 +49,7 @@ namespace Core
                 }
 
                 // Block comment handling
-                if (Regex.Matches(line, @"/\*").Count != Regex.Matches(line, @"\*/").Count)
+                if (Regex.Matches(line, @"/\*").Count != Regex.Matches(line, @"\*/").Count) // Remark-cz: This is not robust but it works😆
                     currentLineIsInBlockComment = !currentLineIsInBlockComment;
             }
             if (scriptBuilder.Length > 0)
