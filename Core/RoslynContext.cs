@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
+using Core.Services;
 
 namespace Core
 {
@@ -171,10 +172,19 @@ namespace Core
     public partial class RoslynContext
     {
         #region Private States
+        private List<string> ImportedModules { get; set; } = new List<string>();
         private ScriptState<object> State { get; set; }
         private static RoslynContext _Singleton;
         public static RoslynContext Singleton => _Singleton;
         public static Action<string> OutputHandler;
+        #endregion
+
+        #region Lifetime Event
+        private Action ShutdownEvents { get; set; }
+        private void CurrentDomainProcessExit(object sender, EventArgs e)
+        {
+            ShutdownEvents?.Invoke();
+        }
         #endregion
 
         #region Construction
@@ -188,6 +198,8 @@ namespace Core
                 OutputHandler = outputHandler;
                 Console.SetOut(new RedirectedTextWriter());
             }
+            // Bind Process Exit Event
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomainProcessExit);
 
             ScriptOptions options = ScriptOptions.Default
                 // Remark-cz: Use Add* instead of With* to add stuff instead of replacing stuff
@@ -198,10 +210,25 @@ namespace Core
                 .AddImports("Core.Utilities")
                 .AddImports("Core.Construct");
             if (importAdditional)
+            {
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
+                AddEnvironmentPathToDefaultLibraryFolder();
+            }
 
             State = CSharpScript.RunAsync(string.Empty, options).Result;
+
+            void AddEnvironmentPathToDefaultLibraryFolder()
+            {
+                string path = Path.Combine(AssemblyHelper.AssemblyDirectory, "Libraries");
+                if (!Directory.Exists(path))
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "Libraries");
+                if (Directory.Exists(path))
+                    Environment.SetEnvironmentVariable("PATH", 
+                        Environment.GetEnvironmentVariable("PATH") != null 
+                        ? (Environment.GetEnvironmentVariable("PATH") + ";" + path)
+                        : path);
+            }
         }
         #endregion
 
@@ -226,6 +253,9 @@ namespace Core
                 List<string> statements = new List<string>();
                 if (filePath != null && File.Exists(filePath))
                 {
+                    if (ImportedModules.Contains(filePath)) return;
+                    else ImportedModules.Add(filePath);
+
                     // Remark-cz: Add the moment this fails to deal with most scenarios when the package is NOT properly including the single runtime i.e. there is a "runtimes" folder which contains corresponding runtimes (The Target runtime is selected as "Portable" instead of specifc runtime). In this case it will say "<Some module> is not supported on this platform" when the module is actually available in the published build.
                     // Potential reference: https://stackoverflow.com/questions/1373100/how-to-add-folder-to-assembly-search-path-at-runtime-in-net
                     Assembly assembly = Assembly.LoadFrom(filePath); // Remark: Might load from within the Roslyn state's context//app domain?
@@ -235,9 +265,21 @@ namespace Core
                         foreach (var ns in assembly.GetTypes().Where(t => t.IsVisible)
                                 .Select(t => t.Namespace).Distinct())
                             AddImport(ns);
-                    var mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
+                    // Special handle Main class
+                    Type mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
                     if (mainType != null)
+                    {
+                        // Expose all functions at top level for the "Main" interface
                         AddImport($"{mainType.Namespace}.Main");
+                        // Execute "StartUp" if any
+                        MethodInfo startUp = mainType.GetMethod("StartUp", BindingFlags.NonPublic | BindingFlags.Static);
+                        if (startUp != null && startUp.GetParameters().Length == 0 && startUp.IsPrivate == true)
+                            startUp.Invoke(null, null);
+                        // Handle "ShutDown" if any
+                        MethodInfo shutDown = mainType.GetMethod("ShutDown", BindingFlags.NonPublic | BindingFlags.Static);
+                        if (shutDown != null && shutDown.GetParameters().Length == 0 && shutDown.IsPrivate == true)
+                            ShutdownEvents += (Action)Delegate.CreateDelegate(typeof(Action), shutDown);
+                    }
                 }
                 else Console.WriteLine($"Cannot find package: {dllName}");
 
