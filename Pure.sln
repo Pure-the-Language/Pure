@@ -15,6 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aurora", "Aurora\Aurora.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{495B342E-4B50-4C7B-8EDF-4C6E7D3F9A6B}"
 	ProjectSection(SolutionItems) = preProject
+		SampleScripts\Python\PythonExample.cs = SampleScripts\Python\PythonExample.cs
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -47,6 +48,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryTests", "LibraryTests", "{9D9D1730-0BA6-447B-A521-E9CF3AD984FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonTest", "PythonTest\PythonTest.csproj", "{436C9921-9FCD-41DA-A785-749EF7CCF200}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleScripts", "SampleScripts", "{A35751FC-3D78-4AC9-B4F3-7781B188A7E4}"
+	ProjectSection(SolutionItems) = preProject
+		SampleScripts\Python\PythonExample.cs = SampleScripts\Python\PythonExample.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +136,7 @@ Global
 		{F306C211-6F66-4A88-BD04-20DDBA7312C0} = {66A19951-0B64-4CDA-9283-DF42F000BB81}
 		{9D9D1730-0BA6-447B-A521-E9CF3AD984FE} = {C9304917-F884-4798-9CAB-82D3663A5E26}
 		{436C9921-9FCD-41DA-A785-749EF7CCF200} = {9D9D1730-0BA6-447B-A521-E9CF3AD984FE}
+		{A35751FC-3D78-4AC9-B4F3-7781B188A7E4} = {495B342E-4B50-4C7B-8EDF-4C6E7D3F9A6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B113BF9D-0A5B-43D7-A132-D1CCD6AC46DA}

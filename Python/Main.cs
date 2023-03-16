@@ -36,7 +36,7 @@ namespace Python
             using (Py.GIL())
             {
                 dynamic result = Scope.Eval(snippet);
-                if (result != null)
+                if (result != null && result.ToString() != "None")
                     Console.WriteLine(result.ToString());
             }
         }
