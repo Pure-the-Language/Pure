@@ -12,7 +12,11 @@ namespace Python
             {
                 Python.Runtime.Runtime.PythonDLL = "python310.dll";
                 PythonEngine.Initialize();
-                Scope = Py.CreateScope();
+                PythonEngine.BeginAllowThreads();
+                using (Py.GIL())
+                {
+                    Scope = Py.CreateScope();
+                }
             }
             catch (Exception e)
             {
@@ -21,7 +25,10 @@ namespace Python
         }
         private static void ShutDown()
         {
-            Scope.Dispose();
+            using (Py.GIL())
+            {
+                Scope.Dispose();
+            }
             PythonEngine.Shutdown();
         }
         #endregion
