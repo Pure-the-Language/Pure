@@ -70,6 +70,40 @@ namespace CoreSyntaxUnitTest
             var sections = Parser.SplitScripts(script);
             Assert.Equal(script.Split('\n').Length, sections.Last().Split('\n').Length);
         }
+        [Fact]
+        public void ShouldSupportBlockComments()
+        {
+            {
+                string script = """
+                /*This is a block comment that 
+                spans multiple lines
+                Below are some misleading comment contents:
+                var a = 5
+                Import(Module)
+                void Func(){var b = 16; return;}
+                */
+                """;
+                var sections = Parser.SplitScripts(script);
+                Assert.Single(sections);
+                Assert.Equal(script.Replace("\r\n", "\n"), sections.First());
+            }
+
+            {
+                string script = """
+                var a = /*This is a block comment that 
+                spans multiple lines
+                Below are some misleading comment contents:
+                var a = 5
+                Import(Module)
+                void Func(){var b = 16; return;}
+                */ 5;
+                WriteLine(a);
+                """;
+                var sections = Parser.SplitScripts(script);
+                Assert.Single(sections);
+                Assert.Equal(script.Replace("\r\n", "\n"), sections.First());
+            }
+        }
         /// <summary>
         /// The reason we had this test is that since we have a few "shorthand" for single-line expressions, it might mess up with those proper C# scripts
         /// </summary>

@@ -17,15 +17,17 @@ namespace Core
                 .ToArray();
             List<string> scripts = new List<string>();
 
+            bool currentLineIsInBlockComment = false;
             int totalLineCounter = 0;
             StringBuilder scriptBuilder = new ();
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
 
-                if (RoslynContext.ImportModuleRegex().IsMatch(line)
+                if (!currentLineIsInBlockComment &&
+                    (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
-                    || RoslynContext.HelpItemRegex().IsMatch(line))
+                    || RoslynContext.HelpItemRegex().IsMatch(line)))
                 {
                     if (scriptBuilder.Length != 0)
                     {
@@ -45,6 +47,10 @@ namespace Core
                     else
                         scriptBuilder.Append("\n" + line);
                 }
+
+                // Block comment handling
+                if (Regex.Matches(line, @"/\*").Count != Regex.Matches(line, @"\*/").Count)
+                    currentLineIsInBlockComment = !currentLineIsInBlockComment;
             }
             if (scriptBuilder.Length > 0)
                 scripts.Add(new string('\n', totalLineCounter) + scriptBuilder.ToString().Trim());
