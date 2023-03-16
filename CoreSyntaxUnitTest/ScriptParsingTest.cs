@@ -70,5 +70,22 @@ namespace CoreSyntaxUnitTest
             var sections = Parser.SplitScripts(script);
             Assert.Equal(script.Split('\n').Length, sections.Last().Split('\n').Length);
         }
+        /// <summary>
+        /// The reason we had this test is that since we have a few "shorthand" for single-line expressions, it might mess up with those proper C# scripts
+        /// </summary>
+        [Fact]
+        public void ShouldNOTRaiseExceptionsForSingleLineFunctionDefinitions()
+        {
+            string script = """
+                double ComplexFunction(double value, params string[] names){ var n = names; WriteLine(n); return 0; }
+                """;
+            var sections = Parser.SplitScripts(script);
+            Assert.Single(sections);
+            Assert.Equal(script, sections.First());
+
+            string output = null;
+            Assert.Null(Record.Exception(() => new Interpreter().Start(message => output = message, null, sections)));
+            Assert.Null(output);
+        }
     }
 }

@@ -523,7 +523,7 @@ namespace Core
         public static partial Regex ArrayVariableCreationRegex();
         [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\W*?){3,}\]")]
         public static partial Regex LiteralArrayRegex();
-        [GeneratedRegex("^.*?=.*[^;]$")]
+        [GeneratedRegex("^[a-zA-Z0-9_]+?=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();
         #endregion
     }
