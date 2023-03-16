@@ -16,7 +16,7 @@ namespace Pure
             }
             else if (args.Length >= 1) 
             {
-                bool interactiveMode = args.Length >= 2 && (bool.Parse(args[0]) || args[0].ToLower() == "-i" || args[0].ToLower() == "--interactive");
+                bool interactiveMode = args.Length >= 2 && (args[0].ToLower() == "-i" || args[0].ToLower() == "--interactive");
                 string fileName = interactiveMode ? args[1] : args[0];
 
                 string file = Path.GetFullPath(fileName);
