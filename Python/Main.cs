@@ -33,18 +33,22 @@ namespace Python
         }
         #endregion
 
-        public static void Evaluate(string snippet)
+        public static dynamic Evaluate(string snippet)
         {
             if (Scope == null) 
             {
                 Console.WriteLine("Python runtime is not initialized.");
-                return;
+                return null;
             }
             using (Py.GIL())
             {
                 dynamic result = Scope.Eval(snippet);
                 if (result != null && result.ToString() != "None")
+                {
                     Console.WriteLine(result.ToString());
+                    return result;
+                }
+                else return null;
             }
         }
     }
