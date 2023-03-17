@@ -1,4 +1,5 @@
 ﻿using Core;
+using ICSharpCode.AvalonEdit;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Win32;
 using NuGet.Protocol.Plugins;
@@ -54,6 +55,30 @@ namespace Notebook
             Control control = sender as Control;
             CellBlock cellBlock = control.DataContext as CellBlock;
             CurrentCell = cellBlock;
+        }
+        private void AvalonTextEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            CellBlock cellBlock = editor.DataContext as CellBlock;
+            CurrentCell = cellBlock;
+        }
+        private void AvalonTextEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            CellBlock block = editor.DataContext as CellBlock;
+            editor.Text = block.Content;
+        }
+        private void AvalonTextEditor_Initialized(object sender, System.EventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            CellBlock block = editor.DataContext as CellBlock;
+            editor.Text = block.Content;
+        }
+        private void AvalonTextEditor_OnTextChanged(object sender, System.EventArgs e)
+        {
+            TextEditor editor = sender as TextEditor;
+            CellBlock block = editor.DataContext as CellBlock;
+            block.Content = editor.Text;
         }
         #endregion
 
