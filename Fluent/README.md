@@ -9,3 +9,7 @@ As a meta-package, it's going to be huge in size, but the bright side is this: i
 Conceptually, combined with Pure's simplistic language styles, this package aims to provide an alternative to some other proposed workflow constructs like Expresso or Parcel V6. Conceptually, if we shall call it "Parcel V7", it's like auto-generated C# nodes for strongly functional workflows + auto-Roslyn code-generation + C#/Python extension nodes. It's just as a mere library there is no internal caching mechanism - which we shall implement inside a host like Righteous.
 
 In general, all standard Pure packages should be independent of each other, so is Fluent, and other packages should generally avoid depending on Fluent directly.
+
+Design guides:
+
+1. Avoid throw exceptions from the top-level main interface routines: instead, the return result should be zero or like what's done more traditionally in C, return an integer to indicate success. This way the caller do not need to wrap those calls into try-catch clauses which makes scripts ugly.
