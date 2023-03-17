@@ -17,6 +17,7 @@ $PublishExecutables = @(
     "Aurora"
     "Virgin"
     "Righteous"
+    "Notebook"
 )
 foreach ($Item in $PublishExecutables)
 {
