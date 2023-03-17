@@ -324,7 +324,7 @@ namespace Core
                     // Basically, host functions cannot and should not have side-effects on the state object directly
                     State = State.ContinueWithAsync(SyntaxWrap(singleEvaluation)).Result;
                     if (State.ReturnValue != null)
-                        Console.WriteLine(State.ReturnValue.ToString());
+                        PrintReturnValuePreviews(State.ReturnValue);
                 }
                 catch (Exception e)
                 {
@@ -336,6 +336,30 @@ namespace Core
                 => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;
             void AddImport(string import)
                 => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddImports(import)).Result;
+            void PrintReturnValuePreviews(object returnValue)
+            {
+                // Print string items preview
+                if (returnValue is System.Collections.IList list)
+                {
+                    Console.WriteLine($"{returnValue} (Count: {list.Count})");
+                    if (list.Count < 10)
+                        foreach (var item in list)
+                            Console.WriteLine(item.ToString());
+                    else
+                    {
+                        for (int i = 0; i < 7; i++)
+                            Console.WriteLine(list[i].ToString());
+                        Console.WriteLine(".");
+                        Console.WriteLine(".");
+                        Console.WriteLine(".");
+                        for (int i = 3; i > 0; i--)
+                            Console.WriteLine(list[list.Count - i].ToString());
+                    }
+                }
+                // Print general preview of primitives and type
+                else
+                    Console.WriteLine(returnValue.ToString());
+            }
         }
         #endregion
 
