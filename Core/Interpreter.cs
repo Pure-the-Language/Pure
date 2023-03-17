@@ -28,6 +28,10 @@ namespace Core
                         """);
                 }
             }
+            else
+                Context.Evaluate($"""
+                    string[] Arguments = Array.Empty<string>();
+                    """);
             if (startingScripts != null)
                 foreach (var script in startingScripts)
                     Context.Evaluate(script);
