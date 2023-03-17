@@ -28,7 +28,7 @@ $PublishWindowsExecutables = @(
 )
 foreach ($Item in $PublishWindowsExecutables)
 {
-    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --use-current-runtime --output $PublishFolder
+    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --runtime win-x64 --no-self-contained --output $PublishFolder
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
