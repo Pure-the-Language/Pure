@@ -3,12 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:Notebook.Converters"
         xmlns:local="clr-namespace:Notebook"
         mc:Ignorable="d"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         Title="Notebook 📓 - Default" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
+    <Window.Resources>
+        <conv:CellTypeToIsReadOnlyConverter x:Key="CellTypeToIsReadOnlyConverter"/>
+        <conv:CellTypeToBorderThicknessConverter x:Key="CellTypeToBorderThicknessConverter"/>
+        <conv:CellTypeToLabelNameConverter x:Key="CellTypeToLabelNameConverter"/>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Command="Open" Key="O" Modifiers="Ctrl"/>
+        <KeyBinding Command="Save" Key="S" Modifiers="Ctrl"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" CanExecute="FileOpenCommand_CanExecute" Executed="FileOpenCommand_Executed" />
+        <CommandBinding Command="Save" CanExecute="FileSaveCommand_CanExecute" Executed="FileSaveCommand_Executed" />
+
+        <CommandBinding Command="local:NotebookCommands.CreateCellCommand" CanExecute="CreateCellCommand_CanExecute" Executed="CreateCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.DeleteCellCommand" CanExecute="DeleteCellCommand_CanExecute" Executed="DeleteCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.ExecuteCellCommand" CanExecute="ExecuteCellCommand_CanExecute" Executed="ExecuteCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.ExecuteAllCellsCommand" CanExecute="ExecuteAllCellsCommand_CanExecute" Executed="ExecuteAllCellsCommand_Executed"/>
+    </Window.CommandBindings>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -17,56 +36,25 @@
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Add Cell (F2)" Click="AddCellMenuItem_Click"/>
-                <MenuItem Header="Delete Cell" Click="DeleteCellMenuItem_Click"/>
+                <MenuItem Header="Delete Cell (F3)" Click="DeleteCellMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Convert Cell to Markdown (F11)"/>
+                <MenuItem Header="Convert Cell to Code (F12)"/>
             </MenuItem>
             <MenuItem Header="Runtime">
                 <MenuItem Header="Execute Cell (F5)" Click="ExecuteCellMenuItem_Click"/>
                 <MenuItem Header="Execute All (F6)" Click="ExecuteAllMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <ListView DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
-            <ListView.ItemTemplate>
+        <ItemsControl DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Label Content="{Binding CellType}"/>
-                        <ContentControl>
-                            <ContentControl.Style>
-                                <Style TargetType="ContentControl">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding CellType}" Value="Markdown">
-                                            <Setter Property="ContentTemplate">
-                                                <Setter.Value>
-                                                    <DataTemplate>
-                                                        <TextBox Text="{Binding Content}" IsReadOnly="True"/>
-                                                    </DataTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding CellType}" Value="Code">
-                                            <Setter Property="ContentTemplate">
-                                                <Setter.Value>
-                                                    <DataTemplate>
-                                                        <TextBox Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}"/>
-                                                    </DataTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding CellType}" Value="CacheOutput">
-                                            <Setter Property="ContentTemplate">
-                                                <Setter.Value>
-                                                    <DataTemplate>
-                                                        <TextBox Text="{Binding Content}" IsReadOnly="True"/>
-                                                    </DataTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ContentControl.Style>
-                        </ContentControl>
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <Label Content="{Binding CellType, Converter={StaticResource CellTypeToLabelNameConverter}}"/>
+                        <TextBox HorizontalAlignment="Stretch" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding CellType, Converter={StaticResource CellTypeToIsReadOnlyConverter}}" AcceptsReturn="True" AcceptsTab="True" GotFocus="TextBox_GotFocus" BorderThickness="{Binding CellType, Converter={StaticResource CellTypeToBorderThicknessConverter}}"/>
                     </StackPanel>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </DockPanel>
 </Window>

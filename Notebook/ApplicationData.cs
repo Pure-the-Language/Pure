@@ -18,7 +18,7 @@ namespace Notebook
     {
         #region Attributes
         private CellType _CellType;
-        private string _Content;
+        private string _Content = string.Empty;
         #endregion
 
         #region Data Bindings

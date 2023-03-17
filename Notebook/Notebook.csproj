@@ -14,4 +14,8 @@
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
 </Project>
