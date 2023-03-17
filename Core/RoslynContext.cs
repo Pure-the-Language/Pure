@@ -205,7 +205,11 @@ namespace Core
                 // Remark-cz: Use Add* instead of With* to add stuff instead of replacing stuff
                 .WithReferences(typeof(RoslynContext).Assembly)
                 .AddReferences(typeof(Enumerable).Assembly)
-                .AddImports("System.Collections.Generic", "System.Linq")
+                .AddImports(
+                    "System",
+                    "System.Collections.Generic",
+                    "System.IO", 
+                    "System.Linq")
                 .AddImports("Core.Math")
                 .AddImports("Core.Utilities")
                 .AddImports("Core.Construct");
