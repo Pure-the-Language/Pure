@@ -11,8 +11,10 @@ namespace Notebook.Converters
             {
                 case CellType.Markdown:
                     return "Markdown";
-                case CellType.Code:
-                    return "Code";
+                case CellType.CSharp:
+                    return "C#";
+                case CellType.Python:
+                    return "Python";
                 case CellType.CacheOutput:
                     return "Cached Output";
                 default:
@@ -24,8 +26,10 @@ namespace Notebook.Converters
         {
             switch ((string)value)
             {
-                case "Code":
-                    return CellType.Code;
+                case "C#":
+                    return CellType.CSharp;
+                case "Python":
+                    return CellType.Python;
                 case "Markdown":
                     return CellType.Markdown;
                 case "Cached Output":

@@ -5,13 +5,29 @@ namespace Notebook
     public static class NotebookCommands
     {
         #region Menu Commands
-        public static readonly RoutedUICommand CreateCellCommand =
+        public static readonly RoutedUICommand CreateCSharpCellCommand =
             new(
-                "Create Cell",
-                "CreateCell",
+                "Create C# Cell",
+                "CreateCSharpCell",
                 typeof(NotebookCommands),
                 new InputGestureCollection {
                     new KeyGesture(Key.F2, ModifierKeys.None, "F2")
+                });
+        public static readonly RoutedUICommand CreatePythonCellCommand =
+            new(
+                "Create Python Cell",
+                "CreatePythonCell",
+                typeof(NotebookCommands),
+                new InputGestureCollection {
+                    new KeyGesture(Key.F3, ModifierKeys.None, "F3")
+                });
+        public static readonly RoutedUICommand CreateMarkdownCellCommand =
+            new(
+                "Create Markdown Cell",
+                "CreateMarkdownCell",
+                typeof(NotebookCommands),
+                new InputGestureCollection {
+                    new KeyGesture(Key.F4, ModifierKeys.None, "F4")
                 });
         public static readonly RoutedUICommand DeleteCellCommand =
             new(
@@ -19,7 +35,7 @@ namespace Notebook
                 "DeleteCell",
                 typeof(NotebookCommands),
                 new InputGestureCollection {
-                    new KeyGesture(Key.F3, ModifierKeys.None, "F3")
+                    new KeyGesture(Key.Delete, ModifierKeys.Control, "Ctrl+Delete")
                 });
         public static readonly RoutedUICommand ExecuteCellCommand =
             new(

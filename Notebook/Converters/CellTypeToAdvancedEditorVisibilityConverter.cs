@@ -11,11 +11,11 @@ namespace Notebook.Converters
             switch ((CellType)value)
             {
                 case CellType.Markdown:
-                    return Visibility.Collapsed;
-                case CellType.Code:
-                    return Visibility.Visible;
                 case CellType.CacheOutput:
                     return Visibility.Collapsed;
+                case CellType.CSharp:
+                case CellType.Python:
+                    return Visibility.Visible;
                 default:
                     throw new ArgumentException();
             }
@@ -23,13 +23,7 @@ namespace Notebook.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var visibility = (Visibility)value;
-            if (visibility == Visibility.Collapsed)
-                throw new ArgumentException();
-            else if (visibility == Visibility.Visible)
-                return CellType.Code;
-            else
-                throw new ArgumentException();
+            throw new InvalidOperationException();
         }
     }
 }

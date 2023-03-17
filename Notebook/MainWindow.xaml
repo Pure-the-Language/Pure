@@ -17,6 +17,7 @@
         <conv:CellTypeToLabelNameConverter x:Key="CellTypeToLabelNameConverter"/>
         <conv:CellTypeToAdvancedEditorVisibilityConverter x:Key="CellTypeToAdvancedEditorVisibilityConverter"/>
         <conv:CellTypeToBasicEditorVisibilityConverter x:Key="CellTypeToBasicEditorVisibilityConverter"/>
+        <conv:CellTypeToAvalonLanguageTypeConverter x:Key="CellTypeToAvalonLanguageTypeConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Command="Open" Key="O" Modifiers="Ctrl"/>
@@ -26,7 +27,9 @@
         <CommandBinding Command="Open" CanExecute="FileOpenCommand_CanExecute" Executed="FileOpenCommand_Executed" />
         <CommandBinding Command="Save" CanExecute="FileSaveCommand_CanExecute" Executed="FileSaveCommand_Executed" />
 
-        <CommandBinding Command="local:NotebookCommands.CreateCellCommand" CanExecute="CreateCellCommand_CanExecute" Executed="CreateCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreateCSharpCellCommand" CanExecute="CreateCSharpCellCommand_CanExecute" Executed="CreateCSharpCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreatePythonCellCommand" CanExecute="CreatePythonCellCommand_CanExecute" Executed="CreatePythonCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreateMarkdownCellCommand" CanExecute="CreateMarkdownCellCommand_CanExecute" Executed="CreateMarkdownCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.DeleteCellCommand" CanExecute="DeleteCellCommand_CanExecute" Executed="DeleteCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.ExecuteCellCommand" CanExecute="ExecuteCellCommand_CanExecute" Executed="ExecuteCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.ExecuteAllCellsCommand" CanExecute="ExecuteAllCellsCommand_CanExecute" Executed="ExecuteAllCellsCommand_Executed"/>
@@ -36,10 +39,18 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open (Ctrl+O)" Click="OpenFileMenuItem_Click"/>
                 <MenuItem Header="Save (Ctrl+S)" Click="SaveFileMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Export">
+                    <MenuItem Header="Export Markdown..." Click="ExportMarkdownMenuItem_Click"/>
+                    <MenuItem Header="Export Code..." Click="ExportCodeMenuItem_Click"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Add Cell (F2)" Click="AddCellMenuItem_Click"/>
-                <MenuItem Header="Delete Cell (F3)" Click="DeleteCellMenuItem_Click"/>
+                <MenuItem Header="Add C# Cell (F2)" Click="AddCSharpCellMenuItem_Click"/>
+                <MenuItem Header="Add Python Cell (F3)" Click="AddPythonCellMenuItem_Click"/>
+                <MenuItem Header="Add Markdown Cell (F4)" Click="AddMarkdownCellMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Delete Cell (Ctrl+Delete)" Click="DeleteCellMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Convert Cell to Markdown (F11)"/>
                 <MenuItem Header="Convert Cell to Code (F12)"/>
@@ -65,7 +76,7 @@
                             Visibility="{Binding CellType, Converter={StaticResource CellTypeToAdvancedEditorVisibilityConverter}}"
                             Name="AvalonEdit" Margin="5"
                             BorderThickness="2" BorderBrush="Beige"
-                            ShowLineNumbers="True" SyntaxHighlighting="C#" 
+                            ShowLineNumbers="True" SyntaxHighlighting="{Binding CellType, Converter={StaticResource CellTypeToAvalonLanguageTypeConverter}}" 
                             FontSize="10pt" FontFamily="Consolas" WordWrap="True" 
                             GotFocus="AvalonTextEditor_GotFocus"
                             DataContextChanged="AvalonTextEditor_DataContextChanged"

@@ -1,8 +1,5 @@
 ﻿using K4os.Compression.LZ4.Streams;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -11,8 +8,9 @@ namespace Notebook
     public enum CellType
     {
         Markdown,
-        Code,
-        CacheOutput
+        CacheOutput,
+        CSharp,
+        Python
     }
     public class CellBlock : BaseNotifyPropertyChanged
     {

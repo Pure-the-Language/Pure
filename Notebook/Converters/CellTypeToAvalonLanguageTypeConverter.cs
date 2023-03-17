@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
 
 namespace Notebook.Converters
 {
-    class CellTypeToBorderThicknessConverter : IValueConverter
+    class CellTypeToAvalonLanguageTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             switch ((CellType)value)
             {
                 case CellType.Markdown:
-                    return new Thickness(1);
+                    return ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("Markdown");
                 case CellType.CSharp:
+                    return ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#");
                 case CellType.Python:
-                    return new Thickness(2);
+                    return ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("Python");
                 case CellType.CacheOutput:
-                    return new Thickness(0);
+                    return null;
                 default:
                     throw new ArgumentException();
             }

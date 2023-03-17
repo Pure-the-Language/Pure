@@ -13,7 +13,7 @@ namespace Notebook
             get
             {
                 Directory.CreateDirectory(DefaultNotebookFolder);
-                string path = Path.Combine(DefaultNotebookFolder, "Default.md");
+                string path = Path.Combine(DefaultNotebookFolder, "Default.pnb");
                 return path;
             }
         }
@@ -35,9 +35,9 @@ namespace Notebook
         {
             return ApplicationData.Load(NotebookFilePath);
         }
-        internal static void Save(ApplicationData data)
+        internal static void Save(ApplicationData data, bool asBackup = false)
         {
-            ApplicationData.Save(NotebookFilePath, data);
+            ApplicationData.Save(NotebookFilePath + (asBackup ? ".backup" : string.Empty), data);
         }
         #endregion
     }
