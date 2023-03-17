@@ -505,10 +505,13 @@ namespace Core
             }
             else if (types.Contains(name))
             {
-                var type = AppDomain.CurrentDomain
+                var foundTypes = AppDomain.CurrentDomain
                     .GetAssemblies()
-                    .SelectMany(a => a.GetTypes().Where(t => t.Name == name)).Single();
-                PrintType(type);
+                    .SelectMany(a => a.GetTypes().Where(t => t.Name == name)).ToArray();
+                if (foundTypes.Length == 1)
+                    PrintType(foundTypes.Single());
+                else
+                    Console.WriteLine(string.Join('\n', foundTypes.Select(t => t.FullName)));
                 return true;
             }
             else if (typesFullname.Contains(name))
