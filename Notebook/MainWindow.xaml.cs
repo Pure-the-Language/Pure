@@ -206,7 +206,8 @@ namespace Notebook
             switch (cell.CellType)
             {
                 case CellType.CSharp:
-                    Interpreter.Evaluate(cell.Content);
+                    foreach (var script in Parser.SplitScripts(cell.Content))
+                        Interpreter.Evaluate(script);
                     break;
                 case CellType.Python:
                     Interpreter.Evaluate("Import(Python)");
