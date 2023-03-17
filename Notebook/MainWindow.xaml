@@ -18,6 +18,7 @@
         <conv:CellTypeToAdvancedEditorVisibilityConverter x:Key="CellTypeToAdvancedEditorVisibilityConverter"/>
         <conv:CellTypeToBasicEditorVisibilityConverter x:Key="CellTypeToBasicEditorVisibilityConverter"/>
         <conv:CellTypeToAvalonLanguageTypeConverter x:Key="CellTypeToAvalonLanguageTypeConverter"/>
+        <conv:CellTypeToTextBoxFontFamilyConverter x:Key="CellTypeToTextBoxFontFamilyConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Command="Open" Key="O" Modifiers="Ctrl"/>
@@ -60,31 +61,35 @@
                 <MenuItem Header="Execute All (F6)" Click="ExecuteAllMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <ItemsControl DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel HorizontalAlignment="Stretch">
-                        <Label Content="{Binding CellType, Converter={StaticResource CellTypeToLabelNameConverter}}"/>
-                        <TextBox 
-                            Visibility="{Binding CellType, Converter={StaticResource CellTypeToBasicEditorVisibilityConverter}}"
-                            HorizontalAlignment="Stretch" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" 
-                            IsReadOnly="{Binding CellType, Converter={StaticResource CellTypeToIsReadOnlyConverter}}" 
-                            AcceptsReturn="True" AcceptsTab="True" 
-                            GotFocus="TextBox_GotFocus" 
-                            BorderThickness="{Binding CellType, Converter={StaticResource CellTypeToBorderThicknessConverter}}"/>
-                        <avalonEdit:TextEditor 
-                            Visibility="{Binding CellType, Converter={StaticResource CellTypeToAdvancedEditorVisibilityConverter}}"
-                            Name="AvalonEdit" Margin="5"
-                            BorderThickness="2" BorderBrush="Beige"
-                            ShowLineNumbers="True" SyntaxHighlighting="{Binding CellType, Converter={StaticResource CellTypeToAvalonLanguageTypeConverter}}" 
-                            FontSize="10pt" FontFamily="Consolas" WordWrap="True" 
-                            GotFocus="AvalonTextEditor_GotFocus"
-                            DataContextChanged="AvalonTextEditor_DataContextChanged"
-                            Initialized="AvalonTextEditor_Initialized"
-                            TextChanged="AvalonTextEditor_OnTextChanged"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ScrollViewer 
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
+            <ItemsControl DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <Label Content="{Binding CellType, Converter={StaticResource CellTypeToLabelNameConverter}}"/>
+                            <TextBox 
+                                Visibility="{Binding CellType, Converter={StaticResource CellTypeToBasicEditorVisibilityConverter}}"
+                                HorizontalAlignment="Stretch" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" 
+                                IsReadOnly="{Binding CellType, Converter={StaticResource CellTypeToIsReadOnlyConverter}}" 
+                                AcceptsReturn="True" AcceptsTab="True" 
+                                GotFocus="TextBox_GotFocus" FontFamily="{Binding CellType, Converter={StaticResource CellTypeToTextBoxFontFamilyConverter}}"
+                                BorderThickness="{Binding CellType, Converter={StaticResource CellTypeToBorderThicknessConverter}}"/>
+                            <avalonEdit:TextEditor 
+                                Visibility="{Binding CellType, Converter={StaticResource CellTypeToAdvancedEditorVisibilityConverter}}"
+                                Name="AvalonEdit" Margin="5"
+                                BorderThickness="2" BorderBrush="Beige"
+                                ShowLineNumbers="True" SyntaxHighlighting="{Binding CellType, Converter={StaticResource CellTypeToAvalonLanguageTypeConverter}}" 
+                                FontSize="10pt" FontFamily="Consolas" WordWrap="True" 
+                                GotFocus="AvalonTextEditor_GotFocus"
+                                DataContextChanged="AvalonTextEditor_DataContextChanged"
+                                Initialized="AvalonTextEditor_Initialized"
+                                TextChanged="AvalonTextEditor_OnTextChanged"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </DockPanel>
 </Window>

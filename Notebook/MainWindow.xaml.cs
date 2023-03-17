@@ -98,21 +98,21 @@ namespace Notebook
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Data.Cells.Add(new CellBlock()
+            AddCell(new CellBlock()
             {
                 CellType = CellType.Markdown
             });
         }
         private void AddCSharpCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Data.Cells.Add(new CellBlock()
+            AddCell(new CellBlock()
             {
                 CellType = CellType.CSharp
             });
         }
         private void AddPythonCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Data.Cells.Add(new CellBlock()
+            AddCell(new CellBlock()
             {
                 CellType = CellType.Python
             });
@@ -176,6 +176,19 @@ namespace Notebook
         #endregion
 
         #region Routines
+        private void AddCell(CellBlock newCell)
+        {
+            if (CurrentCell == null)
+                Data.Cells.Insert(0, newCell);
+            else
+            {
+                int cellIndex = Data.Cells.IndexOf(CurrentCell);
+                if (Data.Cells.Count > cellIndex + 1 && Data.Cells[cellIndex + 1].CellType == CellType.CacheOutput)
+                    cellIndex = cellIndex + 1;
+                Data.Cells.Insert(cellIndex + 1, newCell);
+            }
+            CurrentCell = newCell;
+        }
         private void GenerateOutputCell(CellBlock codeCell, string message, bool reInitialize)
         {
             int cellIndex = Data.Cells.IndexOf(codeCell);
