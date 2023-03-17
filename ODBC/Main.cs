@@ -9,6 +9,12 @@ namespace ODBC
         public static string DSN { get; set; }
         public static DataTable Query(string query)
         {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return null;
+            }
+
             var odbcConnection = new OdbcConnection($"DSN={DSN}");
             odbcConnection.Open();
             DataTable dataTable = new DataTable();
@@ -30,6 +36,12 @@ namespace ODBC
         }
         public static void Insert(string query)
         {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return;
+            }
+
             var odbcConnection = new OdbcConnection($"DSN={DSN}");
             odbcConnection.Open();
             new OdbcCommand(query, odbcConnection).ExecuteNonQuery();
@@ -37,6 +49,12 @@ namespace ODBC
         }
         public static void Update(string query)
         {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return;
+            }
+
             var odbcConnection = new OdbcConnection($"DSN={DSN}");
             odbcConnection.Open();
             new OdbcCommand(query, odbcConnection).ExecuteNonQuery();
@@ -44,6 +62,12 @@ namespace ODBC
         }
         public static void Delete(string query)
         {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return;
+            }
+
             var odbcConnection = new OdbcConnection($"DSN={DSN}");
             odbcConnection.Open();
             new OdbcCommand(query, odbcConnection).ExecuteNonQuery();
