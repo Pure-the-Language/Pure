@@ -16,12 +16,19 @@ $PublishExecutables = @(
     "Purer"
     "Aurora"
     "Virgin"
-    "Righteous"
-    "Notebook"
 )
 foreach ($Item in $PublishExecutables)
 {
     dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --use-current-runtime --output $PublishFolder
+}
+# Publish Windows-only Executables
+$PublishWindowsExecutables = @(
+    "Righteous"
+    "Notebook"
+)
+foreach ($Item in $PublishWindowsExecutables)
+{
+    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --runtime win-x64 --no-self-contained --output $PublishFolder
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
