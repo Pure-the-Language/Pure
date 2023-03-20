@@ -594,7 +594,7 @@ namespace Core
         public static partial Regex HelpItemRegex();
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
         public static partial Regex ArrayVariableCreationRegex();
-        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\W*?){3,}\]")]
+        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\s*?){3,}\]")]
         public static partial Regex LiteralArrayRegex();
         [GeneratedRegex(@"^(\S*)?\s*[a-zA-Z0-9_]+\s*=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();

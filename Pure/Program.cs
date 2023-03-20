@@ -8,7 +8,7 @@ namespace Pure
         {
             if (args.Length == 0)
                 new Interpreter().Start("""
-                    Pure v0.0.2
+                    Pure v0.0.3
                     """);
             else if (args.Length >= 2 && (args[0] == "-m" || args[0] == "-mi"))
             {
