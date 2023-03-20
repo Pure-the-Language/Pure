@@ -145,11 +145,43 @@ namespace Notebook
         }
         private void ExportMarkdownMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Title = "Select path to save file",
+                Filter = "Markdown (*.md)|*.md|All (*.*)|*.*"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filepath = saveFileDialog.FileName;
+                File.WriteAllText(filepath, string.Join("\n", Data.Cells
+                    .Where(c => c.CellType != CellType.CacheOutput)
+                    .Select(c => c.CellType == CellType.Markdown 
+                        ? c.Content 
+                        : $"""
+                        ```{(c.CellType == CellType.Python ? "Python" : "C#")}
+                        {c.Content}
+                        ```
+                        """)));
+            }
+            e.Handled = true;
         }
         private void ExportCodeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Title = "Select path to save file",
+                Filter = "C# (*.cs)|*.cs|Python (*.py)|*.py"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filepath = saveFileDialog.FileName;
+                string extension = Path.GetExtension(filepath);
+                if (extension == ".cs")
+                    File.WriteAllText(filepath, string.Join("\n", Data.Cells.Where(c => c.CellType == CellType.CSharp).Select(c => c.Content)));
+                else if (extension == ".py")
+                    File.WriteAllText(filepath, string.Join("\n", Data.Cells.Where(c => c.CellType == CellType.Python).Select(c => c.Content)));
+            }
+            e.Handled = true;
         }
         #endregion
 
