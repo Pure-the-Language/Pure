@@ -581,7 +581,13 @@ namespace Core
             string[] arguments = m.GetParameters()
                 .Select(p => $"{p.ParameterType.Name} {p.Name}")
                 .ToArray();
-            return $"{name}({string.Join(", ", arguments)})";
+            if (m.ContainsGenericParameters)
+            {
+                var generics = m.GetGenericArguments().Select(t => t.Name);
+                return $"{name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)})";
+            }
+            else 
+                return $"{name}({string.Join(", ", arguments)})";
         }
         #endregion
 
