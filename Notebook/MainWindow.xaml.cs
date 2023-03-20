@@ -139,7 +139,8 @@ namespace Notebook
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var cell in Data.Cells
+            Data.Cells = new (Data.Cells.Where(c => c.CellType != CellType.CacheOutput));
+            foreach (var cell in Data.Cells.ToArray()
                 .Where(c => c.CellType == CellType.CSharp || c.CellType == CellType.Python))
                 ExecuteCell(cell);
         }
