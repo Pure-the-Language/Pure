@@ -19,6 +19,8 @@
         <conv:CellTypeToBasicEditorVisibilityConverter x:Key="CellTypeToBasicEditorVisibilityConverter"/>
         <conv:CellTypeToAvalonLanguageTypeConverter x:Key="CellTypeToAvalonLanguageTypeConverter"/>
         <conv:CellTypeToTextBoxFontFamilyConverter x:Key="CellTypeToTextBoxFontFamilyConverter"/>
+        <conv:CellTypeToTextWrappingConverter x:Key="CellTypeToTextWrappingConverter"/>
+        <conv:CellTypeToHorizontalScrollBarVisibilityConverter x:Key="CellTypeToHorizontalScrollBarVisibilityConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Command="Open" Key="O" Modifiers="Ctrl"/>
@@ -73,8 +75,8 @@
                                 Visibility="{Binding CellType, Converter={StaticResource CellTypeToBasicEditorVisibilityConverter}}"
                                 HorizontalAlignment="Stretch" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" 
                                 IsReadOnly="{Binding CellType, Converter={StaticResource CellTypeToIsReadOnlyConverter}}" 
-                                AcceptsReturn="True" AcceptsTab="True" MaxHeight="450"
-                                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                AcceptsReturn="True" AcceptsTab="True" MaxHeight="450" TextWrapping="{Binding CellType, Converter={StaticResource CellTypeToTextWrappingConverter}}"
+                                HorizontalScrollBarVisibility="{Binding CellType, Converter={StaticResource CellTypeToHorizontalScrollBarVisibilityConverter}}" VerticalScrollBarVisibility="Auto"
                                 GotFocus="TextBox_GotFocus" FontFamily="{Binding CellType, Converter={StaticResource CellTypeToTextBoxFontFamilyConverter}}"
                                 BorderThickness="{Binding CellType, Converter={StaticResource CellTypeToBorderThicknessConverter}}"/>
                             <avalonEdit:TextEditor 
