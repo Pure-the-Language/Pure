@@ -62,7 +62,7 @@
             </MenuItem>
         </Menu>
         <ScrollViewer 
-            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
             <ItemsControl DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
                 <ItemsControl.ItemTemplate>
@@ -73,12 +73,14 @@
                                 Visibility="{Binding CellType, Converter={StaticResource CellTypeToBasicEditorVisibilityConverter}}"
                                 HorizontalAlignment="Stretch" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" 
                                 IsReadOnly="{Binding CellType, Converter={StaticResource CellTypeToIsReadOnlyConverter}}" 
-                                AcceptsReturn="True" AcceptsTab="True" 
+                                AcceptsReturn="True" AcceptsTab="True" MaxHeight="450"
+                                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                                 GotFocus="TextBox_GotFocus" FontFamily="{Binding CellType, Converter={StaticResource CellTypeToTextBoxFontFamilyConverter}}"
                                 BorderThickness="{Binding CellType, Converter={StaticResource CellTypeToBorderThicknessConverter}}"/>
                             <avalonEdit:TextEditor 
                                 Visibility="{Binding CellType, Converter={StaticResource CellTypeToAdvancedEditorVisibilityConverter}}"
                                 Name="AvalonEdit" Margin="5"
+                                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                                 BorderThickness="2" BorderBrush="Beige"
                                 ShowLineNumbers="True" SyntaxHighlighting="{Binding CellType, Converter={StaticResource CellTypeToAvalonLanguageTypeConverter}}" 
                                 FontSize="10pt" FontFamily="Consolas" WordWrap="True" 
