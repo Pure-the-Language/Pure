@@ -6,6 +6,7 @@ using NuGet.Protocol.Plugins;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,14 @@ namespace Notebook
             Interpreter.Start(OutputHandler, """
                     Pure v0.0.1
                     """);
+
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length == 2)
+            {
+                string filepath = args[1];
+                if (File.Exists(filepath))
+                    OpenFile(filepath);
+            }
         }
         private Interpreter Interpreter;
         private void OutputHandler(string message)
@@ -87,9 +96,8 @@ namespace Notebook
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                NotebookManager.CurrentNotebookFilePath = saveFileDialog.FileName;
-                Title = $"Pure - {saveFileDialog.FileName}";
-                Data = NotebookManager.Load();
+                string filepath = saveFileDialog.FileName;
+                OpenFile(filepath);
             }
             e.Handled = true;
         }
@@ -178,6 +186,12 @@ namespace Notebook
         #endregion
 
         #region Routines
+        private void OpenFile(string filepath)
+        {
+            NotebookManager.CurrentNotebookFilePath = filepath;
+            Title = $"Pure - {filepath}";
+            Data = NotebookManager.Load();
+        }
         private void AddCell(CellBlock newCell)
         {
             if (CurrentCell == null)
