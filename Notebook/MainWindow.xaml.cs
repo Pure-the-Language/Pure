@@ -149,12 +149,13 @@ namespace Notebook
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
                 Title = "Select path to save file",
+                FileName = "Export",
                 Filter = "Markdown (*.md)|*.md|All (*.*)|*.*"
             };
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filepath = saveFileDialog.FileName;
-                File.WriteAllText(filepath, string.Join("\n", Data.Cells
+                File.WriteAllText(filepath, string.Join("\n\n", Data.Cells
                     .Where(c => c.CellType != CellType.CacheOutput)
                     .Select(c => c.CellType == CellType.Markdown 
                         ? c.Content 
@@ -171,6 +172,7 @@ namespace Notebook
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
                 Title = "Select path to save file",
+                FileName = "Export",
                 Filter = "C# (*.cs)|*.cs|Python (*.py)|*.py"
             };
             if (saveFileDialog.ShowDialog() == true)
