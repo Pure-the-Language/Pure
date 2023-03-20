@@ -89,6 +89,7 @@ namespace Notebook
             {
                 NotebookManager.CurrentNotebookFilePath = saveFileDialog.FileName;
                 Title = $"Pure - {saveFileDialog.FileName}";
+                Data = NotebookManager.Load();
             }
             e.Handled = true;
         }
@@ -119,7 +120,8 @@ namespace Notebook
         }
         private void DeleteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
+                DeleteCell(CurrentCell);
         }
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -209,6 +211,16 @@ namespace Notebook
                 outputCell.Content = message;
             else
                 outputCell.Content += message;
+        }
+        private void DeleteCell(CellBlock cell)
+        {
+            int cellIndex = Data.Cells.IndexOf(cell);
+            if (cell.CellType != CellType.CacheOutput && Data.Cells.Count > cellIndex + 1 && Data.Cells[cellIndex + 1].CellType == CellType.CacheOutput)
+            {
+                CellBlock outputCell = Data.Cells[cellIndex + 1];
+                Data.Cells.Remove(outputCell);
+            }
+            Data.Cells.Remove(cell);
         }
         private void ExecuteCell(CellBlock cell)
         {
