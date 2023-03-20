@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -138,7 +139,9 @@ namespace Notebook
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            foreach (var cell in Data.Cells
+                .Where(c => c.CellType == CellType.CSharp || c.CellType == CellType.Python))
+                ExecuteCell(cell);
         }
         private void ExportMarkdownMenuItem_Click(object sender, RoutedEventArgs e)
         {
