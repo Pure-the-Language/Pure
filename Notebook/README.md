@@ -10,6 +10,10 @@ Advanced features:
 * [GUI] `// @Param <Description>` for GUI controls of primitive inputs
 * [GUI] Ability to hide/collape code cell blocks by default (when opening new files)
 
+## Issues
+
+1. Currently we have no way to limit max height for Avalon Edit - the Text Editor control either is fixed at a certain height or will not show scrollbar automatically. And it eats our scrolling event and that makes scolling and editing long code blocks inconvinient.
+
 ## Notebook Format
 
 Notebook is stored in native (GitHub Flavoured) Markdown/HTML including documents, codes, and code result caches.
