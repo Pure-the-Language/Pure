@@ -229,6 +229,7 @@ namespace Notebook
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
+            Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(filepath));
         }
         private void AddCell(CellBlock newCell)
         {
