@@ -134,11 +134,13 @@ namespace Notebook
         }
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            NotebookManager.Save(Data, true);
             if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
                 ExecuteCell(CurrentCell);
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            NotebookManager.Save(Data, true);
             Data.Cells = new (Data.Cells.Where(c => c.CellType != CellType.CacheOutput));
             foreach (var cell in Data.Cells.ToArray()
                 .Where(c => c.CellType == CellType.CSharp || c.CellType == CellType.Python))
