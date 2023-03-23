@@ -19,6 +19,9 @@ namespace Notebook
         #region Construction
         public MainWindow()
         {
+            // Hide console
+            Win32.HideConsoleWindow();
+
             InitializeComponent();
 
             Interpreter = new Interpreter();
