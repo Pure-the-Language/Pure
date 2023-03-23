@@ -28,7 +28,7 @@ namespace Notebook
             Interpreter = new Interpreter();
             Interpreter.Start(OutputHandler, """
                     Pure v0.0.1
-                    """, args.Length > 2 ? args.Skip(2).ToArray() : null);
+                    """, null, args.Length > 2 ? args.Skip(2).ToArray() : null);
 
             if (args.Length == 2)
             {

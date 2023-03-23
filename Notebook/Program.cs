@@ -41,11 +41,9 @@ namespace Notebook
                 Console.WriteLine($"File doesn't exist: {args[0]}");
             else
             {
-                string filepath = args[0];
+                string filepath = Path.GetFullPath(args[0]);
                 Interpreter interpreter = new Interpreter();
-                interpreter.Start(null, """
-                    Pure v0.0.1
-                    """, args.Skip(1).ToArray());
+                interpreter.Start(null, null, null, args.Skip(1).ToArray());
 
                 NotebookManager.CurrentNotebookFilePath = filepath;
                 var data = NotebookManager.Load();
