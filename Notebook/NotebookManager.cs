@@ -37,7 +37,27 @@ namespace Notebook
         }
         internal static void Save(ApplicationData data, bool asBackup = false)
         {
-            ApplicationData.Save(NotebookFilePath + (asBackup ? ".backup" : string.Empty), data);
+            string savePath = NotebookFilePath + (asBackup ? ".backup" : string.Empty);
+            ApplicationData.Save(savePath, data);
+
+            // In case no changes are made, don't create auto save file
+            // Remark-cz: For slightly faster implementation, we can compare directly in-memory streams instead of actually writing to file first
+            if (asBackup && File.Exists(NotebookFilePath) && CompareFileEquals(NotebookFilePath, savePath))
+                File.Delete(savePath);
+
+            static bool CompareFileEquals(string path1, string path2)
+            {
+                byte[] file1 = System.IO.File.ReadAllBytes(path1);
+                byte[] file2 = System.IO.File.ReadAllBytes(path2);
+                if (file1.Length == file2.Length)
+                {
+                    for (int i = 0; i < file1.Length; i++)
+                        if (file1[i] != file2[i])
+                            return false;
+                    return true;
+                }
+                return false;
+            }
         }
         #endregion
     }

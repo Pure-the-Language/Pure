@@ -84,6 +84,10 @@ namespace Notebook
             CellBlock block = editor.DataContext as CellBlock;
             block.Content = editor.Text;
         }
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            NotebookManager.Save(Data, true);
+        }
         #endregion
 
         #region Menu Items
