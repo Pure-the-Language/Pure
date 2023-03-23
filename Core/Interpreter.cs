@@ -11,10 +11,47 @@ namespace Core
         #region Methods
         public void Start(string welcomeMessage = null, bool advancedInterpretingMode = false, bool defaultPackages = true, string[] startingScripts = null, bool skipInteractiveMode = false, string[] arguments = null)
         {
+            Context = new RoslynContext(true, null);
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
 
-            Context = new RoslynContext(true, null);
+            InitializeArguments(arguments);
+            if (startingScripts != null)
+                foreach (var script in startingScripts)
+                    Context.Evaluate(script);
+
+            if (skipInteractiveMode)
+                return;
+            while (true)
+            {
+                Console.Write(">>> ");
+                string input = Console.ReadLine().Trim();
+
+                if (input == "exit" || input == "exit()")
+                    return;
+                Context.Evaluate(input);
+            }
+        }
+        public void Start(Action<string> outputHandler, string welcomeMessage = null, string[] startingScripts = null, string[] arguments = null)
+        {
+            Context = new RoslynContext(true, outputHandler);
+            if (!string.IsNullOrWhiteSpace(welcomeMessage))
+                Console.WriteLine(welcomeMessage);
+
+            InitializeArguments(arguments);
+            if (startingScripts != null)
+                foreach (var script in startingScripts)
+                    Context.Evaluate(script);
+        }
+        public void Evaluate(string script)
+        {
+            Context.Evaluate(script);
+        }
+        #endregion
+
+        #region Routines
+        private void InitializeArguments(string[] arguments)
+        {
             if (arguments != null && arguments.Length != 0)
             {
                 Context.Evaluate($"""
@@ -32,34 +69,6 @@ namespace Core
                 Context.Evaluate($"""
                     string[] Arguments = Array.Empty<string>();
                     """);
-            if (startingScripts != null)
-                foreach (var script in startingScripts)
-                    Context.Evaluate(script);
-
-            if (skipInteractiveMode)
-                return;
-            while (true)
-            {
-                Console.Write(">>> ");
-                string input = Console.ReadLine().Trim();
-
-                if (input == "exit" || input == "exit()")
-                    return;
-                Context.Evaluate(input);
-            }
-        }
-        public void Start(Action<string> outputHandler, string welcomeMessage = null, string[] startingScripts = null)
-        {
-            Context = new RoslynContext(true, outputHandler);
-            if (!string.IsNullOrWhiteSpace(welcomeMessage))
-                Console.WriteLine(welcomeMessage);
-            if (startingScripts != null)
-                foreach (var script in startingScripts)
-                    Context.Evaluate(script);
-        }
-        public void Evaluate(string script)
-        {
-            Context.Evaluate(script);
         }
         #endregion
     }

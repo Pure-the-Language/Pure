@@ -24,12 +24,12 @@ namespace Notebook
 
             InitializeComponent();
 
+            var args = Environment.GetCommandLineArgs();
             Interpreter = new Interpreter();
             Interpreter.Start(OutputHandler, """
                     Pure v0.0.1
-                    """);
+                    """, args.Length > 2 ? args.Skip(2).ToArray() : null);
 
-            var args = Environment.GetCommandLineArgs();
             if (args.Length == 2)
             {
                 string filepath = args[1];

@@ -2,6 +2,8 @@
 
 A desktop-local WPF based Jupyter-Notebook-like literate programming client for Pure that is native to Pure (and Windows) and serves as a quick debug-development friendly environment/alternative to Pure CLI/REPL in a fashion similar to iPython. This is the GUI version for Pure that is easier to write and maintain than Righteous and before the C# Terminal port becomes a thing. Unlike Jupyter notebook, this is completely version-control friendly.
 
+When triggered in command line (CMD and PowerShell), will enter CLI mode.
+
 ## TODO
 
 Advanced features:
@@ -10,9 +12,16 @@ Advanced features:
 * [GUI] `// @Param <Description>` for GUI controls of primitive inputs
 * [GUI] Ability to hide/collape code cell blocks by default (when opening new files)
 
-## Issues
+### Issues
 
 1. Currently we have no way to limit max height for Avalon Edit - the Text Editor control either is fixed at a certain height or will not show scrollbar automatically. And it eats our scrolling event and that makes scolling and editing long code blocks inconvinient.
+2. Notice at the moment the core Interpreter supports only a single (ever) instance of Roslyn context - thus when opening new files the old state is maintained. This means if we try to work with different files in a clean state, we should start new process instances instead of relying on "Open" file.
+
+## CLI Arguments
+
+* `--debug`: Show parent process name
+* `Notebook <Filepath>`: Batch run process
+* `Notebook <Filepath> [<Arguments>]`: Batch run process with command line arguments
 
 ## Notebook Format
 
