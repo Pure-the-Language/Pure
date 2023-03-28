@@ -142,8 +142,10 @@ namespace Notebook
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
             NotebookManager.Save(Data, true);
-            if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
                 ExecuteCell(CurrentCell);
+            if (CurrentCell != null && Data.Cells.Contains(CurrentCell)
+                && CurrentCell.CellType != CellType.Markdown
+                && CurrentCell.CellType != CellType.CacheOutput)
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
