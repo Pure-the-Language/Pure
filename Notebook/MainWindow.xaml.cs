@@ -27,7 +27,7 @@ namespace Notebook
 
             var args = Environment.GetCommandLineArgs();
             Interpreter = new Interpreter();
-            Interpreter.Start(OutputHandler, """
+            Interpreter.Start(OutputHandlerNonMainThread, """
                     Pure v0.0.1
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null);
 
@@ -38,12 +38,17 @@ namespace Notebook
                     OpenFile(filepath);
             }
         }
-        private Dispatcher MainUIDispatcher = Dispatcher.CurrentDispatcher;
-        private Interpreter Interpreter;
-        private void OutputHandler(string message)
+        private readonly Dispatcher MainUIDispatcher = Dispatcher.CurrentDispatcher;
+        private readonly Interpreter Interpreter;
+        private void OutputHandlerNonMainThread(string message)
         {
-            if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
-                GenerateOutputCell(CurrentCell, message, false);
+            MainUIDispatcher.Invoke(OutputHandler);
+
+            void OutputHandler()
+            {
+                if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
+                    GenerateOutputCell(CurrentCell, message, false);
+            }
         }
         #endregion
 
@@ -95,7 +100,7 @@ namespace Notebook
         #region Menu Items
         private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            SaveFileDialog saveFileDialog = new()
             {
                 Title = "Select path to save file",
                 Filter = "Pure Notebook Files (*.pnb)|*.pnb|All (*.*)|*.*",
@@ -159,7 +164,7 @@ namespace Notebook
         }
         private void ExportMarkdownMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            SaveFileDialog saveFileDialog = new()
             {
                 Title = "Select path to save file",
                 FileName = "Export",
@@ -182,7 +187,7 @@ namespace Notebook
         }
         private void ExportCodeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            SaveFileDialog saveFileDialog = new()
             {
                 Title = "Select path to save file",
                 FileName = "Export",
@@ -242,7 +247,7 @@ namespace Notebook
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
-            Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(filepath));
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
         }
         private void AddCell(CellBlock newCell)
         {
@@ -252,7 +257,7 @@ namespace Notebook
             {
                 int cellIndex = Data.Cells.IndexOf(CurrentCell);
                 if (Data.Cells.Count > cellIndex + 1 && Data.Cells[cellIndex + 1].CellType == CellType.CacheOutput)
-                    cellIndex = cellIndex + 1;
+                    cellIndex++;
                 Data.Cells.Insert(cellIndex + 1, newCell);
             }
             CurrentCell = newCell;
@@ -273,7 +278,7 @@ namespace Notebook
         private void GenerateOutputCell(CellBlock codeCell, string message, bool reInitialize)
         {
             int cellIndex = Data.Cells.IndexOf(codeCell);
-            CellBlock outputCell = null;
+            CellBlock outputCell;
             if (Data.Cells.Count > cellIndex + 1 && Data.Cells[cellIndex + 1].CellType == CellType.CacheOutput)
                 outputCell = Data.Cells[cellIndex + 1];
             else
@@ -303,28 +308,33 @@ namespace Notebook
         }
         private void ExecuteCell(CellBlock cell)
         {
-            if (cell.CellType == CellType.CacheOutput || cell.CellType == CellType.Markdown)
-                throw new InvalidOperationException($"Invalid cell type: {cell.CellType}");
+            Task.Run(ExecuteCellThreaded);
 
-            GenerateOutputCell(cell, string.Empty, true);
-            switch (cell.CellType)
+            void ExecuteCellThreaded()
             {
-                case CellType.CSharp:
-                    foreach (var script in Parser.SplitScripts(cell.Content))
-                        Interpreter.Evaluate(script);
-                    break;
-                case CellType.Python:
-                    Interpreter.Evaluate("Import(Python)");
-                    Interpreter.Evaluate($"""""
+                if (cell.CellType == CellType.CacheOutput || cell.CellType == CellType.Markdown)
+                    throw new InvalidOperationException($"Invalid cell type: {cell.CellType}");
+
+                Dispatcher.Invoke(() => GenerateOutputCell(cell, string.Empty, true));
+                switch (cell.CellType)
+                {
+                    case CellType.CSharp:
+                        foreach (var script in Parser.SplitScripts(cell.Content))
+                            Interpreter.Evaluate(script);
+                        break;
+                    case CellType.Python:
+                        Interpreter.Evaluate("Import(Python)");
+                        Interpreter.Evaluate($"""""
                         Evaluate("""
                         {cell.Content}
                         """);
                         """"");
-                    break;
-                case CellType.Markdown:
-                case CellType.CacheOutput:
-                default:
-                    throw new ArgumentException($"Invalid cell type: {cell.CellType}");
+                        break;
+                    case CellType.Markdown:
+                    case CellType.CacheOutput:
+                    default:
+                        throw new ArgumentException($"Invalid cell type: {cell.CellType}");
+                }
             }
         }
         #endregion
