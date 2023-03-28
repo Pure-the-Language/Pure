@@ -66,7 +66,7 @@
         <ScrollViewer 
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
-            <ItemsControl DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
+            <ItemsControl Name="DataItemsControl" DockPanel.Dock="Bottom" Margin="2" Padding="12" ItemsSource="{Binding Data.Cells}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel HorizontalAlignment="Stretch">

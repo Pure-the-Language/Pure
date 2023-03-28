@@ -1,16 +1,17 @@
 ﻿using Core;
 using ICSharpCode.AvalonEdit;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Win32;
-using NuGet.Protocol.Plugins;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Notebook
 {
@@ -37,6 +38,7 @@ namespace Notebook
                     OpenFile(filepath);
             }
         }
+        private Dispatcher MainUIDispatcher = Dispatcher.CurrentDispatcher;
         private Interpreter Interpreter;
         private void OutputHandler(string message)
         {
@@ -142,10 +144,10 @@ namespace Notebook
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
             NotebookManager.Save(Data, true);
-                ExecuteCell(CurrentCell);
             if (CurrentCell != null && Data.Cells.Contains(CurrentCell)
                 && CurrentCell.CellType != CellType.Markdown
                 && CurrentCell.CellType != CellType.CacheOutput)
+                ExecuteCell(CurrentCell);
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -254,6 +256,19 @@ namespace Notebook
                 Data.Cells.Insert(cellIndex + 1, newCell);
             }
             CurrentCell = newCell;
+
+            // Auto-focus
+            Task.Delay(300).ContinueWith(t =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    if (CurrentCell.CellType == CellType.Python || CurrentCell.CellType == CellType.CSharp)
+                    {
+                        var te = FindVisualChildren<TextEditor>(DataItemsControl).SingleOrDefault(te => (te.DataContext as CellBlock) == CurrentCell);
+                        te.Focus();
+                    }
+                });
+            });
         }
         private void GenerateOutputCell(CellBlock codeCell, string message, bool reInitialize)
         {
@@ -324,6 +339,20 @@ namespace Notebook
             field = value;
             NotifyPropertyChanged(propertyName);
             return true;
+        }
+        #endregion
+
+        #region Helpers
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
+            }
         }
         #endregion
     }
