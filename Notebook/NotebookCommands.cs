@@ -45,14 +45,6 @@ namespace Notebook
                 new InputGestureCollection {
                     new KeyGesture(Key.F5, ModifierKeys.None, "F5")
                 });
-        public static readonly RoutedUICommand ExecuteAllCellsCommand =
-            new(
-                "Execute All Cells",
-                "ExecuteAllCells",
-                typeof(NotebookCommands),
-                new InputGestureCollection {
-                    new KeyGesture(Key.F6, ModifierKeys.None, "F6")
-                });
         #endregion
     }
 }

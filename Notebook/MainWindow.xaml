@@ -35,7 +35,6 @@
         <CommandBinding Command="local:NotebookCommands.CreateMarkdownCellCommand" CanExecute="CreateMarkdownCellCommand_CanExecute" Executed="CreateMarkdownCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.DeleteCellCommand" CanExecute="DeleteCellCommand_CanExecute" Executed="DeleteCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.ExecuteCellCommand" CanExecute="ExecuteCellCommand_CanExecute" Executed="ExecuteCellCommand_Executed"/>
-        <CommandBinding Command="local:NotebookCommands.ExecuteAllCellsCommand" CanExecute="ExecuteAllCellsCommand_CanExecute" Executed="ExecuteAllCellsCommand_Executed"/>
     </Window.CommandBindings>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
@@ -60,7 +59,7 @@
             </MenuItem>
             <MenuItem Header="Runtime">
                 <MenuItem Header="Execute Cell (F5)" Click="ExecuteCellMenuItem_Click"/>
-                <MenuItem Header="Execute All (F6)" Click="ExecuteAllMenuItem_Click"/>
+                <MenuItem Header="Execute All" Click="ExecuteAllMenuItem_Click"/>
             </MenuItem>
         </Menu>
         <ScrollViewer 

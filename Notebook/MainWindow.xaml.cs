@@ -235,10 +235,6 @@ namespace Notebook
             => e.CanExecute = true;
         private void ExecuteCellCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
             => ExecuteCellMenuItem_Click(null, null);
-        private void ExecuteAllCellsCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
-            => e.CanExecute = true;
-        private void ExecuteAllCellsCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-            => ExecuteAllMenuItem_Click(null, null);
         #endregion
 
         #region Routines
