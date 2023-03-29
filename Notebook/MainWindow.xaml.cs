@@ -331,6 +331,8 @@ namespace Notebook
                     default:
                         throw new ArgumentException($"Invalid cell type: {cell.CellType}");
                 }
+
+                OutputHandlerNonMainThread("Done.");
             }
         }
         #endregion
