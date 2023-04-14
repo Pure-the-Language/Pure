@@ -240,6 +240,7 @@ namespace Notebook
         #region Routines
         private void OpenFile(string filepath)
         {
+            filepath = Path.GetFullPath(filepath);
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
