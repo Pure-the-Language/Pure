@@ -8,6 +8,7 @@
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         ui:WindowHelper.UseModernWindowStyle="True"
         Title="Notebook 📓 - Default" Height="450" Width="800" Closing="Window_Closing"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
@@ -69,6 +70,14 @@
                 <MenuItem Header="Execute All" Click="ExecuteAllMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Arguments..." Click="SetArgumentsMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Visibility="{Binding RunningIndicatorVisibility}">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Refresh" Spin="True" Width="24" Height="24" Foreground="DodgerBlue"/>
+                        <Label Content="Running..." Margin="4, 0"/>
+                    </StackPanel>
+                </MenuItem.Header>
             </MenuItem>
         </Menu>
         <ScrollViewer 

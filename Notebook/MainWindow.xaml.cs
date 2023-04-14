@@ -53,12 +53,23 @@ namespace Notebook
         #endregion
 
         #region Data Binding Properties
+        private Visibility _RunningIndicatorVisibility = Visibility.Collapsed;
         private CellBlock _CurrentEditingCell = null;
+        private CellBlock _CurrentExecutingCell = null;
         private ApplicationData _Data = NotebookManager.Load();
-        private CellBlock CurrentExecutingCell { get; set; }
+        
+        private CellBlock CurrentExecutingCell { 
+            get => _CurrentExecutingCell; 
+            set
+            {
+                _CurrentExecutingCell = value;
+                RunningIndicatorVisibility = value == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
 
         public CellBlock CurrentEditingCell { get => _CurrentEditingCell; set => SetField(ref _CurrentEditingCell, value); }
         public ApplicationData Data { get => _Data; set => SetField(ref _Data, value); }
+        public Visibility RunningIndicatorVisibility { get => _RunningIndicatorVisibility; set => SetField(ref _RunningIndicatorVisibility, value); }
         #endregion
 
         #region Windows Events
