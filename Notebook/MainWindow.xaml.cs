@@ -307,13 +307,52 @@ namespace Notebook
         #endregion
 
         #region Routines
+        private FileSystemWatcher Watcher { get; set; }
         private void OpenFile(string filepath)
         {
             filepath = Path.GetFullPath(filepath);
+
+            // Watch external changes
+            if (Watcher != null)
+            {
+                Watcher.EnableRaisingEvents = false;
+                Watcher.Dispose();
+            }
+            Watcher = new(Path.GetDirectoryName(filepath))
+            {
+                Filter = Path.GetFileName(filepath),
+                NotifyFilter = NotifyFilters.Attributes
+                                 | NotifyFilters.CreationTime
+                                 | NotifyFilters.DirectoryName
+                                 | NotifyFilters.FileName
+                                 | NotifyFilters.LastAccess
+                                 | NotifyFilters.LastWrite
+                                 | NotifyFilters.Security
+                                 | NotifyFilters.Size
+            };
+            Watcher.Changed += FileSystemWatcherEvent;
+            Watcher.Renamed += FileSystemWatcherEvent;
+            Watcher.Error += DisposeWatcher;
+            Watcher.IncludeSubdirectories = true;
+            Watcher.EnableRaisingEvents = true;
+
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
+
+            void FileSystemWatcherEvent(object sender, FileSystemEventArgs e)
+            {
+                if (File.Exists(e.FullPath))
+                {
+                    Dispatcher.Invoke(() => OpenFile(e.FullPath));
+                }
+            }
+            void DisposeWatcher(object sender, ErrorEventArgs e)
+            {
+                Watcher.Dispose();
+                Watcher = null;
+            }
         }
         private void AddCell(CellBlock newCell, bool copyCellContent = false)
         {
