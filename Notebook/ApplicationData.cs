@@ -38,6 +38,8 @@ namespace Notebook
         public static void Save(string filepath, ApplicationData data, bool compressed = true)
         {
             string extension = Path.GetExtension(filepath);
+            if (filepath.ToLower().EndsWith(".backup"))
+                extension = Path.GetExtension(Path.GetFileNameWithoutExtension(filepath));
             switch (extension.ToLower())
             {
                 case ".md":
