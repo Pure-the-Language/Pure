@@ -33,6 +33,9 @@
         <CommandBinding Command="local:NotebookCommands.CreateCSharpCellCommand" CanExecute="CreateCSharpCellCommand_CanExecute" Executed="CreateCSharpCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.CreatePythonCellCommand" CanExecute="CreatePythonCellCommand_CanExecute" Executed="CreatePythonCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.CreateMarkdownCellCommand" CanExecute="CreateMarkdownCellCommand_CanExecute" Executed="CreateMarkdownCellCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreateCSharpCellWithCopyCommand" CanExecute="CreateCSharpCellWithCopyCommand_CanExecute" Executed="CreateCSharpCellWithCopyCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreatePythonCellWithCopyCommand" CanExecute="CreatePythonCellWithCopyCommand_CanExecute" Executed="CreatePythonCellWithCopyCommand_Executed"/>
+        <CommandBinding Command="local:NotebookCommands.CreateMarkdownCellWithCopyCommand" CanExecute="CreateMarkdownCellWithCopyCommand_CanExecute" Executed="CreateMarkdownCellWithCopyCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.DeleteCellCommand" CanExecute="DeleteCellCommand_CanExecute" Executed="DeleteCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.ExecuteCellCommand" CanExecute="ExecuteCellCommand_CanExecute" Executed="ExecuteCellCommand_Executed"/>
     </Window.CommandBindings>
@@ -52,6 +55,9 @@
                 <MenuItem Header="Add C# Cell (F2)" Click="AddCSharpCellMenuItem_Click"/>
                 <MenuItem Header="Add Python Cell (F3)" Click="AddPythonCellMenuItem_Click"/>
                 <MenuItem Header="Add Markdown Cell (F4)" Click="AddMarkdownCellMenuItem_Click"/>
+                <MenuItem Header="Add C# Cell (Copy) (Shift+F2)" Click="AddCSharpCellWithCopyMenuItem_Click"/>
+                <MenuItem Header="Add Python Cell (Copy) (Shift+F3)" Click="AddPythonCellWithCopyMenuItem_Click"/>
+                <MenuItem Header="Add Markdown Cell (Copy) (Shift+F4)" Click="AddMarkdownCellWithCopyMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Delete Cell (Ctrl+Delete)" Click="DeleteCellMenuItem_Click"/>
                 <Separator/>

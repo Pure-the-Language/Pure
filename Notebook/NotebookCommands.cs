@@ -29,6 +29,30 @@ namespace Notebook
                 new InputGestureCollection {
                     new KeyGesture(Key.F4, ModifierKeys.None, "F4")
                 });
+        public static readonly RoutedUICommand CreateCSharpCellWithCopyCommand =
+            new(
+                "Create C# Cell with Copy",
+                "CreateCSharpCellWithCopy",
+                typeof(NotebookCommands),
+                new InputGestureCollection {
+                    new KeyGesture(Key.F2, ModifierKeys.Shift, "Shift+F2")
+                });
+        public static readonly RoutedUICommand CreatePythonCellWithCopyCommand =
+            new(
+                "Create Python Cell with Copy",
+                "CreatePythonCellWithCopy",
+                typeof(NotebookCommands),
+                new InputGestureCollection {
+                    new KeyGesture(Key.F3, ModifierKeys.Shift, "Shift+F3")
+                });
+        public static readonly RoutedUICommand CreateMarkdownCellWithCopyCommand =
+            new(
+                "Create Markdown Cell with Copy",
+                "CreateMarkdownCellWithCopy",
+                typeof(NotebookCommands),
+                new InputGestureCollection {
+                    new KeyGesture(Key.F4, ModifierKeys.Shift, "Shift+F4")
+                });
         public static readonly RoutedUICommand DeleteCellCommand =
             new(
                 "Delete Cell",

@@ -142,6 +142,27 @@ namespace Notebook
                 CellType = CellType.Python
             });
         }
+        private void AddCSharpCellWithCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddCell(new CellBlock()
+            {
+                CellType = CellType.CSharp
+            }, true);
+        }
+        private void AddPythonCellWithCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddCell(new CellBlock()
+            {
+                CellType = CellType.Python
+            }, true);
+        }
+        private void AddMarkdownCellWithCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddCell(new CellBlock()
+            {
+                CellType = CellType.Markdown
+            }, true);
+        }
         private void DeleteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentEditingCell != null && Data.Cells.Contains(CurrentEditingCell))
@@ -252,6 +273,18 @@ namespace Notebook
             => e.CanExecute = true;
         private void CreateMarkdownCellCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
             => AddMarkdownCellMenuItem_Click(null, null);
+        private void CreateCSharpCellWithCopyCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+        private void CreateCSharpCellWithCopyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+            => AddCSharpCellWithCopyMenuItem_Click(null, null);
+        private void CreatePythonCellWithCopyCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+        private void CreatePythonCellWithCopyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+            => AddPythonCellWithCopyMenuItem_Click(null, null);
+        private void CreateMarkdownCellWithCopyCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+        private void CreateMarkdownCellWithCopyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+            => AddMarkdownCellWithCopyMenuItem_Click(null, null);
         private void DeleteCellCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
             => e.CanExecute = true;
         private void DeleteCellCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
