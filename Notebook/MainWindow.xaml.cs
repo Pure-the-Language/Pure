@@ -46,17 +46,18 @@ namespace Notebook
 
             void OutputHandler()
             {
-                if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
-                    GenerateOutputCell(CurrentCell, message, false);
+                if (CurrentExecutingCell != null && Data.Cells.Contains(CurrentExecutingCell))
+                    GenerateOutputCell(CurrentExecutingCell, message, false);
             }
         }
         #endregion
 
         #region Data Binding Properties
-        private CellBlock _CurrentCell = null;
+        private CellBlock _CurrentEditingCell = null;
         private ApplicationData _Data = NotebookManager.Load();
+        private CellBlock CurrentExecutingCell { get; set; }
 
-        public CellBlock CurrentCell { get => _CurrentCell; set => SetField(ref _CurrentCell, value); }
+        public CellBlock CurrentEditingCell { get => _CurrentEditingCell; set => SetField(ref _CurrentEditingCell, value); }
         public ApplicationData Data { get => _Data; set => SetField(ref _Data, value); }
         #endregion
 
@@ -65,13 +66,13 @@ namespace Notebook
         {
             Control control = sender as Control;
             CellBlock cellBlock = control.DataContext as CellBlock;
-            CurrentCell = cellBlock;
+            CurrentEditingCell = cellBlock;
         }
         private void AvalonTextEditor_GotFocus(object sender, RoutedEventArgs e)
         {
             TextEditor editor = sender as TextEditor;
             CellBlock cellBlock = editor.DataContext as CellBlock;
-            CurrentCell = cellBlock;
+            CurrentEditingCell = cellBlock;
         }
         private void AvalonTextEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -143,16 +144,16 @@ namespace Notebook
         }
         private void DeleteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentCell != null && Data.Cells.Contains(CurrentCell))
-                DeleteCell(CurrentCell);
+            if (CurrentEditingCell != null && Data.Cells.Contains(CurrentEditingCell))
+                DeleteCell(CurrentEditingCell);
         }
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
             NotebookManager.Save(Data, true);
-            if (CurrentCell != null && Data.Cells.Contains(CurrentCell)
-                && CurrentCell.CellType != CellType.Markdown
-                && CurrentCell.CellType != CellType.CacheOutput)
-                ExecuteCell(CurrentCell);
+            if (CurrentEditingCell != null && Data.Cells.Contains(CurrentEditingCell)
+                && CurrentEditingCell.CellType != CellType.Markdown
+                && CurrentEditingCell.CellType != CellType.CacheOutput)
+                ExecuteCell(CurrentEditingCell);
         }
         private void ExecuteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -270,27 +271,29 @@ namespace Notebook
             Data = NotebookManager.Load();
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
         }
-        private void AddCell(CellBlock newCell)
+        private void AddCell(CellBlock newCell, bool copyCellContent = false)
         {
-            if (CurrentCell == null)
+            if (CurrentEditingCell == null)
                 Data.Cells.Insert(0, newCell);
             else
             {
-                int cellIndex = Data.Cells.IndexOf(CurrentCell);
+                int cellIndex = Data.Cells.IndexOf(CurrentEditingCell);
                 if (Data.Cells.Count > cellIndex + 1 && Data.Cells[cellIndex + 1].CellType == CellType.CacheOutput)
                     cellIndex++;
                 Data.Cells.Insert(cellIndex + 1, newCell);
             }
-            CurrentCell = newCell;
+            if (copyCellContent)
+                newCell.Content = CurrentEditingCell?.Content;   // Auto-copy existing cell content
+            CurrentEditingCell = newCell;
 
             // Auto-focus
             Task.Delay(300).ContinueWith(t =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (CurrentCell.CellType == CellType.Python || CurrentCell.CellType == CellType.CSharp)
+                    if (CurrentEditingCell.CellType == CellType.Python || CurrentEditingCell.CellType == CellType.CSharp)
                     {
-                        var te = FindVisualChildren<TextEditor>(DataItemsControl).SingleOrDefault(te => (te.DataContext as CellBlock) == CurrentCell);
+                        var te = FindVisualChildren<TextEditor>(DataItemsControl).SingleOrDefault(te => (te.DataContext as CellBlock) == CurrentEditingCell);
                         te.Focus();
                     }
                 });
@@ -329,6 +332,13 @@ namespace Notebook
         }
         private void ExecuteCell(CellBlock cell)
         {
+            if (CurrentExecutingCell != null)
+            {
+                MessageBox.Show("Cannot execute code when a cell is already running.");
+                return;
+            }
+
+            CurrentExecutingCell = cell;
             Task.Run(ExecuteCellThreaded);
 
             void ExecuteCellThreaded()
@@ -356,6 +366,7 @@ namespace Notebook
                     default:
                         throw new ArgumentException($"Invalid cell type: {cell.CellType}");
                 }
+                CurrentExecutingCell = null;
             }
         }
         #endregion
