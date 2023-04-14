@@ -60,6 +60,8 @@
             <MenuItem Header="Runtime">
                 <MenuItem Header="Execute Cell (F5)" Click="ExecuteCellMenuItem_Click"/>
                 <MenuItem Header="Execute All" Click="ExecuteAllMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Arguments..." Click="SetArgumentsMenuItem_Click"/>
             </MenuItem>
         </Menu>
         <ScrollViewer 

@@ -6,6 +6,7 @@ namespace Core
     {
         #region Property
         private RoslynContext Context { get; set; }
+        public string[] Arguments { get; private set; }
         #endregion
 
         #region Methods
@@ -50,8 +51,9 @@ namespace Core
         #endregion
 
         #region Routines
-        private void InitializeArguments(string[] arguments)
+        public void InitializeArguments(string[] arguments)
         {
+            Arguments = arguments;
             if (arguments != null && arguments.Length != 0)
             {
                 Context.Evaluate($"""

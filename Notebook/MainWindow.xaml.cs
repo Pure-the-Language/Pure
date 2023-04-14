@@ -29,7 +29,7 @@ namespace Notebook
             Interpreter = new Interpreter();
             Interpreter.Start(OutputHandlerNonMainThread, """
                     Pure v0.0.1
-                    """, null, args.Length > 2 ? args.Skip(2).ToArray() : null);
+                    """, null, args.Length > 2 ? args.Skip(2).ToArray() : null); // Remark-cz: 1st argument is executable path, 2nd argument is taken to be open file path
 
             if (args.Length >= 2)
             {
@@ -201,6 +201,23 @@ namespace Notebook
                     File.WriteAllText(filepath, string.Join("\n", Data.Cells.Where(c => c.CellType == CellType.CSharp).Select(c => c.Content)));
                 else if (extension == ".py")
                     File.WriteAllText(filepath, string.Join("\n", Data.Cells.Where(c => c.CellType == CellType.Python).Select(c => c.Content)));
+            }
+            e.Handled = true;
+        }
+        private void SetArgumentsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new EntryWindow(string.Join(" ", Interpreter.Arguments.Select(a => a.Contains(' ') ? $"\"{a}\"" : a)))
+            {
+                Owner = this
+            };
+            if (window.ShowDialog() == true)
+            {
+                string[] arguments = Csv.CsvReader.ReadFromText(window.Result, new Csv.CsvOptions()
+                {
+                    HeaderMode = Csv.HeaderMode.HeaderAbsent,
+                    Separator = ' '
+                }).First().Values;
+                Interpreter.InitializeArguments(arguments);
             }
             e.Handled = true;
         }
