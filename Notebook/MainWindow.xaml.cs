@@ -246,11 +246,11 @@ namespace Notebook
         }
         private void SetArgumentsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var window = new EntryWindow(string.Join(" ", Interpreter.Arguments.Select(a => a.Contains(' ') ? $"\"{a}\"" : a)))
+            var window = new EntryWindow(string.Join(" ", Interpreter.Arguments?.Select(a => a.Contains(' ') ? $"\"{a}\"" : a) ?? Array.Empty<string>()))
             {
                 Owner = this
             };
-            if (window.ShowDialog() == true)
+            if (window.ShowDialog() == true && !string.IsNullOrEmpty(window.Result))
             {
                 string[] arguments = Csv.CsvReader.ReadFromText(window.Result, new Csv.CsvOptions()
                 {
