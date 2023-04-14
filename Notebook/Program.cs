@@ -12,6 +12,18 @@ namespace Notebook
         [STAThread]
         public static void Main(string[] args)
         {
+            if (args.Length == 2 && args[0].ToLower() == "--create")
+            {
+                if (File.Exists(args[1]))
+                    Console.WriteLine("File already exists.");
+                else
+                {
+                    NotebookManager.CurrentNotebookFilePath = args[1];
+                    NotebookManager.Save(new ApplicationData());
+                }
+                return;
+            }
+
             var parent = ParentProcessUtilities.GetParentProcess();
             if (args.Length == 1 && args[0].ToLower() == "--debug")
             {
