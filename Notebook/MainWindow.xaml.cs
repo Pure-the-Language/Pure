@@ -31,7 +31,7 @@ namespace Notebook
                     Pure v0.0.1
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null);
 
-            if (args.Length == 2)
+            if (args.Length >= 2)
             {
                 string filepath = args[1];
                 if (File.Exists(filepath))
