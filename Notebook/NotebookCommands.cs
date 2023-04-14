@@ -53,14 +53,6 @@ namespace Notebook
                 new InputGestureCollection {
                     new KeyGesture(Key.F4, ModifierKeys.Shift, "Shift+F4")
                 });
-        public static readonly RoutedUICommand DeleteCellCommand =
-            new(
-                "Delete Cell",
-                "DeleteCell",
-                typeof(NotebookCommands),
-                new InputGestureCollection {
-                    new KeyGesture(Key.Delete, ModifierKeys.Control, "Ctrl+Delete")
-                });
         public static readonly RoutedUICommand ExecuteCellCommand =
             new(
                 "Execute Cell",

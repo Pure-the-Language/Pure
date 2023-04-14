@@ -37,7 +37,6 @@
         <CommandBinding Command="local:NotebookCommands.CreateCSharpCellWithCopyCommand" CanExecute="CreateCSharpCellWithCopyCommand_CanExecute" Executed="CreateCSharpCellWithCopyCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.CreatePythonCellWithCopyCommand" CanExecute="CreatePythonCellWithCopyCommand_CanExecute" Executed="CreatePythonCellWithCopyCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.CreateMarkdownCellWithCopyCommand" CanExecute="CreateMarkdownCellWithCopyCommand_CanExecute" Executed="CreateMarkdownCellWithCopyCommand_Executed"/>
-        <CommandBinding Command="local:NotebookCommands.DeleteCellCommand" CanExecute="DeleteCellCommand_CanExecute" Executed="DeleteCellCommand_Executed"/>
         <CommandBinding Command="local:NotebookCommands.ExecuteCellCommand" CanExecute="ExecuteCellCommand_CanExecute" Executed="ExecuteCellCommand_Executed"/>
     </Window.CommandBindings>
     <DockPanel LastChildFill="True">
@@ -60,7 +59,7 @@
                 <MenuItem Header="Add Python Cell (Copy) (Shift+F3)" Click="AddPythonCellWithCopyMenuItem_Click"/>
                 <MenuItem Header="Add Markdown Cell (Copy) (Shift+F4)" Click="AddMarkdownCellWithCopyMenuItem_Click"/>
                 <Separator/>
-                <MenuItem Header="Delete Cell (Ctrl+Delete)" Click="DeleteCellMenuItem_Click"/>
+                <MenuItem Header="Delete Cell" Click="DeleteCellMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Convert Cell to Markdown (F11)"/>
                 <MenuItem Header="Convert Cell to Code (F12)"/>

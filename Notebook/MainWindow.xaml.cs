@@ -303,10 +303,6 @@ namespace Notebook
             => e.CanExecute = true;
         private void CreateMarkdownCellWithCopyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
             => AddMarkdownCellWithCopyMenuItem_Click(null, null);
-        private void DeleteCellCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
-            => e.CanExecute = true;
-        private void DeleteCellCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-            => DeleteCellMenuItem_Click(null, null);
         private void ExecuteCellCommand_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
             => e.CanExecute = true;
         private void ExecuteCellCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
