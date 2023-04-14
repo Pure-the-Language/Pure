@@ -130,6 +130,11 @@ namespace Notebook
         }
         private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            if (Watcher != null)
+            {
+                Watcher.Dispose();
+                Watcher = null;
+            }
             NotebookManager.Save(Data);
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
