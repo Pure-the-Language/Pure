@@ -131,11 +131,10 @@ namespace Notebook
         private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (Watcher != null)
-            {
-                Watcher.Dispose();
-                Watcher = null;
-            }
+                Watcher.EnableRaisingEvents = false;
             NotebookManager.Save(Data);
+            if (Watcher != null)
+                Watcher.EnableRaisingEvents = true;
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
