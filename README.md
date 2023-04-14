@@ -21,6 +21,7 @@ Currently Pure has two main issues that stops it from being used for production 
     * The Pure.exe program itself apparently needs work, along with tne engine code.
     * We are yet to integrate and implement BaseRepl for Aurora from CSharpRepl.
 2. Importing and consuming Nuget packages is not fully implemented yet.
+3. Currently "Help" is not showing extension methods.
 
 As it goes, it is actually possible at the moment to use Righteous along with manually downloaded DLL packages to implement all the needed functions.
 
