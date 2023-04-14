@@ -131,39 +131,13 @@ namespace Notebook
         private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (Watcher != null)
-            {
                 Watcher.EnableRaisingEvents = false;
-                Watcher.Dispose();
-            }
             NotebookManager.Save(Data);
             if (Watcher != null) // Remark-cz: This whole setup is just to avoid wacher raising changed event when we are saving files ourselves
-            {
-                string path = Watcher.Path;
-                string filter = Watcher.Filter;
-                Watcher = null;
-
                 Task.Delay(2000).ContinueWith(t =>
                 {
-                    FileSystemWatcher newWatcher = new(path)
-                    {
-                        Filter = filter,
-                        NotifyFilter = NotifyFilters.Attributes
-                                     | NotifyFilters.CreationTime
-                                     | NotifyFilters.DirectoryName
-                                     | NotifyFilters.FileName
-                                     | NotifyFilters.LastAccess
-                                     | NotifyFilters.LastWrite
-                                     | NotifyFilters.Security
-                                     | NotifyFilters.Size
-                    };
-                    newWatcher.Changed += FileSystemWatcherEvent;
-                    newWatcher.Renamed += FileSystemWatcherEvent;
-                    newWatcher.Error += DisposeWatcher;
-                    newWatcher.IncludeSubdirectories = true;
-                    newWatcher.EnableRaisingEvents = true;
-                    Watcher = newWatcher;
+                    Watcher.EnableRaisingEvents = true;
                 });
-            }
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -373,22 +347,23 @@ namespace Notebook
             Watcher.Error += DisposeWatcher;
             Watcher.IncludeSubdirectories = true;
             Watcher.EnableRaisingEvents = true;
-        }
-        void FileSystemWatcherEvent(object sender, FileSystemEventArgs e)
-        {
-            Watcher.EnableRaisingEvents = false;
-            Watcher.Dispose();
-            Watcher = null;
-            if (File.Exists(e.FullPath))
+
+            void FileSystemWatcherEvent(object sender, FileSystemEventArgs e)
             {
-                Task.Delay(500).ContinueWith(t => { Dispatcher.Invoke(() => OpenFile(e.FullPath)); });
+                Watcher.EnableRaisingEvents = false;
+                Watcher.Dispose();
+                Watcher = null;
+                if (File.Exists(e.FullPath))
+                {
+                    Task.Delay(500).ContinueWith(t => { Dispatcher.Invoke(() => OpenFile(e.FullPath)); });
+                }
             }
-        }
-        void DisposeWatcher(object sender, ErrorEventArgs e)
-        {
-            Watcher.EnableRaisingEvents = false;
-            Watcher.Dispose();
-            Watcher = null;
+            void DisposeWatcher(object sender, ErrorEventArgs e)
+            {
+                Watcher.EnableRaisingEvents = false;
+                Watcher.Dispose();
+                Watcher = null;
+            }
         }
         private void AddCell(CellBlock newCell, bool copyCellContent = false)
         {
