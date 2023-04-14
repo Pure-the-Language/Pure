@@ -52,7 +52,7 @@ namespace Notebook
 
             static void SaveToMarkdown(string filepath, ApplicationData data)
             {
-                MarkdownHelper.SaveDataTo(filepath, data);
+                MarkdownHelper.SaveDataTo(filepath, data, true);
             }
             static void SaveToLZ4(string filepath, ApplicationData data, bool compressed)
             {
