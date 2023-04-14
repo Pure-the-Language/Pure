@@ -103,7 +103,7 @@ namespace Notebook
             SaveFileDialog saveFileDialog = new()
             {
                 Title = "Select path to save file",
-                Filter = "Pure Notebook Files (*.pnb)|*.pnb|All (*.*)|*.*",
+                Filter = "Pure Notebook Files (*.pnb)|*.pnb|Literate Markdown Files (*.md)|*.md|All (*.*)|*.*",
                 CheckFileExists = false,
                 OverwritePrompt = false,
                 CreatePrompt = false,
@@ -173,15 +173,22 @@ namespace Notebook
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filepath = saveFileDialog.FileName;
-                File.WriteAllText(filepath, string.Join("\n\n", Data.Cells
-                    .Where(c => c.CellType != CellType.CacheOutput)
-                    .Select(c => c.CellType == CellType.Markdown 
-                        ? c.Content 
-                        : $"""
-                        ```{(c.CellType == CellType.Python ? "Python" : "C#")}
-                        {c.Content}
-                        ```
-                        """)));
+                MarkdownHelper.SaveDataTo(filepath, Data);
+            }
+            e.Handled = true;
+        }
+        private void ExportMarkdownMenuItemWithCache_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Title = "Select path to save file",
+                FileName = "Export",
+                Filter = "Markdown (*.md)|*.md|All (*.*)|*.*"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filepath = saveFileDialog.FileName;
+                MarkdownHelper.SaveDataTo(filepath, Data, true);
             }
             e.Handled = true;
         }

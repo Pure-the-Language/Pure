@@ -37,32 +37,70 @@ namespace Notebook
         #region Methods
         public static void Save(string filepath, ApplicationData data, bool compressed = true)
         {
-            if (compressed)
+            string extension = Path.GetExtension(filepath);
+            switch (extension.ToLower())
             {
-                using LZ4EncoderStream stream = LZ4Stream.Encode(File.Create(filepath));
-                using BinaryWriter writer = new(stream, Encoding.UTF8, false);
-                WriteToStream(writer, data);
+                case ".md":
+                case ".txt":
+                    SaveToMarkdown(filepath, data);
+                    break;
+                case ".pnb":
+                default:
+                    SaveToLZ4(filepath, data, compressed);
+                    break;
             }
-            else
+
+            static void SaveToMarkdown(string filepath, ApplicationData data)
             {
-                using FileStream stream = File.Open(filepath, FileMode.Create);
-                using BinaryWriter writer = new(stream, Encoding.UTF8, false);
-                WriteToStream(writer, data);
+                MarkdownHelper.SaveDataTo(filepath, data);
+            }
+            static void SaveToLZ4(string filepath, ApplicationData data, bool compressed)
+            {
+                if (compressed)
+                {
+                    using LZ4EncoderStream stream = LZ4Stream.Encode(File.Create(filepath));
+                    using BinaryWriter writer = new(stream, Encoding.UTF8, false);
+                    WriteToStream(writer, data);
+                }
+                else
+                {
+                    using FileStream stream = File.Open(filepath, FileMode.Create);
+                    using BinaryWriter writer = new(stream, Encoding.UTF8, false);
+                    WriteToStream(writer, data);
+                }
             }
         }
         public static ApplicationData Load(string filepath, bool compressed = true)
         {
-            if (compressed)
+            string extension = Path.GetExtension(filepath);
+            switch (extension.ToLower())
             {
-                using LZ4DecoderStream source = LZ4Stream.Decode(File.OpenRead(filepath));
-                using BinaryReader reader = new(source, Encoding.UTF8, false);
-                return ReadFromStream(reader);
+                case ".md":
+                case ".txt":
+                    return LoadFromMarkdown(filepath);
+                case ".pnb":
+                default:
+                    return LoadFromLZ4(filepath, compressed);
             }
-            else
+            static ApplicationData LoadFromMarkdown(string filepath)
             {
-                using FileStream stream = File.Open(filepath, FileMode.Open);
-                using BinaryReader reader = new(stream, Encoding.UTF8, false);
-                return ReadFromStream(reader);
+                return MarkdownHelper.LoadDataFrom(filepath);
+            }
+
+            static ApplicationData LoadFromLZ4(string filepath, bool compressed)
+            {
+                if (compressed)
+                {
+                    using LZ4DecoderStream source = LZ4Stream.Decode(File.OpenRead(filepath));
+                    using BinaryReader reader = new(source, Encoding.UTF8, false);
+                    return ReadFromStream(reader);
+                }
+                else
+                {
+                    using FileStream stream = File.Open(filepath, FileMode.Open);
+                    using BinaryReader reader = new(stream, Encoding.UTF8, false);
+                    return ReadFromStream(reader);
+                }
             }
         }
         #endregion

@@ -44,6 +44,7 @@
                 <Separator/>
                 <MenuItem Header="Export">
                     <MenuItem Header="Export Markdown..." Click="ExportMarkdownMenuItem_Click"/>
+                    <MenuItem Header="Export Markdown (with Cache Outputs)..." Click="ExportMarkdownMenuItemWithCache_Click"/>
                     <MenuItem Header="Export Code..." Click="ExportCodeMenuItem_Click"/>
                 </MenuItem>
             </MenuItem>
