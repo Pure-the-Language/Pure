@@ -58,13 +58,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent", "Fluent\Fluent.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NonStandardLibraries", "NonStandardLibraries", "{6BFA5661-1352-4F51-8E1B-3756C1912463}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODBC", "ODBC\ODBC.csproj", "{FDCD3478-28CE-4092-BEAA-AA5EC1C70EEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODBC", "ODBC\ODBC.csproj", "{FDCD3478-28CE-4092-BEAA-AA5EC1C70EEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODBCTest", "ODBCTest\ODBCTest.csproj", "{1AB8660A-A47C-4BB9-9F5D-0CB8AF21A956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODBCTest", "ODBCTest\ODBCTest.csproj", "{1AB8660A-A47C-4BB9-9F5D-0CB8AF21A956}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExperimentalFrontends", "ExperimentalFrontends", "{B94B6375-FDCB-4E5B-9670-F518924CFD0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notebook", "Notebook\Notebook.csproj", "{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook", "Notebook\Notebook.csproj", "{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

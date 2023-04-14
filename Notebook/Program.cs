@@ -19,7 +19,7 @@ namespace Notebook
                 return;
             }
 
-            if (new string[] { "cwd", "powershell", "pwsh" }.Contains(parent.ProcessName.ToLower()))
+            if (new string[] { "cwd", "powershell", "pwsh" }.Contains(parent.ProcessName.ToLower())) // Remar-cz: During debugging in VS it might be necessary to add "vsdebugconsole" to enter CLI mode
             {
                 BatchMode(args);
             }
@@ -44,11 +44,9 @@ namespace Notebook
                 string filepath = Path.GetFullPath(args[0]);
                 Interpreter interpreter = new Interpreter();
                 interpreter.Start(null, null, null, args.Skip(1).ToArray());
-
-                NotebookManager.CurrentNotebookFilePath = filepath;
-                var data = NotebookManager.Load();
-                Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
                 
+                ApplicationData data = LoadData(filepath);
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
                 ExecuteCells(interpreter, data);
             }
 
@@ -87,6 +85,19 @@ namespace Notebook
                         break;
                     default:
                         throw new ArgumentException($"Invalid cell type: {cell.CellType}");
+                }
+            }
+            static ApplicationData LoadData(string filepath)
+            {
+                string extension = Path.GetExtension(filepath);
+                // Parse code blocks from MD files
+                if (extension.ToLower() == ".md")
+                    return MarkdownHelper.LoadDataFrom(filepath);
+                else
+                {
+
+                    NotebookManager.CurrentNotebookFilePath = filepath;
+                    return NotebookManager.Load();
                 }
             }
         }
