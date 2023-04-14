@@ -312,6 +312,11 @@ namespace Notebook
         {
             filepath = Path.GetFullPath(filepath);
 
+            NotebookManager.CurrentNotebookFilePath = filepath;
+            Title = $"Pure - {filepath}";
+            Data = NotebookManager.Load();
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
+
             // Watch external changes
             if (Watcher != null)
             {
@@ -336,20 +341,19 @@ namespace Notebook
             Watcher.IncludeSubdirectories = true;
             Watcher.EnableRaisingEvents = true;
 
-            NotebookManager.CurrentNotebookFilePath = filepath;
-            Title = $"Pure - {filepath}";
-            Data = NotebookManager.Load();
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
-
             void FileSystemWatcherEvent(object sender, FileSystemEventArgs e)
             {
+                Watcher.EnableRaisingEvents = false;
+                Watcher.Dispose();
+                Watcher = null;
                 if (File.Exists(e.FullPath))
                 {
-                    Dispatcher.Invoke(() => OpenFile(e.FullPath));
+                    Task.Delay(500).ContinueWith(t => { Dispatcher.Invoke(() => OpenFile(e.FullPath)); });
                 }
             }
             void DisposeWatcher(object sender, ErrorEventArgs e)
             {
+                Watcher.EnableRaisingEvents = false;
                 Watcher.Dispose();
                 Watcher = null;
             }
