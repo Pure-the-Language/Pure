@@ -25,6 +25,7 @@ namespace Python
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                PythonEngine.Shutdown();
             }
         }
         private static void ShutDown()

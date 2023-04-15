@@ -13,7 +13,7 @@ namespace Python
                     foreach (var file in Directory.EnumerateFiles(path))
                     {
                         string filename = Path.GetFileName(file);
-                        if (Regex.IsMatch(filename, @"python\d+\.dll"))
+                        if (Regex.IsMatch(filename, @"python\d{2,3}\.dll"))
                             return file;
                     }
                 }
