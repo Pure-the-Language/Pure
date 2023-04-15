@@ -323,6 +323,7 @@ namespace Notebook
         private void OpenFile(string filepath)
         {
             filepath = Path.GetFullPath(filepath);
+            Interpreter.SetNugetRepositoryIdentifier(filepath.GetHashCode().ToString());
 
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
