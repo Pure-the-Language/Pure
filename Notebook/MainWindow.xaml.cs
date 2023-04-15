@@ -54,10 +54,12 @@ namespace Notebook
 
         #region Data Binding Properties
         private Visibility _RunningIndicatorVisibility = Visibility.Collapsed;
+        private Visibility _FileHasChangedIndicatorVisibility = Visibility.Collapsed;
         private CellBlock _CurrentEditingCell = null;
         private CellBlock _CurrentExecutingCell = null;
         private ApplicationData _Data = NotebookManager.Load();
-        
+
+        private string ReloadFilePath;
         private CellBlock CurrentExecutingCell { 
             get => _CurrentExecutingCell; 
             set
@@ -70,6 +72,7 @@ namespace Notebook
         public CellBlock CurrentEditingCell { get => _CurrentEditingCell; set => SetField(ref _CurrentEditingCell, value); }
         public ApplicationData Data { get => _Data; set => SetField(ref _Data, value); }
         public Visibility RunningIndicatorVisibility { get => _RunningIndicatorVisibility; set => SetField(ref _RunningIndicatorVisibility, value); }
+        public Visibility FileHasChangedIndicatorVisibility { get => _FileHasChangedIndicatorVisibility; set => SetField(ref _FileHasChangedIndicatorVisibility, value); }
         #endregion
 
         #region Windows Events
@@ -268,6 +271,12 @@ namespace Notebook
             }
             e.Handled = true;
         }
+        private void RefreshFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(ReloadFilePath))
+                OpenFile(ReloadFilePath);
+            FileHasChangedIndicatorVisibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region Keyboard Commands
@@ -351,7 +360,11 @@ namespace Notebook
                 Watcher = null;
                 if (File.Exists(e.FullPath))
                 {
-                    Task.Delay(500).ContinueWith(t => { Dispatcher.Invoke(() => OpenFile(e.FullPath)); });
+                    Dispatcher.Invoke(() =>
+                    {
+                        FileHasChangedIndicatorVisibility = Visibility.Visible;
+                        ReloadFilePath = e.FullPath;
+                    });
                 }
             }
             void DisposeWatcher(object sender, ErrorEventArgs e)

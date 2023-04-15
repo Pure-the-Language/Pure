@@ -78,6 +78,14 @@
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
+            <MenuItem Visibility="{Binding FileHasChangedIndicatorVisibility}" Click="RefreshFileMenuItem_Click">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Warning" Spin="False" Width="24" Height="24" Foreground="Red"/>
+                        <Label Content="File Has Changed" Margin="6, 0"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
         </Menu>
         <ScrollViewer 
             HorizontalScrollBarVisibility="Disabled"
