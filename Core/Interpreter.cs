@@ -10,9 +10,9 @@ namespace Core
         #endregion
 
         #region Methods
-        public void Start(string welcomeMessage = null, bool advancedInterpretingMode = false, bool defaultPackages = true, string[] startingScripts = null, bool skipInteractiveMode = false, string[] arguments = null)
+        public void Start(string welcomeMessage = null, bool advancedInterpretingMode = false, bool defaultPackages = true, string[] startingScripts = null, bool skipInteractiveMode = false, string[] arguments = null, string nugetRepoIdentifier = null)
         {
-            Context = new RoslynContext(true, null);
+            Context = new RoslynContext(true, null, nugetRepoIdentifier);
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
 
@@ -33,9 +33,9 @@ namespace Core
                 Context.Evaluate(input);
             }
         }
-        public void Start(Action<string> outputHandler, string welcomeMessage = null, string[] startingScripts = null, string[] arguments = null)
+        public void Start(Action<string> outputHandler, string welcomeMessage = null, string[] startingScripts = null, string[] arguments = null, string nugetRepoIdentifier = null)
         {
-            Context = new RoslynContext(true, outputHandler);
+            Context = new RoslynContext(true, outputHandler, nugetRepoIdentifier);
             if (!string.IsNullOrWhiteSpace(welcomeMessage))
                 Console.WriteLine(welcomeMessage);
 
@@ -51,6 +51,10 @@ namespace Core
         #endregion
 
         #region Routines
+        public void SetNugetRepositoryIdentifier(string nugetRepoIdentifier)
+        {
+            Context.NugetRepoIdentifier = nugetRepoIdentifier;
+        }
         public void InitializeArguments(string[] arguments)
         {
             Arguments = arguments;

@@ -5,8 +5,79 @@ using NuGet.Packaging.Core;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using System.Diagnostics;
+
 namespace Core.Services
 {
+    #region Placeholder Solution
+    /// <remarks>
+    /// Before the formal implementation is complete, here we provide an easy win-x64 use only implementation that makes use of `dotnet` cli;
+    /// This relies on `pwsh` (PowerShell 7)
+    /// </remarks>
+    public static class QuickEasyDirtyNugetPreparer
+    {
+        public static string TryDownloadNugetPackage(string packageName, string nugetRepoIdentifier)
+        {
+            if (NugetHelper.FindLatestVersion(packageName) == null)
+                return null;
+
+            string downloadFolder = Path.Combine(Path.GetTempPath(), "Pure", "NugetDownloads");
+            Directory.CreateDirectory(downloadFolder);
+
+            if (nugetRepoIdentifier == null)
+                nugetRepoIdentifier = "Default";
+            string packageFolder = Path.Combine(downloadFolder, nugetRepoIdentifier, packageName);
+            string dllPath = Path.Combine(packageFolder, "CompiledDLLs", $"{packageName}.dll");
+            if (File.Exists(dllPath))
+                return dllPath;
+
+            if (Directory.Exists(packageFolder))
+                Directory.Delete(packageFolder, true);
+            Directory.CreateDirectory(packageFolder);
+
+            try
+            {
+                string scriptPath = Path.Combine(packageFolder, "Script.ps1");
+                File.WriteAllText(scriptPath, $"""
+                    dotnet new console --language C# --name TempProject
+                    cd TempProject
+                    dotnet add package {packageName}
+                    dotnet build --runtime win-x64 --no-self-contained --output ..\CompiledDLLs
+                    """);
+                IssuePowerShellCommands(scriptPath);
+                return dllPath;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            static void IssuePowerShellCommands(string scriptFile)
+            {
+                scriptFile = Path.GetFullPath(scriptFile);
+                Process process = new()
+                {
+                    StartInfo = new()
+                    {
+                        FileName = "pwsh.exe",
+                        Arguments = Path.GetFileName(scriptFile),
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WorkingDirectory = Path.GetDirectoryName(scriptFile)
+                    }
+                };
+                process.Start();
+
+                string output = process.StandardOutput.ReadToEnd();
+                string errors = process.StandardError.ReadToEnd();
+            }
+        }
+    }
+    #endregion
+
+    #region Formal Implementation (Not Complete)
     public class NugetPackageMetadata
     {
         public class NugetPackageDependancyGroup
@@ -132,7 +203,7 @@ namespace Core.Services
                 .ToArray();
         }
         public static async Task<string> FindLatestVersionAsync(string packageName, bool containsBeta = false)
-            => (await FindVersionsAsync(packageName, containsBeta)).OrderBy(v => v).Last();
+            => (await FindVersionsAsync(packageName, containsBeta)).OrderBy(v => v).LastOrDefault();
         #endregion
 
         #region Helpers
@@ -185,4 +256,5 @@ namespace Core.Services
         }
         #endregion
     }
+    #endregion
 }

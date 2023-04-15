@@ -1,11 +1,11 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Core
 {
     public static class Parser
     {
+        public static string CoreVersion = "v0.0.3";
         /// <summary>
         /// Split a large script into executable units for Roslyn
         /// </summary>

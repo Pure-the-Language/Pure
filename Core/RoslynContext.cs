@@ -175,8 +175,10 @@ namespace Core
         private List<string> ImportedModules { get; set; } = new List<string>();
         private ScriptState<object> State { get; set; }
         private static RoslynContext _Singleton;
+
         public static RoslynContext Singleton => _Singleton;
         public static Action<string> OutputHandler;
+        public string NugetRepoIdentifier { get; set; }
         #endregion
 
         #region Lifetime Event
@@ -188,11 +190,12 @@ namespace Core
         #endregion
 
         #region Construction
-        public RoslynContext(bool importAdditional, Action<string> outputHandler)
+        public RoslynContext(bool importAdditional, Action<string> outputHandler, string nugetRepoIdentifier)
         {
             if (_Singleton != null)
                 throw new InvalidOperationException("Roslyn Context is already initialized.");
             _Singleton = this;
+            NugetRepoIdentifier = nugetRepoIdentifier;
             if (outputHandler != null)
             {
                 OutputHandler = outputHandler;
@@ -252,7 +255,7 @@ namespace Core
 
                 string filePath = dllName;
                 if (!File.Exists(dllName))
-                    filePath = TryFindDLLFile(dllName);
+                    filePath = TryFindDLLFile(dllName, NugetRepoIdentifier);
 
                 List<string> statements = new List<string>();
                 if (filePath != null && File.Exists(filePath))
@@ -364,11 +367,13 @@ namespace Core
         #endregion
 
         #region Helpers
-        public static string TryFindDLLFile(string dllName)
+        public static string TryFindDLLFile(string dllName, string nugetRepoIdentifier)
         {
+            // Try use full path
             string fullpath = Path.GetFullPath(dllName);
             if (File.Exists(fullpath))
                 return fullpath;
+            // Try using PATH env variable
             foreach (var path in Environment.GetEnvironmentVariable("PATH")
                 .Split(';', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -401,7 +406,8 @@ namespace Core
                 // Remark-cz: Certain paths might NOT be enumerable due to access issues
                 catch (Exception) { continue; }
             }
-            return null;
+            // Try downloading from Nuget
+            return QuickEasyDirtyNugetPreparer.TryDownloadNugetPackage(dllName, nugetRepoIdentifier);
         }
         public static string TryFindScriptFile(string scriptName)
         {
