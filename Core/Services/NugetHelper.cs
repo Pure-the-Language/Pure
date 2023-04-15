@@ -27,7 +27,7 @@ namespace Core.Services
             if (nugetRepoIdentifier == null)
                 nugetRepoIdentifier = "Default";
             string packageFolder = Path.Combine(downloadFolder, nugetRepoIdentifier, packageName);
-            string dllPath = Path.Combine(packageFolder, "CompiledDLLs", $"{packageName}.dll");
+            string dllPath = Path.Combine(packageFolder, "CompiledDLLs", $"{SpecialHandlePackages(packageName)}.dll");
             if (File.Exists(dllPath))
                 return dllPath;
 
@@ -72,6 +72,16 @@ namespace Core.Services
 
                 string output = process.StandardOutput.ReadToEnd();
                 string errors = process.StandardError.ReadToEnd();
+            }
+            static string SpecialHandlePackages(string packageName)
+            {
+                Dictionary<string, string> specialPackageNames = new Dictionary<string, string>()
+                {
+                    { "pythonnet", "Python.Runtime" }
+                };
+                if (specialPackageNames.ContainsKey(packageName))
+                    return specialPackageNames[packageName];
+                return packageName;
             }
         }
     }
