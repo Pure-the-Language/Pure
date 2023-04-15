@@ -10,7 +10,11 @@ namespace Python
         {
             try
             {
-                Python.Runtime.Runtime.PythonDLL = "python310.dll";
+                var installedPython = RuntimeHelper.FindPythonDLL();
+                if (installedPython == null)
+                    throw new ArgumentException("Cannot find any usable Python installation on the machine.");
+
+                Python.Runtime.Runtime.PythonDLL = installedPython;
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
                 using (Py.GIL())
