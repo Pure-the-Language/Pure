@@ -38,7 +38,7 @@ namespace Python
         }
         #endregion
 
-        public static dynamic Evaluate(string snippet)
+        public static PyObject Evaluate(string snippet)
         {
             if (Scope == null) 
             {
@@ -47,7 +47,7 @@ namespace Python
             }
             using (Py.GIL())
             {
-                dynamic result = Scope.Eval(snippet);
+                PyModule result = Scope.Exec(snippet);
                 if (result != null && result.ToString() != "None")
                 {
                     Console.WriteLine(result.ToString());
