@@ -5,6 +5,7 @@ namespace Python
     public static class Main
     {
         #region Initialization
+        private static PyModule PythonScope;
         private static void StartUp()
         {
             try
@@ -38,20 +39,31 @@ namespace Python
         #endregion
 
         #region Method
-        public static dynamic Evaluate(string snippet)
+        public static void Evaluate(string snippet)
         {
             if (PythonScope == null)
             {
                 Console.WriteLine("Python runtime is not initialized.");
-                return null;
             }
             using (Py.GIL())
             {
                 PythonScope.Exec(snippet);
-                return PythonScope;
             }
         }
-        public static dynamic PythonScope { get; private set; }
+        public static object ReadPythonScope(Func<dynamic, object> func)
+        {
+            using (Py.GIL())
+            {
+                return func(PythonScope);
+            }
+        }
+        public static void ModifyPythonScope(Action<dynamic> func)
+        {
+            using (Py.GIL())
+            {
+                func(PythonScope);
+            }
+        }
         #endregion
     }
 }
