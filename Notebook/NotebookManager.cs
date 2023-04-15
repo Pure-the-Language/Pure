@@ -44,20 +44,22 @@ namespace Notebook
             // Remark-cz: For slightly faster implementation, we can compare directly in-memory streams instead of actually writing to file first
             if (asBackup && File.Exists(NotebookFilePath) && CompareFileEquals(NotebookFilePath, savePath))
                 File.Delete(savePath);
+        }
+        #endregion
 
-            static bool CompareFileEquals(string path1, string path2)
+        #region Helpers
+        public static bool CompareFileEquals(string path1, string path2)
+        {
+            byte[] file1 = System.IO.File.ReadAllBytes(path1);
+            byte[] file2 = System.IO.File.ReadAllBytes(path2);
+            if (file1.Length == file2.Length)
             {
-                byte[] file1 = System.IO.File.ReadAllBytes(path1);
-                byte[] file2 = System.IO.File.ReadAllBytes(path2);
-                if (file1.Length == file2.Length)
-                {
-                    for (int i = 0; i < file1.Length; i++)
-                        if (file1[i] != file2[i])
-                            return false;
-                    return true;
-                }
-                return false;
+                for (int i = 0; i < file1.Length; i++)
+                    if (file1[i] != file2[i])
+                        return false;
+                return true;
             }
+            return false;
         }
         #endregion
     }

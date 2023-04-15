@@ -141,6 +141,7 @@ namespace Notebook
                 {
                     Watcher.EnableRaisingEvents = true;
                 });
+            FileHasChangedIndicatorVisibility = Visibility.Collapsed;
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -359,7 +360,7 @@ namespace Notebook
                 Watcher.EnableRaisingEvents = false;
                 Watcher.Dispose();
                 Watcher = null;
-                if (File.Exists(e.FullPath))
+                if (File.Exists(e.FullPath) && !NotebookManager.CompareFileEquals(filepath, e.FullPath))
                 {
                     Dispatcher.Invoke(() =>
                     {
