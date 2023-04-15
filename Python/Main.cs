@@ -5,7 +5,6 @@ namespace Python
     public static class Main
     {
         #region Initialization
-        private static PyModule Scope;
         private static void StartUp()
         {
             try
@@ -19,7 +18,7 @@ namespace Python
                 PythonEngine.BeginAllowThreads();
                 using (Py.GIL())
                 {
-                    Scope = Py.CreateScope();
+                    PythonScope = Py.CreateScope();
                 }
             }
             catch (Exception e)
@@ -32,29 +31,27 @@ namespace Python
         {
             using (Py.GIL())
             {
-                Scope.Dispose();
+                PythonScope.Dispose();
             }
             PythonEngine.Shutdown();
         }
         #endregion
 
-        public static PyObject Evaluate(string snippet)
+        #region Method
+        public static dynamic Evaluate(string snippet)
         {
-            if (Scope == null) 
+            if (PythonScope == null)
             {
                 Console.WriteLine("Python runtime is not initialized.");
                 return null;
             }
             using (Py.GIL())
             {
-                PyModule result = Scope.Exec(snippet);
-                if (result != null && result.ToString() != "None")
-                {
-                    Console.WriteLine(result.ToString());
-                    return result;
-                }
-                else return null;
+                PythonScope.Exec(snippet);
+                return PythonScope;
             }
         }
+        public static dynamic PythonScope { get; private set; }
+        #endregion
     }
 }
