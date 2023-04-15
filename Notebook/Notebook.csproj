@@ -8,7 +8,12 @@
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
 	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.2.0.78" />
