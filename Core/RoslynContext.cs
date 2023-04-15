@@ -374,8 +374,7 @@ namespace Core
             if (File.Exists(fullpath))
                 return fullpath;
             // Try using PATH env variable
-            foreach (var path in Environment.GetEnvironmentVariable("PATH")
-                .Split(';', StringSplitOptions.RemoveEmptyEntries))
+            foreach (var path in Environment.GetEnvironmentVariable("PATH").SplitArgumentsLikeCsv(';', true))
             {
                 try
                 {

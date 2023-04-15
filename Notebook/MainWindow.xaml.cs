@@ -267,11 +267,7 @@ namespace Notebook
             };
             if (window.ShowDialog() == true && !string.IsNullOrEmpty(window.Result))
             {
-                string[] arguments = Csv.CsvReader.ReadFromText(window.Result, new Csv.CsvOptions()
-                {
-                    HeaderMode = Csv.HeaderMode.HeaderAbsent,
-                    Separator = ' '
-                }).First().Values;
+                string[] arguments = window.Result.SplitArgumentsLikeCsv(' ');
                 Interpreter.InitializeArguments(arguments);
             }
             e.Handled = true;
