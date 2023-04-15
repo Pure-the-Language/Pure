@@ -60,6 +60,7 @@
                 <MenuItem Header="Add Markdown Cell (Copy) (Shift+F4)" Click="AddMarkdownCellWithCopyMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Delete Cell" Click="DeleteCellMenuItem_Click"/>
+                <MenuItem Header="Delete All Cells" Click="DeleteAllCellsMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Convert Cell to Markdown (F11)"/>
                 <MenuItem Header="Convert Cell to Code (F12)"/>

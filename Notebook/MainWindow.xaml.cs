@@ -190,6 +190,10 @@ namespace Notebook
             if (CurrentEditingCell != null && Data.Cells.Contains(CurrentEditingCell))
                 DeleteCell(CurrentEditingCell);
         }
+        private void DeleteAllCellsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Data.Cells.Clear();
+        }
         private void ExecuteCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
             NotebookManager.Save(Data, true);
