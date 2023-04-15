@@ -38,7 +38,7 @@ namespace Plot
             }, filePath);
             string programPath = Path.Combine(GetAssemblyFolder(), "PlotWindow.exe");
             if (!File.Exists(programPath))
-                programPath = RoslynContext.TryFindDLLFile(Path.Combine("Plot", "PlotWindow.exe"));
+                programPath = RoslynContext.TryFindDLLFile(Path.Combine("Plot", "PlotWindow.exe"), null);
             if (!File.Exists(programPath))
             {
                 Console.WriteLine($"Failed to find executable path: {programPath}");
