@@ -360,7 +360,7 @@ namespace Notebook
                 Watcher.EnableRaisingEvents = false;
                 Watcher.Dispose();
                 Watcher = null;
-                if (File.Exists(e.FullPath) && !NotebookManager.CompareFileEquals(filepath, e.FullPath))
+                if (File.Exists(e.FullPath) && (e.ChangeType == WatcherChangeTypes.Renamed || !NotebookManager.CompareFileEquals(filepath, e.FullPath)))
                 {
                     Dispatcher.Invoke(() =>
                     {
