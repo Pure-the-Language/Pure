@@ -29,3 +29,24 @@ WriteLine(ReadPythonScope(scope => scope.newVar));
 ```Cache
 30
 ```
+
+## Passing .Net Functions
+
+.Net funcs cannot be passed directly using above methods, but we can pass entire objects, so we just need a think wrapper.
+
+```C#
+class Wrapper
+{
+	public string Func() => "Hello";
+}
+Wrapper ins = new Wrapper();
+ModifyPythonScope(scope => scope.ins = ins);
+```
+
+```Python
+result = ins.Func()
+```
+
+```C#
+WriteLine(ReadPythonScope(scope => scope.result).ToString());
+```
