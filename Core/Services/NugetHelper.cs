@@ -18,6 +18,12 @@ namespace Core.Services
     {
         public static string TryDownloadNugetPackage(string packageName, string nugetRepoIdentifier)
         {
+            string loadDllAs = null;
+            if (packageName.Contains(" as "))
+            {
+                loadDllAs = packageName[(packageName.IndexOf(" as ") + " as ".Length)..].Trim();
+                packageName = packageName[..packageName.IndexOf(" as ")].Trim();
+            }
             if (NugetHelper.FindLatestVersion(packageName) == null)
                 return null;
 
@@ -27,7 +33,7 @@ namespace Core.Services
             if (nugetRepoIdentifier == null)
                 nugetRepoIdentifier = "Default";
             string packageFolder = Path.Combine(downloadFolder, nugetRepoIdentifier, packageName);
-            string dllPath = Path.Combine(packageFolder, "CompiledDLLs", $"{SpecialHandlePackages(packageName)}.dll");
+            string dllPath = Path.Combine(packageFolder, "CompiledDLLs", $"{SpecialHandlePackages(packageName, loadDllAs)}.dll");
             if (File.Exists(dllPath))
                 return dllPath;
 
@@ -45,12 +51,18 @@ namespace Core.Services
                     dotnet build --runtime win-x64 --no-self-contained --output ..\CompiledDLLs
                     """);
                 IssuePowerShellCommands(scriptPath);
-                return dllPath;
             }
             catch (Exception)
             {
                 return null;
             }
+
+            if (!File.Exists(dllPath))
+            {
+                Console.WriteLine($"Cannot locate package DLL - the package is built successfully but the package DLL cannot be found at {dllPath}");
+                Console.WriteLine($"Consult folder {Path.Combine(packageFolder, "CompiledDLLs")} for information on entrance dll name and use overload of `Import` to import proper dll.");
+            }
+            return dllPath;
 
             static void IssuePowerShellCommands(string scriptFile)
             {
@@ -73,15 +85,11 @@ namespace Core.Services
                 string output = process.StandardOutput.ReadToEnd();
                 string errors = process.StandardError.ReadToEnd();
             }
-            static string SpecialHandlePackages(string packageName)
+            static string SpecialHandlePackages(string packageName, string loadDllAs)
             {
-                Dictionary<string, string> specialPackageNames = new Dictionary<string, string>()
-                {
-                    { "pythonnet", "Python.Runtime" }
-                };
-                if (specialPackageNames.ContainsKey(packageName))
-                    return specialPackageNames[packageName];
-                return packageName;
+                if (loadDllAs != null)
+                    return loadDllAs;
+                else return packageName;
             }
         }
     }

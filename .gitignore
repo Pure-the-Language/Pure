@@ -364,3 +364,7 @@ FodyWeavers.xsd
 
 ManualTest
 launchSettings.json
+
+# Pure/Notebook Examples
+*.md.backup
+*.pnb.backup
