@@ -325,6 +325,7 @@ namespace Notebook
         {
             filepath = Path.GetFullPath(filepath);
             Interpreter.SetNugetRepositoryIdentifier(filepath.GetDeterministicHashCode().ToString());
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
 
             NotebookManager.CurrentNotebookFilePath = filepath;
             Title = $"Pure - {filepath}";
