@@ -45,6 +45,10 @@ namespace Notebook
             if (asBackup && File.Exists(NotebookFilePath) && CompareFileEquals(NotebookFilePath, savePath))
                 File.Delete(savePath);
         }
+        public static string GetCurrentNotebookFilePath()
+        {
+            return CurrentNotebookFilePath;
+        }
         #endregion
 
         #region Helpers
@@ -61,6 +65,8 @@ namespace Notebook
             }
             return false;
         }
+
+        
         #endregion
     }
 }

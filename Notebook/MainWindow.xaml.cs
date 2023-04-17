@@ -131,6 +131,20 @@ namespace Notebook
             }
             e.Handled = true;
         }
+        private void OpenFileContainingFolderMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAndSelectFileInFileExplorer(NotebookManager.GetCurrentNotebookFilePath());
+
+            void OpenAndSelectFileInFileExplorer(string filepath)
+            {
+                if (!File.Exists(filepath))
+                    return;
+
+                // Combine the arguments together it doesn't matter if there is a space after ','
+                string argument = "/select, \"" + filepath + "\"";
+                System.Diagnostics.Process.Start("explorer.exe", argument);
+            }
+        }
         private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (Watcher != null)

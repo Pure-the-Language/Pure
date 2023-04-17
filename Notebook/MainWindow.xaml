@@ -50,6 +50,8 @@
                     <MenuItem Header="Export Markdown (with Cache Outputs)..." Click="ExportMarkdownMenuItemWithCache_Click"/>
                     <MenuItem Header="Export Code..." Click="ExportCodeMenuItem_Click"/>
                 </MenuItem>
+                <Separator/>
+                <MenuItem Header="Open Containing Folder" Click="OpenFileContainingFolderMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Add C# Cell (F2)" Click="AddCSharpCellMenuItem_Click"/>
