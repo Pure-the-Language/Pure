@@ -67,7 +67,7 @@ namespace Core
                 {
                     string argument = arguments[i];
                     Context.Evaluate($"""
-                        Arguments[{i}] = "{argument.Replace("\"", "\\\"")}";
+                        Arguments[{i}] = @"{argument.Replace("\"", "\\\"")}";
                         """);
                 }
             }
