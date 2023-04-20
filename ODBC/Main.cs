@@ -7,6 +7,8 @@ namespace ODBC
     public static class Main
     {
         public static string DSN { get; set; }
+
+        #region Generic
         public static DataTable Query(string query)
         {
             if (DSN == null)
@@ -73,5 +75,31 @@ namespace ODBC
             new OdbcCommand(query, odbcConnection).ExecuteNonQuery();
             odbcConnection.Close();
         }
+        public static void Command(string query)
+        {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return;
+            }
+
+            var odbcConnection = new OdbcConnection($"DSN={DSN}");
+            odbcConnection.Open();
+            new OdbcCommand(query, odbcConnection).ExecuteNonQuery();
+            odbcConnection.Close();
+        }
+        #endregion
+
+        #region Transactional
+        public static Transaction OpenTransaction()
+        {
+            if (DSN == null)
+            {
+                Console.WriteLine("DSN is not set.");
+                return null;
+            }
+            return new Transaction(DSN);
+        }
+        #endregion
     }
 }
