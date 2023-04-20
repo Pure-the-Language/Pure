@@ -376,6 +376,7 @@ namespace Core
             // Try using PATH env variable
             foreach (var path in Environment.GetEnvironmentVariable("PATH").SplitArgumentsLikeCsv(';', true))
             {
+                if (!Directory.Exists(path)) continue;
                 try
                 {
                     if (!dllName.EndsWith(".dll") && !dllName.EndsWith(".exe")
