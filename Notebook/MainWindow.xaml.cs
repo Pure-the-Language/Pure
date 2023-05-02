@@ -60,6 +60,7 @@ namespace Notebook
         private ApplicationData _Data = NotebookManager.Load();
 
         private string ReloadFilePath;
+        private TextEditor CurrentEditingCellContext;
         private CellBlock CurrentExecutingCell { 
             get => _CurrentExecutingCell; 
             set
@@ -87,6 +88,7 @@ namespace Notebook
             TextEditor editor = sender as TextEditor;
             CellBlock cellBlock = editor.DataContext as CellBlock;
             CurrentEditingCell = cellBlock;
+            CurrentEditingCellContext = editor;
         }
         private void AvalonTextEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -459,6 +461,7 @@ namespace Notebook
             }
 
             CurrentExecutingCell = cell;
+            string scriptContent = (CurrentEditingCellContext != null && CurrentEditingCellContext.DataContext == cell && !string.IsNullOrWhiteSpace(CurrentEditingCellContext.SelectedText)) ? CurrentEditingCellContext.SelectedText : cell.Content;
             Task.Run(ExecuteCellThreaded);
 
             void ExecuteCellThreaded()
@@ -470,14 +473,14 @@ namespace Notebook
                 switch (cell.CellType)
                 {
                     case CellType.CSharp:
-                        foreach (var script in Parser.SplitScripts(cell.Content))
+                        foreach (var script in Parser.SplitScripts(scriptContent))
                             Interpreter.Evaluate(script);
                         break;
                     case CellType.Python:
                         Interpreter.Evaluate("Import(Python)");
                         Interpreter.Evaluate($"""""
                         Evaluate("""
-                        {cell.Content}
+                        {scriptContent}
                         """);
                         """"");
                         break;
