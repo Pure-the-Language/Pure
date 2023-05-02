@@ -56,7 +56,7 @@ $Date = Get-Date -Format yyyyMMdd
 $ArchiveFolder = "$PublishFolder\..\Packages"
 $ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_Windows_B$Date.zip"
 New-Item -ItemType Directory -Force -Path $ArchiveFolder
-Compress-Archive -Path $PublishFolder\*.* -DestinationPath $ArchivePath -Force
+Compress-Archive -Path $PublishFolder\* -DestinationPath $ArchivePath -Force
 
 # Validation
 if (-Not (Test-Path (Join-Path $PublishFolder "Pure.exe")))
