@@ -5,8 +5,9 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-	<UseWPF>true</UseWPF>
-	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	  <UseWPF>true</UseWPF>
+	  <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-	<StartupObject>Notebook.Program</StartupObject>
+	  <StartupObject>Notebook.Program</StartupObject>
     <TargetFramework>net7.0-windows</TargetFramework>
-	<VersionPrefix>0.0.1</VersionPrefix>
+	  <VersionPrefix>0.0.1</VersionPrefix>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
-	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
-	<ApplicationIcon>Icon.ico</ApplicationIcon>
+	  <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	  <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>

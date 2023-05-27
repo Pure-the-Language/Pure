@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>disable</Nullable>
-	<VersionPrefix>0.0.1</VersionPrefix>
+	  <Nullable>disable</Nullable>
+	  <VersionPrefix>0.0.1</VersionPrefix>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>
