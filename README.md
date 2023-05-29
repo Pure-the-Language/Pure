@@ -54,3 +54,9 @@ System.Drawing is not supported on this platform. Notice the scenario is like th
 
 Note that libraries CANNOT directly target (or indirectly target) .Net 7 Windows because the hosting environment (aka. Pure) target .Net 7.
 The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
+
+## To Do
+
+- [ ] (Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
+- [ ] (Data Library) Provide `Data` (standalone).
+- [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
