@@ -21,6 +21,13 @@ namespace Python
                 {
                     PythonScope = Py.CreateScope();
                 }
+                Evaluate("""
+                    import clr
+                    clr.AddReference("Python")
+                    import Python
+                    def print(o):
+                    	Python.Main.Print(o)
+                    """);
             }
             catch (Exception e)
             {
@@ -35,6 +42,13 @@ namespace Python
                 PythonScope.Dispose();
             }
             PythonEngine.Shutdown();
+        }
+        #endregion
+
+        #region Print
+        public static void Print(object o)
+        {
+            Console.WriteLine(o.ToString());
         }
         #endregion
 
