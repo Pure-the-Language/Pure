@@ -43,6 +43,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Open (Ctrl+O)" Click="OpenFileMenuItem_Click"/>
+                <MenuItem Header="Reload" Click="RefreshFileMenuItem_Click"/>
                 <MenuItem Header="Save (Ctrl+S)" Click="SaveFileMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Export">
@@ -78,14 +79,6 @@
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Refresh" Spin="True" Width="24" Height="24" Foreground="DodgerBlue"/>
                         <Label Content="Running..." Margin="4, 0"/>
-                    </StackPanel>
-                </MenuItem.Header>
-            </MenuItem>
-            <MenuItem Visibility="{Binding FileHasChangedIndicatorVisibility}" Click="RefreshFileMenuItem_Click">
-                <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <fa:ImageAwesome Icon="Warning" Spin="False" Width="24" Height="24" Foreground="Red"/>
-                        <Label Content="File Has Changed" Margin="6, 0"/>
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
