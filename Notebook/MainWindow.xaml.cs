@@ -54,12 +54,10 @@ namespace Notebook
 
         #region Data Binding Properties
         private Visibility _RunningIndicatorVisibility = Visibility.Collapsed;
-        private Visibility _FileHasChangedIndicatorVisibility = Visibility.Collapsed;
         private CellBlock _CurrentEditingCell = null;
         private CellBlock _CurrentExecutingCell = null;
         private ApplicationData _Data = NotebookManager.Load();
 
-        private string ReloadFilePath;
         private TextEditor CurrentEditingCellContext;
         private CellBlock CurrentExecutingCell { 
             get => _CurrentExecutingCell; 
@@ -73,7 +71,6 @@ namespace Notebook
         public CellBlock CurrentEditingCell { get => _CurrentEditingCell; set => SetField(ref _CurrentEditingCell, value); }
         public ApplicationData Data { get => _Data; set => SetField(ref _Data, value); }
         public Visibility RunningIndicatorVisibility { get => _RunningIndicatorVisibility; set => SetField(ref _RunningIndicatorVisibility, value); }
-        public Visibility FileHasChangedIndicatorVisibility { get => _FileHasChangedIndicatorVisibility; set => SetField(ref _FileHasChangedIndicatorVisibility, value); }
         #endregion
 
         #region Windows Events
@@ -133,6 +130,10 @@ namespace Notebook
             }
             e.Handled = true;
         }
+        private void RefreshFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Data = NotebookManager.Load();
+        }
         private void OpenFileContainingFolderMenuItem_Click(object sender, RoutedEventArgs e)
         {
             OpenAndSelectFileInFileExplorer(NotebookManager.GetCurrentNotebookFilePath());
@@ -149,15 +150,7 @@ namespace Notebook
         }
         private void SaveFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (Watcher != null)
-                Watcher.EnableRaisingEvents = false;
             NotebookManager.Save(Data);
-            if (Watcher != null) // Remark-cz: This whole setup is just to avoid wacher raising changed event when we are saving files ourselves
-                Task.Delay(2000).ContinueWith(t =>
-                {
-                    Watcher.EnableRaisingEvents = true;
-                });
-            FileHasChangedIndicatorVisibility = Visibility.Collapsed;
         }
         private void AddMarkdownCellMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -288,12 +281,6 @@ namespace Notebook
             }
             e.Handled = true;
         }
-        private void RefreshFileMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (File.Exists(ReloadFilePath))
-                OpenFile(ReloadFilePath);
-            FileHasChangedIndicatorVisibility = Visibility.Collapsed;
-        }
         #endregion
 
         #region Keyboard Commands
@@ -336,7 +323,6 @@ namespace Notebook
         #endregion
 
         #region Routines
-        private FileSystemWatcher Watcher { get; set; }
         private void OpenFile(string filepath)
         {
             filepath = Path.GetFullPath(filepath);
@@ -347,51 +333,6 @@ namespace Notebook
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
-
-            // Watch external changes
-            if (Watcher != null)
-            {
-                Watcher.EnableRaisingEvents = false;
-                Watcher.Dispose();
-            }
-            Watcher = new(Path.GetDirectoryName(filepath))
-            {
-                Filter = Path.GetFileName(filepath),
-                NotifyFilter = NotifyFilters.Attributes
-                                 | NotifyFilters.CreationTime
-                                 | NotifyFilters.DirectoryName
-                                 | NotifyFilters.FileName
-                                 | NotifyFilters.LastAccess
-                                 | NotifyFilters.LastWrite
-                                 | NotifyFilters.Security
-                                 | NotifyFilters.Size
-            };
-            Watcher.Changed += FileSystemWatcherEvent;
-            Watcher.Renamed += FileSystemWatcherEvent;
-            Watcher.Error += DisposeWatcher;
-            Watcher.IncludeSubdirectories = true;
-            Watcher.EnableRaisingEvents = true;
-
-            void FileSystemWatcherEvent(object sender, FileSystemEventArgs e)
-            {
-                Watcher.EnableRaisingEvents = false;
-                Watcher.Dispose();
-                Watcher = null;
-                if (File.Exists(e.FullPath) && (e.ChangeType == WatcherChangeTypes.Renamed || !NotebookManager.CompareFileEquals(filepath, e.FullPath)))
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        FileHasChangedIndicatorVisibility = Visibility.Visible;
-                        ReloadFilePath = e.FullPath;
-                    });
-                }
-            }
-            void DisposeWatcher(object sender, ErrorEventArgs e)
-            {
-                Watcher.EnableRaisingEvents = false;
-                Watcher.Dispose();
-                Watcher = null;
-            }
         }
         private void AddCell(CellBlock newCell, bool copyCellContent = false)
         {
