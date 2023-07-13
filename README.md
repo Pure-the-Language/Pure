@@ -60,3 +60,19 @@ The solution for this is to isolate such components and trigger as sub-process (
 - [ ] (Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
 - [ ] (Data Library) Provide `Data` (standalone).
 - [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
+
+## (Additional) Standard Libraries
+
+* ODBC
+* Python
+* Pipeline
+
+### Pipeline
+
+Run CLI commands perl style.
+
+Provides:
+
+* `string Run(string, string)`
+* `string Run(string, string[])`
+* `string Run(string, Dictionary<string, string>)`
