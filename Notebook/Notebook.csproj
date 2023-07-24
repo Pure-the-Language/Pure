@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
 	  <StartupObject>Notebook.Program</StartupObject>
     <TargetFramework>net7.0-windows</TargetFramework>
-	  <VersionPrefix>0.0.1</VersionPrefix>
+	  <VersionPrefix>0.0.2</VersionPrefix>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
 	  <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>

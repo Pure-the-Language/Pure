@@ -14,9 +14,9 @@ Advanced features:
 
 ### Issues
 
-1. Currently we have no way to limit max height for Avalon Edit - the Text Editor control either is fixed at a certain height or will not show scrollbar automatically. And it eats our scrolling event and that makes scolling and editing long code blocks inconvinient.
+1. Currently we have no way to limit max height for Avalon Edit - the Text Editor control either is fixed at a certain height or will not show scrollbar automatically. And it eats our scrolling event and that makes scolling and editing long code blocks inconvinient. This issue is mentioned here: https://github.com/icsharpcode/AvalonEdit/issues/394
 2. Notice at the moment the core Interpreter supports only a single (ever) instance of Roslyn context - thus when opening new files the old state is maintained. This means if we try to work with different files in a clean state, we should start new process instances instead of relying on "Open" file.
-3. Per [this](https://github.com/pythonnet/pythonnet/discussions/1794) and [this](https://github.com/pythonnet/pythonnet/issues/1501): Currently cannot get output from Python using `print()`.
+3. Per [this](https://github.com/pythonnet/pythonnet/discussions/1794) and [this](https://github.com/pythonnet/pythonnet/issues/1501): Currently cannot get output from Python using `print()`. There is a workaround being implemented in [as C#-side implementation](https://github.com/Pure-the-Language/Pure/commit/03b04fe3fbf0f87999a51e2b599b3d4185004f73).
 
 ## CLI Arguments
 
