@@ -105,6 +105,16 @@ namespace Notebook
             CellBlock block = editor.DataContext as CellBlock;
             block.Content = editor.Text;
         }
+        private void AvalonTextEditor_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            // Remark-cz: This is a workaround that deals with AvalonEdit TextEditor's "eating the scroll event" issue, as per here: https://github.com/icsharpcode/AvalonEdit/issues/395
+            ScrollViewer scrollViewer = DataItemsControl.Parent as ScrollViewer;
+            if (e.Delta > 0)
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 50);
+            else
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 50);
+            e.Handled = true;
+        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             NotebookManager.Save(Data, true);
