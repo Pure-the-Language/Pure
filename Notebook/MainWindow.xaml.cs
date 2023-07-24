@@ -115,6 +115,11 @@ namespace Notebook
                 scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 50);
             e.Handled = true;
         }
+        private void AvalonTextEditor_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            // Remark-cz: This is a workaround that handles the jumpiness of large texts, as per here: https://github.com/icsharpcode/AvalonEdit/issues/396
+            e.Handled = true;
+        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             NotebookManager.Save(Data, true);

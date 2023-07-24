@@ -110,7 +110,8 @@
                                 DataContextChanged="AvalonTextEditor_DataContextChanged"
                                 Initialized="AvalonTextEditor_Initialized"
                                 TextChanged="AvalonTextEditor_OnTextChanged"
-                                PreviewMouseWheel="AvalonTextEditor_PreviewMouseWheel"/>
+                                PreviewMouseWheel="AvalonTextEditor_PreviewMouseWheel"
+                                RequestBringIntoView="AvalonTextEditor_RequestBringIntoView"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
