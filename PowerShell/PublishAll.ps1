@@ -13,9 +13,6 @@ Remove-Item $PublishFolder -Recurse -Force
 # Publish Executables
 $PublishExecutables = @(
     "Pure"
-    "Purer"
-    "Aurora"
-    "Virgin"
 )
 foreach ($Item in $PublishExecutables)
 {
@@ -23,7 +20,6 @@ foreach ($Item in $PublishExecutables)
 }
 # Publish Windows-only Executables
 $PublishWindowsExecutables = @(
-    "Righteous"
     "Notebook"
 )
 foreach ($Item in $PublishWindowsExecutables)
@@ -32,7 +28,6 @@ foreach ($Item in $PublishWindowsExecutables)
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
-    "Fluent"
     "Python"
     "ODBC"
 )
@@ -42,7 +37,6 @@ foreach ($Item in $PublishLibraries)
 }
 # Publish Nugets
 $PublishNugets = @(
-    "Fluent"
     "Python"
     "ODBC"
 )
