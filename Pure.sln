@@ -56,6 +56,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExperimentalFrontends", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook", "Notebook\Notebook.csproj", "{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipeline", "Pipeline\Pipeline.csproj", "{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AB37E42-8F7B-471B-9C3D-3EEDD3221814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +141,7 @@ Global
 		{1AB8660A-A47C-4BB9-9F5D-0CB8AF21A956} = {9D9D1730-0BA6-447B-A521-E9CF3AD984FE}
 		{B94B6375-FDCB-4E5B-9670-F518924CFD0F} = {69C4FF0E-BC56-439F-8BED-592E3A01EBBD}
 		{1AB37E42-8F7B-471B-9C3D-3EEDD3221814} = {B94B6375-FDCB-4E5B-9670-F518924CFD0F}
+		{58D2CDD4-FD8D-4AEA-BE01-0FD7FF752655} = {66A19951-0B64-4CDA-9283-DF42F000BB81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B113BF9D-0A5B-43D7-A132-D1CCD6AC46DA}

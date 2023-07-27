@@ -30,6 +30,7 @@ foreach ($Item in $PublishWindowsExecutables)
 $PublishLibraries = @(
     "Python"
     "ODBC"
+    "Pipeline"
 )
 foreach ($Item in $PublishLibraries)
 {
@@ -39,6 +40,7 @@ foreach ($Item in $PublishLibraries)
 $PublishNugets = @(
     "Python"
     "ODBC"
+    "Pipeline"
 )
 foreach ($Item in $PublishNugets)
 {
