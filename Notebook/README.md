@@ -11,6 +11,7 @@ Advanced features:
 * [GUI] CPU and MEM usage monitoring
 * [GUI] `// @Param <Description>` for GUI controls of primitive inputs
 * [GUI] Ability to hide/collape code cell blocks by default (when opening new files)
+* [System] Allow self-referencing in Notebook, i.e. somehow inject a Notebook only property like "Arguments" that allows the running cell to access previous cell outputs (and maybe outputs of all other cells); This will allow a single cell script to have self-sustained state. May implement this as an extension of base class Interpreter.
 
 ### Issues
 
