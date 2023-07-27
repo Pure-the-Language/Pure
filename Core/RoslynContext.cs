@@ -588,6 +588,11 @@ namespace Core
                 .Select(p => $"{p.ParameterType.Name} {p.Name}")
                 .ToArray();
             string returnType = m.ReturnType == typeof(void) ? string.Empty : $" : {m.ReturnType.Name}";
+            if (m.ReturnType.GenericTypeArguments.Length != 0)
+            {
+                var generics = m.ReturnType.GetGenericArguments().Select(t => t.Name);
+                returnType = $" : {m.ReturnType.Name}<{string.Join(", ", generics)}>";
+            }
             if (m.ContainsGenericParameters)
             {
                 var generics = m.GetGenericArguments().Select(t => t.Name);
