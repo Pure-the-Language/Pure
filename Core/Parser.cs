@@ -5,7 +5,7 @@ namespace Core
 {
     public static class Parser
     {
-        public static string CoreVersion = "v0.0.3";
+        public static string CoreVersion = "v0.0.4";
         /// <summary>
         /// Split a large script into executable units for Roslyn
         /// </summary>
