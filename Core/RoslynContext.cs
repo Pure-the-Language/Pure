@@ -587,13 +587,14 @@ namespace Core
             string[] arguments = m.GetParameters()
                 .Select(p => $"{p.ParameterType.Name} {p.Name}")
                 .ToArray();
+            string returnType = m.ReturnType == typeof(void) ? string.Empty : $" : {m.ReturnType.Name}";
             if (m.ContainsGenericParameters)
             {
                 var generics = m.GetGenericArguments().Select(t => t.Name);
-                return $"{name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)})";
+                return $"{name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}";
             }
             else 
-                return $"{name}({string.Join(", ", arguments)})";
+                return $"{name}({string.Join(", ", arguments)}){returnType}";
         }
         #endregion
 
