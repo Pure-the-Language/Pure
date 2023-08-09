@@ -333,6 +333,8 @@ namespace Core
                 {
                     e = e.InnerException ?? e;
                     Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
+                    if (e is not ApplicationException)
+                            Console.WriteLine(e.StackTrace);
                 }
             }
             void AddReference(Assembly assembly)
