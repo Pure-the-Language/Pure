@@ -445,7 +445,7 @@ namespace Core
         #region Routine
         private static string SyntaxWrap(string input)
         {
-            // Numerical array creation
+            // Numerical array creation  // Remark-cz-2023-Aug: This is troublesome, consider deprecate this feature.
             var match = ArrayVariableCreationRegex().Match(input);
             if (match.Success)
             {
@@ -458,11 +458,11 @@ namespace Core
                 if (values.All(v => double.TryParse(v, out _)))
                     input = $"var {varName} = new Vector(new double[] {{{string.Join(",", values)}}})";
             }
-            // Literal numerical array
+            // Literal numerical array  // Remark-cz-2023-Aug: This is troublesome, consider deprecate this feature.
             input = LiteralArrayRegex().Replace(input, m =>
             {
-                if (m.Groups[2].Captures.All(c => double.TryParse(c.Value, out _)))
-                    return $"new double[]{{{string.Join(", ", m.Groups[2].Captures.Select(c => c.Value))}}}";
+                if (m.Groups["Numeral"].Captures.All(c => double.TryParse(c.Value, out _)))
+                    return $"new double[]{{{string.Join(", ", m.Groups["Numeral"].Captures.Select(c => c.Value))}}}";
                 return m.Value;
             });
             // Single line assignment
@@ -614,7 +614,7 @@ namespace Core
         public static partial Regex HelpItemRegex();
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
         public static partial Regex ArrayVariableCreationRegex();
-        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((\d+),?\s*?){3,}\]")]
+        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((?<Numeral>\d+),\s*?){2,}((?<Numeral>\d+)\s*?)\]")]
         public static partial Regex LiteralArrayRegex();
         [GeneratedRegex(@"^(\S*)?\s*[a-zA-Z0-9_]+\s*=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();
