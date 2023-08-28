@@ -127,3 +127,12 @@ At any time during REPL (read–eval–print loop), use `Help(<name>)` to get in
 ### Save Session
 
 After you've done some REPL exercise, you can output you inputs in this session by using the `Save(<File Path>)` command. After it's saved, you can modify and clean up the saved history of commands for proper script re-use.
+
+## Chapter N - Proper Usage Tipcs
+
+Pure is designed for quick one-shot scripts that are short and functional. As a rule of thumb, it's intended for things that do not exceed a few hundred lines - assuming proper code management is already implemented.
+
+As scripts grows and code is refactored for proper management, one might use `Include` for simple code management; But as code grows in complexity, either one of the two must be done for more reasonable code management:
+
+1. Refactor shared code into proper C# DLL as library;
+2. Refactor code project into a proper standalone C# solution.
