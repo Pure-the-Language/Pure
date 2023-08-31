@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Python\Python.csproj" />
+    <ProjectReference Include="..\..\..\StandardLibraries\Python\Python.csproj" />
   </ItemGroup>
 
 </Project>
