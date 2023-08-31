@@ -128,6 +128,24 @@ At any time during REPL (read–eval–print loop), use `Help(<name>)` to get in
 
 After you've done some REPL exercise, you can output you inputs in this session by using the `Save(<File Path>)` command. After it's saved, you can modify and clean up the saved history of commands for proper script re-use.
 
+## Chapter 3 - Standard Libraries
+
+A few standard libraries are provided as light wrappers of some conventional functionalities as encountered per author's experience and work needs.
+
+### ODBC
+
+```c#
+DSN = "Some DSN";
+// Create a type to use as return result
+public record Result(string Name, double Value);
+Select<Result>("""
+SELECT
+    Name,
+    Value
+FROM MyValues
+"""); // Returns an array
+```
+
 ## Chapter N - Proper Usage Tipcs
 
 Pure is designed for quick one-shot scripts that are short and functional. As a rule of thumb, it's intended for things that do not exceed a few hundred lines - assuming proper code management is already implemented.
