@@ -12,39 +12,41 @@ Remove-Item $PublishFolder -Recurse -Force
 
 # Publish Executables
 $PublishExecutables = @(
-    "Pure"
+    "Frontends\Pure\Pure.csproj"
 )
 foreach ($Item in $PublishExecutables)
 {
-    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --use-current-runtime --output $PublishFolder
+    dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $PublishFolder
 }
 # Publish Windows-only Executables
 $PublishWindowsExecutables = @(
-    "Notebook"
+    "Frontends\Notebook\Notebook.csproj"
 )
 foreach ($Item in $PublishWindowsExecutables)
 {
-    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --runtime win-x64 --self-contained --output $PublishFolder
+    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $PublishFolder
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
-    "Python"
-    "ODBC"
-    "Pipeline"
+    "StandardLibraries\Python\Python.csproj"
+    "StandardLibraries\ODBC\ODBC.csproj"
+    "StandardLibraries\Pipeline\Pipeline.csproj"
+    "StandardLibraries\Razor\Razor.csproj"
 )
 foreach ($Item in $PublishLibraries)
 {
-    dotnet publish $PSScriptRoot\..\$Item\$Item.csproj --use-current-runtime --output $LibraryPublishFolder
+    dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $LibraryPublishFolder
 }
 # Publish Nugets
 $PublishNugets = @(
-    "Python"
-    "ODBC"
-    "Pipeline"
+    "StandardLibraries\Python\Python.csproj"
+    "StandardLibraries\ODBC\ODBC.csproj"
+    "StandardLibraries\Pipeline\Pipeline.csproj"
+    "StandardLibraries\Razor\Razor.csproj"
 )
 foreach ($Item in $PublishNugets)
 {
-    dotnet pack $PSScriptRoot\..\$Item\$Item.csproj --output $NugetPublishFolder
+    dotnet pack $PSScriptRoot\..\$Item --output $NugetPublishFolder
 }
 
 # Create archive
