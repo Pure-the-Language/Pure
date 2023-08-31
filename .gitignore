@@ -362,7 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-ManualTest
+ManualTests/ManualTest
 launchSettings.json
 
 # Pure/Notebook Examples
