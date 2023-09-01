@@ -37,8 +37,6 @@ Syntax & Special Commands:
 
 ## Technicalities
 
-Key concept: Core is scope-less, one should consider all loaded scripts are executed "in-memory" inside one big giant scope, as Pure is intended for short ad-hoc scripting. This is especially true with regard to how `Include()` is implemented at the moment - Include functions as a macro and executes the codes from specified path in "current" scope.
-
 ### URGENT
 
 Currently Pure has two main issues that stops it from being used for production use (but it's OK right now to use it for one-liners and quick REPL purpose):

@@ -21,10 +21,10 @@ public class MyModel
     public double Age { get; set; }
 }
 MyModel model = new()
-            {
-                Name = "James", 
-                Age = 15
-            };
+{
+    Name = "James", 
+    Age = 15
+};
 string result = Razor.Main.RunTemplate(model, """
     Hello @Model.Name, you age is @Model.Age.
     """, Razor.TemplateFormat.Text);
