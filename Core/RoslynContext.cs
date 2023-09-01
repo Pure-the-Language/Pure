@@ -169,16 +169,30 @@ namespace Core
             RoslynContext.OutputHandler.Invoke(value.ToString() + Environment.NewLine);
         }
     }
-    public partial class RoslynContext
+    /// <remarks>
+    /// This is implementation detail and should be protected from external users
+    /// </remarks>
+    internal partial class RoslynContext
     {
         #region Private States
         private List<string> ImportedModules { get; set; } = new List<string>();
         private ScriptState<object> State { get; set; }
+        /// <summary>
+        /// Remark-cz: We require RoslynContext to be a singleton for some good reason - what was it?
+        /// (There are a few likely reasons, pending further investigation: 
+        /// 1. We touched process level env variable modifications; 
+        /// 2. We are piping STD OUT through custom handler;
+        /// 3. We are binding to AppDomain.CurrentDomain.ProcessExit.)
+        /// </summary>
         private static RoslynContext _Singleton;
-
         public static RoslynContext Singleton => _Singleton;
+        #endregion
+
+        #region Runtime Configurable Behaviors
+        /// <summary>
+        /// Configures the output handling to use
+        /// </summary>
         public static Action<string> OutputHandler;
-        public string NugetRepoIdentifier { get; set; }
         #endregion
 
         #region Lifetime Event
@@ -195,7 +209,6 @@ namespace Core
             if (_Singleton != null)
                 throw new InvalidOperationException("Roslyn Context is already initialized.");
             _Singleton = this;
-            NugetRepoIdentifier = nugetRepoIdentifier;
             if (outputHandler != null)
             {
                 OutputHandler = outputHandler;
@@ -225,8 +238,10 @@ namespace Core
 
             State = CSharpScript.RunAsync(string.Empty, options).Result;
 
-            void AddEnvironmentPathToDefaultLibraryFolder()
+            static void AddEnvironmentPathToDefaultLibraryFolder()
             {
+                // Remark-cz: The Core will be decoupled better if we don't rely on such env variables so explicitly, or at least don't modify it this way
+                // TODO: We should probably just pass in during context/interpreter initialization some external "additional" library folders instead of explicitly search for it in Core. Instead, we can search for it and initialize it as an optional option in Interpreter, which is shared by both Pure (REPL) and Notebook
                 string path = Path.Combine(AssemblyHelper.AssemblyDirectory, "Libraries");
                 if (!Directory.Exists(path))
                     path = Path.Combine(Directory.GetCurrentDirectory(), "Libraries");
@@ -240,7 +255,7 @@ namespace Core
         #endregion
 
         #region Method
-        internal void Evaluate(string input)
+        internal void Evaluate(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (input.TrimStart().StartsWith('#'))
                 return; // Skip line-style comment
@@ -255,7 +270,7 @@ namespace Core
 
                 string filePath = dllName;
                 if (!File.Exists(dllName))
-                    filePath = TryFindDLLFile(dllName, NugetRepoIdentifier);
+                    filePath = TryFindDLLFile(dllName, nugetRepoIdentifier);
 
                 List<string> statements = new List<string>();
                 if (filePath != null && File.Exists(filePath))
@@ -294,19 +309,20 @@ namespace Core
             }
             else if (IncludeScriptRegex().IsMatch(input))
             {
+                // Remark-cz: Include search order: Current working directory, script file path (if any), PUREPATH
                 var match = IncludeScriptRegex().Match(input);
                 string scriptName = match.Groups[1].Value.Trim('"');
                 
                 string scriptPath = scriptName;
                 if (!File.Exists(scriptName))
-                    scriptPath = TryFindScriptFile(scriptName);
+                    scriptPath = TryFindScriptFile(scriptName, currentScriptFile);
 
                 if (!File.Exists(scriptPath))
                     throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
 
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Parser.SplitScripts(text))
-                    Evaluate(code);
+                    Evaluate(code, scriptPath, nugetRepoIdentifier);
             }
             else if (HelpItemRegex().IsMatch(input))
             {
@@ -371,51 +387,25 @@ namespace Core
         #region Helpers
         public static string TryFindDLLFile(string dllName, string nugetRepoIdentifier)
         {
-            // Try use full path
-            string fullpath = Path.GetFullPath(dllName);
-            if (File.Exists(fullpath))
-                return fullpath;
-            // Try using PATH env variable
-            foreach (var path in Environment.GetEnvironmentVariable("PATH").SplitArgumentsLikeCsv(';', true))
-            {
-                if (!Directory.Exists(path)) continue;
-                try
-                {
-                    if (!dllName.EndsWith(".dll") && !dllName.EndsWith(".exe")
-                        && Directory.Exists(Path.Combine(path, dllName)))
-                    {
-                        string dllPath = Path.Combine(path, dllName, dllName);
-                        if (File.Exists(dllPath + ".exe"))
-                            return dllPath + ".exe";
-                        if (File.Exists(dllPath + ".dll"))
-                            return dllPath + ".dll";
-                    }
-                    fullpath = Path.Combine(path, dllName);
-                    if (File.Exists(fullpath))
-                        return fullpath;
-                    foreach (var file in Directory.EnumerateFiles(path))
-                    {
-                        string fileName = Path.GetFileName(file);
-                        string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
-                        string extension = Path.GetExtension(file).ToLower();
-                        if (extension == ".dll" || extension == ".exe")
-                        {
-                            if (fileName == dllName || fileNameNoExtention == dllName)
-                                return file;
-                        }
-                    }
-                }
-                // Remark-cz: Certain paths might NOT be enumerable due to access issues
-                catch (Exception) { continue; }
-            }
+            // Try find from PATH
+            string path = PathHelper.FindDLLFileFromEnvPath(dllName);
+            if (path != null)
+                return path;
             // Try downloading from Nuget
             return QuickEasyDirtyNugetPreparer.TryDownloadNugetPackage(dllName, nugetRepoIdentifier);
         }
-        public static string TryFindScriptFile(string scriptName)
+        public static string TryFindScriptFile(string scriptName, string currentScriptFile)
         {
             string fullpath = Path.GetFullPath(scriptName);
             if (File.Exists(fullpath))
                 return fullpath;
+            if (currentScriptFile != null && File.Exists(currentScriptFile))
+            {
+                string currentScriptFileFolder = Path.GetDirectoryName(Path.GetFullPath(currentScriptFile));
+                string absolutePathRelativeToCurrentScript = Path.Combine(currentScriptFileFolder, scriptName);
+                if (Path.Exists(absolutePathRelativeToCurrentScript))
+                    return absolutePathRelativeToCurrentScript;
+            }
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
                 return null;
             foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")

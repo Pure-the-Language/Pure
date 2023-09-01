@@ -7,13 +7,13 @@ namespace Pure
         static void Main(string[] args)
         {
             if (args.Length == 0)
-                new Interpreter().Start($"""
-                    Pure v0.0.3 (Core: {Core.Parser.CoreVersion})
-                    """);
+                new Interpreter($"""
+                    Pure Interpreter v0.0.3 (Core: {Parser.CoreVersion})
+                    """, null, null, null, null)
+                    .Start();
             else if (args.Length >= 2 && (args[0] == "-m" || args[0] == "-mi"))
-            {
-                new Interpreter().Start(string.Empty, false, true, new string[] { args[1] }, args[0] == "-m", args.Skip(2).ToArray());
-            }
+                new Interpreter(string.Empty, null, args.Skip(2).ToArray(), new string[] { args[1] }, null)
+                    .Start(true);
             else if (args.Length >= 1) 
             {
                 bool interactiveMode = args.Length >= 2 && (args[0].ToLower() == "-i" || args[0].ToLower() == "--interactive");
@@ -25,7 +25,7 @@ namespace Pure
                     Console.WriteLine($"File {file} doesn't exist.");
                     return; 
                 }
-                new Interpreter().Start(string.Empty, false, true, Parser.SplitScripts(File.ReadAllText(file)), !interactiveMode, interactiveMode ? args.Skip(2).ToArray() : args.Skip(1).ToArray());
+                new Interpreter(string.Empty, file, interactiveMode ? args.Skip(2).ToArray() : args.Skip(1).ToArray(), Parser.SplitScripts(File.ReadAllText(file)), file.GetDeterministicHashCode().ToString()).Start(!interactiveMode);
             }
         }
     }

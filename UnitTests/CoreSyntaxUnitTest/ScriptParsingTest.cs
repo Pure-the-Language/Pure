@@ -118,7 +118,7 @@ namespace CoreSyntaxUnitTest
             Assert.Equal(script, sections.First());
 
             string output = null;
-            Assert.Null(Record.Exception(() => new Interpreter().Start(message => output = message, null, sections)));
+            Assert.Null(Record.Exception(() => new Interpreter(null, null, null, sections, null).Start(message => output = message)));
             Assert.Null(output);
         }
     }

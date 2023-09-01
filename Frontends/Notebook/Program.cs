@@ -54,21 +54,20 @@ namespace Notebook
             else
             {
                 string filepath = Path.GetFullPath(args[0]);
-                Interpreter interpreter = new Interpreter();
-                interpreter.Start(null, null, null, args.Skip(1).ToArray());
+                Interpreter interpreter = new(null, filepath, args.Skip(1).ToArray(), null, null);
                 
                 ApplicationData data = LoadData(filepath);
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
-                ExecuteCells(interpreter, data);
+                ExecuteCells(interpreter, data, filepath);
             }
 
-            static void ExecuteCells(Interpreter interpreter, ApplicationData data)
+            static void ExecuteCells(Interpreter interpreter, ApplicationData data, string scriptPath)
             {
                 foreach (CellBlock cell in data.Cells.Where(c => c.CellType == CellType.CSharp || c.CellType == CellType.Python))
                 {
                     try
                     {
-                        ExecuteCell(interpreter, cell);
+                        ExecuteCell(interpreter, cell, scriptPath);
                     }
                     catch (Exception e)
                     {
@@ -79,7 +78,7 @@ namespace Notebook
                     }
                 }
             }
-            static void ExecuteCell(Interpreter interpreter, CellBlock cell)
+            static void ExecuteCell(Interpreter interpreter, CellBlock cell, string scriptPath)
             {
                 switch (cell.CellType)
                 {

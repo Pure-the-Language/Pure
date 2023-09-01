@@ -5,7 +5,19 @@ namespace Core
 {
     public static class Parser
     {
-        public static string CoreVersion = "v0.0.5.1";
+        #region Versioning
+        public static readonly string CoreVersion = "v0.1.0";
+        public static readonly string VersionChangelog = """
+            * v0.0.1-v0.0.3: Misc. basic functional implementations.
+            * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
+            * v0.0.4: Change exception handling logic, print stack trace for easier debugging.
+            * v0.0.5: Update runtime exception handling behavior.
+            * v0.0.5.1: Fix issue with literal numerical array parsing.
+            * v0.1.0: Fix semantics of `Include()`; Bump minor version number.
+            """;
+        #endregion
+
+        #region Main Function
         /// <summary>
         /// Split a large script into executable units for Roslyn
         /// </summary>
@@ -19,7 +31,7 @@ namespace Core
 
             bool currentLineIsInBlockComment = false;
             int totalLineCounter = 0;
-            StringBuilder scriptBuilder = new ();
+            StringBuilder scriptBuilder = new();
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
@@ -42,7 +54,7 @@ namespace Core
                 {
                     if (string.IsNullOrWhiteSpace(line))
                         scriptBuilder.Append("\n");
-                    else if (scriptBuilder.Length == 0) 
+                    else if (scriptBuilder.Length == 0)
                         scriptBuilder.Append(line);
                     else
                         scriptBuilder.Append("\n" + line);
@@ -57,5 +69,6 @@ namespace Core
 
             return scripts.ToArray();
         }
+        #endregion
     }
 }
