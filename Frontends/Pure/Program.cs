@@ -7,6 +7,7 @@ namespace Pure
     {
         static void Main(string[] args)
         {
+            // REPL mode
             if (args.Length == 0)
             {
                 var interpreter = new Interpreter($"""
@@ -16,15 +17,17 @@ namespace Pure
                 interpreter.Start();
                 EnterInteractiveMode(interpreter);
             }
+            // Immediate mode
             else if (args.Length >= 2 && (args[0] == "-m" || args[0] == "-mi"))
                 new Interpreter(string.Empty, null, args.Skip(2).ToArray(), new string[] { args[1] }, null)
                     .Start();
+            // Execute file with optional interactivity
             else if (args.Length >= 1) 
             {
                 bool interactiveMode = args.Length >= 2 && (args[0].ToLower() == "-i" || args[0].ToLower() == "--interactive");
                 string fileName = interactiveMode ? args[1] : args[0];
 
-                string file = Path.GetFullPath(fileName);
+                string file = PathHelper.FindScriptFileFromEnvPath(fileName);
                 if (!File.Exists(file))
                 {
                     Console.WriteLine($"File {file} doesn't exist.");

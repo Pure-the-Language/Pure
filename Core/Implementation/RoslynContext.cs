@@ -323,7 +323,7 @@ namespace Core
                 
                 string scriptPath = scriptName;
                 if (!File.Exists(scriptName))
-                    scriptPath = TryFindScriptFile(scriptName, currentScriptFile);
+                    scriptPath = PathHelper.FindScriptFileFromEnvPath(scriptName, currentScriptFile);
 
                 if (!File.Exists(scriptPath))
                     throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
@@ -401,42 +401,6 @@ namespace Core
                 return path;
             // Try downloading from Nuget
             return QuickEasyDirtyNugetPreparer.TryDownloadNugetPackage(dllName, nugetRepoIdentifier);
-        }
-        public static string TryFindScriptFile(string scriptName, string currentScriptFile)
-        {
-            string fullpath = Path.GetFullPath(scriptName);
-            if (File.Exists(fullpath))
-                return fullpath;
-            if (currentScriptFile != null)
-            {
-                string currentScriptFileFolder = Path.GetDirectoryName(Path.GetFullPath(currentScriptFile));
-                string absolutePathRelativeToCurrentScript = Path.Combine(currentScriptFileFolder, scriptName);
-                if (Path.Exists(absolutePathRelativeToCurrentScript))
-                    return absolutePathRelativeToCurrentScript;
-            }
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PUREPATH")))
-                return null;
-            foreach (var path in Environment.GetEnvironmentVariable("PUREPATH")
-                .Split(';', StringSplitOptions.RemoveEmptyEntries))
-            {
-                try
-                {
-                    foreach (var file in Directory.EnumerateFiles(path))
-                    {
-                        string fileName = Path.GetFileName(file);
-                        string fileNameNoExtention = Path.GetFileNameWithoutExtension(file);
-                        string extension = Path.GetExtension(file).ToLower();
-                        if (extension == ".pure")
-                        {
-                            if (fileName == scriptName || fileNameNoExtention == scriptName)
-                                return file;
-                        }
-                    }
-                }
-                // Remark-cz: Certain paths might NOT be enumerable due to access issues
-                catch (Exception) { continue; }
-            }
-            return null;
         }
         #endregion
 

@@ -12,7 +12,7 @@ Features:
 * Single-word package names.
 * Syntactic sugars.
 * On prompto package invokation (through `Import`).
-* Pure uses `PUREPATH` to search for scripts when using `Include`
+* Pure uses `PUREPATH` to search for scripts when using `Include` and when executing script file directly from command line as the first argument.
 
 (Additional) Standard Libraries:
 
