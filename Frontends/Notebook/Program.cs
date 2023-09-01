@@ -32,9 +32,7 @@ namespace Notebook
             }
 
             if (new string[] { "cwd", "powershell", "pwsh" }.Contains(parent.ProcessName.ToLower())) // Remar-cz: During debugging in VS it might be necessary to add "vsdebugconsole" to enter CLI mode
-            {
                 BatchMode(args);
-            }
             else
             {
                 var app = new App();
@@ -83,7 +81,7 @@ namespace Notebook
                 switch (cell.CellType)
                 {
                     case CellType.CSharp:
-                        foreach (var script in Parser.SplitScripts(cell.Content))
+                        foreach (var script in Interpreter.SplitScripts(cell.Content))
                             interpreter.Evaluate(script);
                         break;
                     case CellType.Python:

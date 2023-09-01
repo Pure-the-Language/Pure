@@ -14,7 +14,7 @@ namespace Core.Services
     /// Before the formal implementation is complete, here we provide an easy win-x64 use only implementation that makes use of `dotnet` cli;
     /// This relies on `pwsh` (PowerShell 7)
     /// </remarks>
-    public static class QuickEasyDirtyNugetPreparer
+    internal static class QuickEasyDirtyNugetPreparer
     {
         public static string TryDownloadNugetPackage(string packageName, string nugetRepoIdentifier)
         {

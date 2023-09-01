@@ -6,10 +6,12 @@ using System.Reflection;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
 using Core.Services;
+using Core.Utilities;
+using Core.Helpers;
 
 namespace Core
 {
-    public sealed class RedirectedTextWriter : TextWriter
+    internal sealed class RedirectedTextWriter : TextWriter
     {
         public override Encoding Encoding => Encoding.UTF8;
         public override void Write(bool value)
@@ -204,7 +206,7 @@ namespace Core
         #endregion
 
         #region Construction
-        public RoslynContext(bool importAdditional, Action<string> outputHandler, string nugetRepoIdentifier)
+        public RoslynContext(bool importAdditional, Action<string> outputHandler)
         {
             if (_Singleton != null)
                 throw new InvalidOperationException("Roslyn Context is already initialized.");
@@ -226,19 +228,23 @@ namespace Core
                     "System.Collections.Generic",
                     "System.IO", 
                     "System.Linq")
-                .AddImports("Core.Math")
-                .AddImports("Core.Utilities")
-                .AddImports("Core.Construct");
+                // Pure language essential namespaces, types, and global static functions
+                .AddImports($"{nameof(Core)}.{nameof(Math)}")
+                .AddImports($"{nameof(Core)}.{nameof(Utilities)}")
+                .AddImports($"{nameof(Core)}.{nameof(Utilities)}.{nameof(Construct)}");
+            // Additional commonly used but secondary imports
             if (importAdditional)
             {
+                // Commonly used .Net namespace
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
-                AddEnvironmentPathToDefaultLibraryFolder();
+                // Pure core standard libraries
+                AddDefaultLibraryFolderToEnvironmentPath();
             }
 
             State = CSharpScript.RunAsync(string.Empty, options).Result;
 
-            static void AddEnvironmentPathToDefaultLibraryFolder()
+            static void AddDefaultLibraryFolderToEnvironmentPath()
             {
                 // Remark-cz: The Core will be decoupled better if we don't rely on such env variables so explicitly, or at least don't modify it this way
                 // TODO: We should probably just pass in during context/interpreter initialization some external "additional" library folders instead of explicitly search for it in Core. Instead, we can search for it and initialize it as an optional option in Interpreter, which is shared by both Pure (REPL) and Notebook
@@ -264,15 +270,14 @@ namespace Core
                 // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
                 var match = ImportModuleRegex().Match(input);
                 string dllName = match.Groups[1].Value.Trim('"');
-                bool importNamespaces = !string.IsNullOrWhiteSpace(match.Groups[2].Value)
-                    ? bool.Parse(match.Groups[4].Value.ToLower())
-                    : true;
+                bool importNamespaces = string.IsNullOrWhiteSpace(match.Groups[2].Value) 
+                    || bool.Parse(match.Groups[4].Value.ToLower());
 
                 string filePath = dllName;
                 if (!File.Exists(dllName))
                     filePath = TryFindDLLFile(dllName, nugetRepoIdentifier);
 
-                List<string> statements = new List<string>();
+                List<string> statements = new();
                 if (filePath != null && File.Exists(filePath))
                 {
                     if (ImportedModules.Contains(filePath)) return;
@@ -321,7 +326,7 @@ namespace Core
                     throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
 
                 string text = File.ReadAllText(scriptPath);
-                foreach (var code in Parser.SplitScripts(text))
+                foreach (var code in Interpreter.SplitScripts(text))
                     Evaluate(code, scriptPath, nugetRepoIdentifier);
             }
             else if (HelpItemRegex().IsMatch(input))

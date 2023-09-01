@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Helpers;
 using ICSharpCode.AvalonEdit;
 using Microsoft.Win32;
 using System;
@@ -431,7 +432,7 @@ namespace Notebook
                 switch (cell.CellType)
                 {
                     case CellType.CSharp:
-                        foreach (var script in Parser.SplitScripts(scriptContent))
+                        foreach (var script in Interpreter.SplitScripts(scriptContent))
                             Interpreter.Evaluate(script);
                         break;
                     case CellType.Python:

@@ -1,4 +1,4 @@
-﻿namespace Core
+﻿namespace Core.Helpers
 {
     public static class PathHelper
     {
