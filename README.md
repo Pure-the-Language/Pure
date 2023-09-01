@@ -12,12 +12,14 @@ Features:
 * Single-word package names.
 * Syntactic sugars.
 * On prompto package invokation (through `Import`).
+* Pure uses `PUREPATH` to search for scripts when using `Include`
 
 (Additional) Standard Libraries:
 
 * ODBC
 * Python
 * Pipeline
+* Razor
 
 Syntax & Special Commands:
 
@@ -34,6 +36,8 @@ Syntax & Special Commands:
 - [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
 
 ## Technicalities
+
+Key concept: Core is scope-less, one should consider all loaded scripts are executed "in-memory" inside one big giant scope, as Pure is intended for short ad-hoc scripting. This is especially true with regard to how `Include()` is implemented at the moment - Include functions as a macro and executes the codes from specified path in "current" scope.
 
 ### URGENT
 

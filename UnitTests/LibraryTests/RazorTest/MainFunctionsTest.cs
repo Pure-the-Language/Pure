@@ -37,12 +37,11 @@ namespace RazorTest
                 Name = "James",
                 Age = 15
             };
-            string result = Razor.Main.RunTemplate(model, """
-                Hello @Model.Name, you age is @Model.Age.
-                """, Razor.TemplateFormat.Text);
             Assert.Throws<RazorEngine.Templating.TemplateCompilationException>(() =>
             {
-                Assert.Equal($"Hello {model.Name}, you age is {model.Age}.", result);
+                string result = Razor.Main.RunTemplate(model, """
+                    Hello @Model.Name, you age is @Model.Age.
+                    """, Razor.TemplateFormat.Text);
             });
         }
     }

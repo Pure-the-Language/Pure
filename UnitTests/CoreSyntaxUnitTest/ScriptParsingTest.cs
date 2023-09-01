@@ -7,7 +7,7 @@ namespace CoreSyntaxUnitTest
         [Fact]
         public void ShouldSplitTextIntoCorrespondingParseableScripts()
         {
-            var sections = Parser.SplitScripts("""
+            var sections = Interpreter.SplitScripts("""
                 Import(Module)
                 Include(Script.cs)
                 WriteLine("Hello World!");
@@ -23,7 +23,7 @@ namespace CoreSyntaxUnitTest
         [Fact]
         public void ShouldHandleVariableDefinitionsProperly()
         {
-            var sections = Parser.SplitScripts("""
+            var sections = Interpreter.SplitScripts("""
                 var a = 5;
                 var b = someObject
                     .Action1()
@@ -35,7 +35,7 @@ namespace CoreSyntaxUnitTest
         [Fact]
         public void ShouldHandleLocalFunctionsProperly()
         {
-            var sections = Parser.SplitScripts("""
+            var sections = Interpreter.SplitScripts("""
                 var a = 5;
                 var b = someObject
                     .Action1()
@@ -67,7 +67,7 @@ namespace CoreSyntaxUnitTest
 
                 // Routines
                 """;
-            var sections = Parser.SplitScripts(script);
+            var sections = Interpreter.SplitScripts(script);
             Assert.Equal(script.Split('\n').Length, sections.Last().Split('\n').Length);
         }
         [Fact]
@@ -83,7 +83,7 @@ namespace CoreSyntaxUnitTest
                 void Func(){var b = 16; return;}
                 */
                 """;
-                var sections = Parser.SplitScripts(script);
+                var sections = Interpreter.SplitScripts(script);
                 Assert.Single(sections);
                 Assert.Equal(script.Replace("\r\n", "\n"), sections.First());
             }
@@ -99,7 +99,7 @@ namespace CoreSyntaxUnitTest
                 */ 5;
                 WriteLine(a);
                 """;
-                var sections = Parser.SplitScripts(script);
+                var sections = Interpreter.SplitScripts(script);
                 Assert.Single(sections);
                 Assert.Equal(script.Replace("\r\n", "\n"), sections.First());
             }
@@ -113,12 +113,12 @@ namespace CoreSyntaxUnitTest
             string script = """
                 double ComplexFunction(double value, params string[] names){ var n = names; WriteLine(n); return 0; }
                 """;
-            var sections = Parser.SplitScripts(script);
+            var sections = Interpreter.SplitScripts(script);
             Assert.Single(sections);
             Assert.Equal(script, sections.First());
 
             string output = null;
-            Assert.Null(Record.Exception(() => new Interpreter().Start(message => output = message, null, sections)));
+            Assert.Null(Record.Exception(() => new Interpreter(null, null, null, sections, null).Start(message => output = message)));
             Assert.Null(output);
         }
     }

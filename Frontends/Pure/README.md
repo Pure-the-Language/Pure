@@ -1,3 +1,3 @@
 ﻿# Pure
 
-Default Pure interpreter.
+Default interactive Pure interpreter (REPL).

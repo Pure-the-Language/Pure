@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Helpers;
 using ICSharpCode.AvalonEdit;
 using Microsoft.Win32;
 using System;
@@ -25,11 +26,12 @@ namespace Notebook
 
             InitializeComponent();
 
+            // Remark-cz: 1st argument is executable path (aka. Notebook.exe), 2nd argument is taken to be open file path
             var args = Environment.GetCommandLineArgs();
-            Interpreter = new Interpreter();
-            Interpreter.Start(OutputHandlerNonMainThread, """
+            Interpreter = new Interpreter("""
                     Pure v0.0.1
-                    """, null, args.Length > 2 ? args.Skip(2).ToArray() : null); // Remark-cz: 1st argument is executable path, 2nd argument is taken to be open file path
+                    """, null, args.Length > 2 ? args.Skip(2).ToArray() : null, null, null);
+            Interpreter.Start(OutputHandlerNonMainThread);
 
             if (args.Length >= 2)
             {
@@ -292,7 +294,7 @@ namespace Notebook
             if (window.ShowDialog() == true && !string.IsNullOrEmpty(window.Result))
             {
                 string[] arguments = window.Result.SplitArgumentsLikeCsv(' ');
-                Interpreter.InitializeArguments(arguments);
+                Interpreter.UpdateScriptArguments(arguments);
             }
             e.Handled = true;
         }
@@ -341,10 +343,11 @@ namespace Notebook
         private void OpenFile(string filepath)
         {
             filepath = Path.GetFullPath(filepath);
-            Interpreter.SetNugetRepositoryIdentifier(filepath.GetDeterministicHashCode().ToString());
+            Interpreter.UpdateNugetRepositoryIdentifier(filepath.GetDeterministicHashCode().ToString());
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
 
             NotebookManager.CurrentNotebookFilePath = filepath;
+            Interpreter.UpdateScriptFilePath(filepath);
             Title = $"Pure - {filepath}";
             Data = NotebookManager.Load();
             Directory.SetCurrentDirectory(Path.GetDirectoryName(filepath));
@@ -429,7 +432,7 @@ namespace Notebook
                 switch (cell.CellType)
                 {
                     case CellType.CSharp:
-                        foreach (var script in Parser.SplitScripts(scriptContent))
+                        foreach (var script in Interpreter.SplitScripts(scriptContent))
                             Interpreter.Evaluate(script);
                         break;
                     case CellType.Python:
