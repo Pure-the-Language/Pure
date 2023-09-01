@@ -404,7 +404,7 @@ namespace Core
             string fullpath = Path.GetFullPath(scriptName);
             if (File.Exists(fullpath))
                 return fullpath;
-            if (currentScriptFile != null && File.Exists(currentScriptFile))
+            if (currentScriptFile != null)
             {
                 string currentScriptFileFolder = Path.GetDirectoryName(Path.GetFullPath(currentScriptFile));
                 string absolutePathRelativeToCurrentScript = Path.Combine(currentScriptFileFolder, scriptName);
