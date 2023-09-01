@@ -1,4 +1,6 @@
-﻿namespace Core.Utilities
+﻿using System.Reflection;
+
+namespace Core.Utilities
 {
     /// <summary>
     /// Provides some global-level functions that's exposed at the root of Roslyn context;
@@ -9,8 +11,15 @@
         #region Type Help
         public static void Help(object instance)
         {
-            var type = instance.GetType();
-            RoslynContext.PrintType(type);
+            if (instance is MethodInfo method)
+                Console.WriteLine(RoslynContext.PrintMethod(method));
+            else if (instance is Delegate @delegate)
+                Console.WriteLine(RoslynContext.PrintMethod(@delegate.Method));
+            else
+            {
+                var type = instance.GetType();
+                RoslynContext.PrintType(type);
+            }
         }
         #endregion
 

@@ -11,7 +11,7 @@ namespace Core
     public class Interpreter
     {
         #region Versioning
-        public static readonly string CoreVersion = "v0.1.0";
+        public static readonly string CoreVersion = "v0.1.1";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -19,6 +19,7 @@ namespace Core
             * v0.0.5: Update runtime exception handling behavior.
             * v0.0.5.1: Fix issue with literal numerical array parsing.
             * v0.1.0: Fix semantics of `Include()`; Bump minor version number; Refactor `Interpreter` interface, merge Parser into Interpreter.
+            * v0.1.1: Implement `Evaluate()` as part of Construct; Enhance `Help` outputs.
             """;
         #endregion
 

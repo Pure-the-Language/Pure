@@ -530,14 +530,14 @@ namespace Core
             }
             else if (AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetTypes().Any(t => t.GetMethods().Any(m => m.Name == name))))
             {
-                MethodInfo methodInfo = null;
+                HashSet<MethodInfo> methodInfos = new();
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                     foreach (var type in assembly.GetTypes())
                         foreach (var method in type.GetMethods())
                             if (method.Name == name)
-                                methodInfo = method;
-                if (methodInfo != null)
-                    Console.WriteLine(PrintMethod(methodInfo));
+                                methodInfos.Add(method);
+                foreach (var method in methodInfos)
+                    Console.WriteLine(PrintMethod(method));
                 return true;
             }
             return false;
@@ -584,6 +584,7 @@ namespace Core
         public static string PrintMethod(MethodInfo m)
         {
             string name = m.Name;
+            string type = m.ReflectedType.Name;
             string[] arguments = m.GetParameters()
                 .Select(p => $"{p.ParameterType.Name} {p.Name}")
                 .ToArray();
@@ -596,10 +597,10 @@ namespace Core
             if (m.ContainsGenericParameters)
             {
                 var generics = m.GetGenericArguments().Select(t => t.Name);
-                return $"{name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}";
+                return $"{type}: {name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}";
             }
             else 
-                return $"{name}({string.Join(", ", arguments)}){returnType}";
+                return $"{type}: {name}({string.Join(", ", arguments)}){returnType}";
         }
         #endregion
 
