@@ -1,6 +1,6 @@
 using Core;
 
-namespace CoreSyntaxUnitTest
+namespace CoreTest
 {
     public class ScriptParsingTest
     {
