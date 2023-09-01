@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 using Console = Colorful.Console;
+using Core.Utilities;
 
 namespace Core
 {
@@ -44,6 +45,9 @@ namespace Core
             Arguments = arguments;
             StartingScripts = startingScripts;
             NugetRepoIdentifier = nugetRepoIdentifier;
+
+            // Singleton-pattern global state
+            Construct.CurrentInterpreter = this;
         }
         #endregion
 

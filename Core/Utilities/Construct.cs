@@ -6,11 +6,21 @@
     /// </summary>
     public static class Construct
     {
-        #region Helper Construct
+        #region Type Help
         public static void Help(object instance)
         {
             var type = instance.GetType();
             RoslynContext.PrintType(type);
+        }
+        #endregion
+
+        #region Runtime Evaluation
+        internal static Interpreter CurrentInterpreter;
+        public static void Evaluate(string script)
+        {
+            if (CurrentInterpreter != null)
+                CurrentInterpreter.Evaluate(script);
+            else throw new ApplicationException("Interpreter is not initialized.");
         }
         #endregion
     }

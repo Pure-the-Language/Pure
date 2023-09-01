@@ -187,7 +187,10 @@ namespace Core
         /// 3. We are binding to AppDomain.CurrentDomain.ProcessExit.)
         /// </summary>
         private static RoslynContext _Singleton;
-        public static RoslynContext Singleton => _Singleton;
+        /// <summary>
+        /// Remark-cz: We are hiding this singleton because we want to avoid using it; When we figure out why we needed singleton in the first place, we might be able to not require a singleton patter nat all
+        /// </summary>
+        private static RoslynContext Singleton => _Singleton;
         #endregion
 
         #region Runtime Configurable Behaviors
