@@ -1,3 +1,5 @@
 ﻿# ODBC
 
+Status: Stable
+
 This library provides standard ODBC access with special routines for strongly typed encapsulation.

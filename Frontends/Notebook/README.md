@@ -6,6 +6,9 @@ When triggered in command line (CMD and PowerShell), will enter CLI mode.
 
 ## TODO
 
+See in-code "TODO" for implementation specific todo items (also viewable in VS Task List).  
+See standard library-specific README for TODO items for standard libraries.
+
 Advanced features:
 
 * [GUI] CPU and MEM usage monitoring

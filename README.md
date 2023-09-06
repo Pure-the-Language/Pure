@@ -1,4 +1,4 @@
-# Pure
+# Pure - Lightweight Native C# Scripting Environment for .Net 7
 
 (Definition) Pure is the scripting version of C# with:
 
@@ -29,7 +29,7 @@ Syntax & Special Commands:
 * (Only applicable at REPL) For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted
 * (Deprecated) Use `#` add the beginning of line for line-style comment
 
-## To Do
+## TODO
 
 - [ ] (Core)(Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
 - [ ] (Data Library) Provide `Data` (standalone).
@@ -69,6 +69,8 @@ System.Drawing is not (directly) supported on this platform. Notice the scenario
 Library Authoring Requirements: Note that any (plug-in) libraries being authored CANNOT (and thus should not) directly target (or indirectly target) *.Net 7 Windows* because the hosting environment (aka. Pure) target *.Net 7* (without specifying windows as target). The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
 
 # (Wiki) Pure - The Scripting Language
+
+<!-- This will be the main book for Pure usage; Consider it as a user guide; This shall be written independent from the rest of Pure solution documentations. -->
 
 As a scripting language, pure has the following features:
 

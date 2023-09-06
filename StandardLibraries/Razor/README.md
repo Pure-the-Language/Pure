@@ -1,5 +1,7 @@
 ﻿# Razor
 
+Status: Alpha
+
 Expose .Net Razor engine in a friendly generic format. This is a very thin wrapper around Net Core RazorEngine.
 
 When using RazorEngine, one needs to reference RazorEngine and use something like the following:
