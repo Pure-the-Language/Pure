@@ -43,8 +43,20 @@ string result = Razor.Main.RunTemplate(values, """
 Assert.Equal($"Total students: {values["TotalStudents"]}", result);
 ```
 
+Tip: Use `@Raw()` or `<text></text>` to switch context in HTML format.
+
 Notice due to limits of RazorEngine, one cannot use record types.
 
 ## Known Issue
 
-Due to limits of complied in-memory types from Roslyn cannot be accessed inside Razor, we cannot use generic version of the RunTemplate function inside Pure. This is a serious issue.
+Due to limits of complied in-memory types from Roslyn cannot be accessed inside Razor, we cannot use generic version of the RunTemplate function inside Pure. This is a serious issue. You will experience error like:
+
+```
+Errors while compiling a Template.
+More details about the error:
+ - error: (9, 112) Preprocessor directives must appear as the first non-whitespace character on a line
+	 - error: (10, 4) Syntax error, '>' expected
+	 - error: (9, 102) The type or namespace name 'Submission' could not be found (are you missing a using directive or an assembly reference?)
+```
+
+Current workaround is to use @ViewBag with the dictionary version of the function instead.

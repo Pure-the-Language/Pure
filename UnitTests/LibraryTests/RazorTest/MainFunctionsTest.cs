@@ -1,3 +1,5 @@
+using Razor;
+
 namespace RazorTest
 {
     internal class InternalModel
@@ -26,6 +28,31 @@ namespace RazorTest
                 Hello @Model.Name, you age is @Model.Age.
                 """, Razor.TemplateFormat.Text);
             Assert.Equal($"Hello {model.Name}, you age is {model.Age}.", result);
+        }
+
+        [Fact]
+        public void TemplateShouldWorkWithLogic()
+        {
+            string[] items = new[] { "apple", "banada" };
+            var bags = new Dictionary<string, object>
+            {
+                {"Items", items}
+            };
+
+            string result = Razor.Main.RunTemplate(bags, """
+                # Document
+                Items supported:
+                @foreach(var a in ViewBag.Items)
+                {
+                    @($"{a} ")
+                }
+                """, TemplateFormat.Text);
+
+            Assert.Equal("""
+                # Document
+                Items supported:
+                apple banada 
+                """, result);
         }
 
 
