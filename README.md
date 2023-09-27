@@ -29,6 +29,13 @@ Syntax & Special Commands:
 * (Only applicable at REPL) For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted
 * (Deprecated) Use `#` add the beginning of line for line-style comment
 
+## Installation
+
+The source code can be built on Windows/Linux with .Net 7 SDK.
+
+* To use on Windows, just download prebuilt executables from [Release](./releases/latest).
+* To build on Linux, either try `PublishAll.ps1` (require `pwsh`), or just do `otnet publish Frontends/Pure/Pure.csproj --use-current-runtime --output Publish`.
+
 ## TODO
 
 - [ ] (Core)(Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
