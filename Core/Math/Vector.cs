@@ -7,14 +7,17 @@ namespace Core.Math
     /// </remarks>
     public class Vector : IList<double>
     {
-        #region Construction
+        #region Properties
         private double[] Values { get; set; }
+        #endregion
+
+        #region Construction
         public Vector() { Values = Array.Empty<double>(); }
         public Vector(IEnumerable<double> values)
         {
             Values = values.ToArray();
         }
-        public Vector(double[] values)
+        public Vector(params double[] values)
         {
             Values = values;
         }
