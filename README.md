@@ -111,7 +111,7 @@ b = 7 // Bad: b is not defined
 
 Use `Import(<Library Name>)` to import libraries. Libraries should be available under PATH as .Net 7 (or .Net Standard) DLL files.
 
-A library is a collection of C# functionalities. It can optionally expose a static Main class, the methods of which will become available at global scope upon import.
+A library is a collection of C# functionalities. ~~It can optionally expose a static Main class, the methods of which will become available at global scope upon import~~ (deprecating, consider using `using static` explicitly instead).
 
 ### 1D Vectot Numerics
 
