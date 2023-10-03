@@ -49,7 +49,7 @@ namespace Pure
 
                 if (input == "exit" || input == "exit()")
                     return;
-                interpreter.Evaluate(input);
+                interpreter.Parse(input);
             }
         }
     }

@@ -25,10 +25,10 @@ namespace Core.Utilities
 
         #region Runtime Evaluation
         internal static Interpreter CurrentInterpreter;
-        public static void Evaluate(string script)
+        public static void Parse(string script)
         {
             if (CurrentInterpreter != null)
-                CurrentInterpreter.Evaluate(script);
+                CurrentInterpreter.Parse(script);
             else throw new ApplicationException("Interpreter is not initialized.");
         }
         #endregion

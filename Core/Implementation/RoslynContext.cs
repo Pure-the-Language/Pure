@@ -264,7 +264,7 @@ namespace Core
         #endregion
 
         #region Method
-        internal void Evaluate(string input, string currentScriptFile, string nugetRepoIdentifier)
+        internal void Parse(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (input.TrimStart().StartsWith('#'))
                 return; // Skip line-style comment
@@ -330,7 +330,7 @@ namespace Core
 
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Interpreter.SplitScripts(text))
-                    Evaluate(code, scriptPath, nugetRepoIdentifier);
+                    Parse(code, scriptPath, nugetRepoIdentifier);
             }
             else if (HelpItemRegex().IsMatch(input))
             {
@@ -338,12 +338,12 @@ namespace Core
                 string name = match.Groups[1].Value;
                 bool isPrintMetaData = PrintName(name);
                 if (!isPrintMetaData)
-                    EvaluateSingle(input);
+                    ParseSingle(input);
             }
-            else EvaluateSingle(input);
+            else ParseSingle(input);
 
             // Remark-cz: Things like "using" statement cannot be put in the middle of code block like other statements and require special treatment
-            void EvaluateSingle(string singleEvaluation)
+            void ParseSingle(string singleEvaluation)
             {
                 try
                 {

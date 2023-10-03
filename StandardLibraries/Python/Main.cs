@@ -14,14 +14,14 @@ namespace Python
                 if (installedPython == null)
                     throw new ArgumentException("Cannot find any usable Python installation on the machine.");
 
-                Python.Runtime.Runtime.PythonDLL = installedPython;
+                Runtime.Runtime.PythonDLL = installedPython;
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
                 using (Py.GIL())
                 {
                     PythonScope = Py.CreateScope();
                 }
-                Evaluate("""
+                Parse("""
                     import clr
                     clr.AddReference("Python")
                     import Python
@@ -53,7 +53,7 @@ namespace Python
         #endregion
 
         #region Method
-        public static void Evaluate(string snippet)
+        public static void Parse(string snippet)
         {
             if (PythonScope == null)
             {

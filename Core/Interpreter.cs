@@ -64,10 +64,10 @@ namespace Core
             UpdateScriptArguments(Arguments);
             if (StartingScripts != null)
                 foreach (var script in StartingScripts)
-                    Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
+                    Context.Parse(script, ScriptFile, NugetRepoIdentifier);
         }
-        public void Evaluate(string script)
-            => Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
+        public void Parse(string script)
+            => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
         #endregion
 
         #region Updaters
@@ -84,19 +84,19 @@ namespace Core
             Arguments = arguments;
             if (arguments != null && arguments.Length != 0)
             {
-                Context.Evaluate($"""
+                Context.Parse($"""
                     string[] Arguments = new string[{arguments.Length}];
                     """, ScriptFile, NugetRepoIdentifier);
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     string argument = arguments[i];
-                    Context.Evaluate($"""
+                    Context.Parse($"""
                         Arguments[{i}] = @"{argument.Replace("\"", "\\\"")}";
                         """, ScriptFile, NugetRepoIdentifier);
                 }
             }
             else
-                Context.Evaluate($"""
+                Context.Parse($"""
                     string[] Arguments = Array.Empty<string>();
                     """, ScriptFile, NugetRepoIdentifier);
         }
