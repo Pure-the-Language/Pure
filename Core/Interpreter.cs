@@ -68,6 +68,8 @@ namespace Core
         }
         public void Parse(string script)
             => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
+        public object Evaluate(string expression)
+            => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
         #endregion
 
         #region Updaters
