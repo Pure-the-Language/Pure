@@ -1,4 +1,3 @@
 Import(Python)
-Evaluate("""
-    print("Hello World from Python!")
-    """)
+using static Python.Main;
+Parse("print('Hello World from Python!')")
