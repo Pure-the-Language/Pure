@@ -264,10 +264,10 @@ namespace Core
         #endregion
 
         #region Method
-        internal object Evaluate(string input, string currentScriptFile, string nugetRepoIdentifier)
+        internal void Evaluate(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (input.TrimStart().StartsWith('#'))
-                return null; // Skip line-style comment
+                return; // Skip line-style comment
             else if (ImportModuleRegex().IsMatch(input))
             {
                 // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
@@ -283,7 +283,7 @@ namespace Core
                 List<string> statements = new();
                 if (filePath != null && File.Exists(filePath))
                 {
-                    if (ImportedModules.Contains(filePath)) return filePath;
+                    if (ImportedModules.Contains(filePath)) return;
                     else ImportedModules.Add(filePath);
 
                     // Remark-cz: Add the moment this fails to deal with most scenarios when the package is NOT properly including the single runtime i.e. there is a "runtimes" folder which contains corresponding runtimes (The Target runtime is selected as "Portable" instead of specifc runtime). In this case it will say "<Some module> is not supported on this platform" when the module is actually available in the published build.
@@ -295,8 +295,6 @@ namespace Core
                         foreach (var ns in assembly.GetTypes().Where(t => t.IsVisible)
                                 .Select(t => t.Namespace).Distinct())
                             AddImport(ns);
-                    
-                    // TODO: [DEPRECATING] Favour static using instead of this.
                     // Special handle Main class
                     Type mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
                     if (mainType != null)
@@ -312,12 +310,10 @@ namespace Core
                         if (shutDown != null && shutDown.GetParameters().Length == 0 && shutDown.IsPrivate == true)
                             ShutdownEvents += (Action)Delegate.CreateDelegate(typeof(Action), shutDown);
                     }
-
-                    return assembly;
                 }
                 else Console.WriteLine($"Cannot find package: {dllName}");
 
-                return null;
+                return;
             }
             else if (IncludeScriptRegex().IsMatch(input))
             {
@@ -335,8 +331,6 @@ namespace Core
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Interpreter.SplitScripts(text))
                     Evaluate(code, scriptPath, nugetRepoIdentifier);
-
-                return null;
             }
             else if (HelpItemRegex().IsMatch(input))
             {
@@ -344,13 +338,12 @@ namespace Core
                 string name = match.Groups[1].Value;
                 bool isPrintMetaData = PrintName(name);
                 if (!isPrintMetaData)
-                    return EvaluateSingle(input);
-                return null;
+                    EvaluateSingle(input);
             }
-            else return EvaluateSingle(input);
+            else EvaluateSingle(input);
 
             // Remark-cz: Things like "using" statement cannot be put in the middle of code block like other statements and require special treatment
-            object EvaluateSingle(string singleEvaluation)
+            void EvaluateSingle(string singleEvaluation)
             {
                 try
                 {
@@ -358,10 +351,7 @@ namespace Core
                     // Basically, host functions cannot and should not have side-effects on the state object directly
                     State = State.ContinueWithAsync(SyntaxWrap(singleEvaluation)).Result;
                     if (State.ReturnValue != null)
-                    {
                         PrintReturnValuePreviews(State.ReturnValue);
-                        return State.ReturnValue;
-                    }
                 }
                 catch (Exception e)
                 {
@@ -370,7 +360,6 @@ namespace Core
                     if (e is not ApplicationException && e is not CompilationErrorException)
                             Console.WriteLine(e.StackTrace);
                 }
-                return null;
             }
             void AddReference(Assembly assembly)
                 => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;

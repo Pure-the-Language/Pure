@@ -22,7 +22,6 @@ namespace Core
             * v0.1.1: Implement `Evaluate()` as part of Construct; Enhance `Help` outputs.
             * v0.1.2: Update handling of search paths for dll and scripts.
             * v0.2.0: Update definition of `Vector` type.
-            * v0.2.1: Return object from Interpreter.Evaluate().
             """;
         #endregion
 
@@ -67,7 +66,7 @@ namespace Core
                 foreach (var script in StartingScripts)
                     Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
         }
-        public object Evaluate(string script)
+        public void Evaluate(string script)
             => Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
         #endregion
 
