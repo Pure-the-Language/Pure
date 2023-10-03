@@ -61,6 +61,7 @@ namespace Core.Services
             {
                 Console.WriteLine($"Cannot locate package DLL - the package is built successfully but the package DLL cannot be found at {dllPath}");
                 Console.WriteLine($"Consult folder {Path.Combine(packageFolder, "CompiledDLLs")} for information on entrance dll name and use overload of `Import` to import proper dll.");
+                Console.WriteLine("Syntax: `Import(LibraryName as DLLName)`, e.g. `Import(pythonnet as Python.Runtime)`");
             }
             return dllPath;
 
