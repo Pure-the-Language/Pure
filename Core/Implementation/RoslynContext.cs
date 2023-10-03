@@ -360,13 +360,13 @@ namespace Core
         /// <remarks>
         /// Remark-cz: Things like "using" statement cannot be put in the middle of code block like other statements and require special treatment
         /// </remarks>
-        private object ParseSingle(string singleEvaluation, bool printToConsole = true)
+        private object ParseSingle(string script, bool printToConsole = true)
         {
             try
             {
                 // Remark-cz: This will NOT work with actions that modifies state by calling host functions
                 // Basically, host functions cannot and should not have side-effects on the state object directly
-                State = State.ContinueWithAsync(SyntaxWrap(singleEvaluation)).Result;
+                State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
                 if (State.ReturnValue != null)
                 {
                     if (printToConsole)
