@@ -433,12 +433,12 @@ namespace Notebook
                 {
                     case CellType.CSharp:
                         foreach (var script in Interpreter.SplitScripts(scriptContent))
-                            Interpreter.Evaluate(script);
+                            Interpreter.Parse(script);
                         break;
                     case CellType.Python:
-                        Interpreter.Evaluate("Import(Python)");
-                        Interpreter.Evaluate($"""""
-                        Evaluate("""
+                        Interpreter.Parse("Import(Python)");
+                        Interpreter.Parse($"""""
+                        Python.Main.Parse("""
                         {scriptContent}
                         """);
                         """"");

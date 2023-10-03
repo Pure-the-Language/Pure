@@ -14,7 +14,7 @@ The expectation for `Include` is it should at least look for scripts relative to
 
 In the implementation https://github.com/Pure-the-Language/Pure/pull/6, such capacity is exposed as a front-end level interface.
 
-The "scope-less" design of Pure discourages composition on the file level, and dictates that Include should be functionally equivalent to `Evaluate(File.ReadAllText(Path.Combine(ScriptFolder, FileName))`.
+The "scope-less" design of Pure discourages composition on the file level, and dictates that Include should be functionally equivalent to ~~`Evaluate(File.ReadAllText(Path.Combine(ScriptFolder, FileName))`~~ (now named as `Parse()`).
 
 ## 20230831 Issues Regarding Exposing Global/Top-Level Contextual Variable e.g. Something like PSScriptRoot
 

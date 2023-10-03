@@ -264,7 +264,7 @@ namespace Core
         #endregion
 
         #region Method
-        internal void Evaluate(string input, string currentScriptFile, string nugetRepoIdentifier)
+        internal void Parse(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (input.TrimStart().StartsWith('#'))
                 return; // Skip line-style comment
@@ -330,7 +330,7 @@ namespace Core
 
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Interpreter.SplitScripts(text))
-                    Evaluate(code, scriptPath, nugetRepoIdentifier);
+                    Parse(code, scriptPath, nugetRepoIdentifier);
             }
             else if (HelpItemRegex().IsMatch(input))
             {
@@ -338,57 +338,78 @@ namespace Core
                 string name = match.Groups[1].Value;
                 bool isPrintMetaData = PrintName(name);
                 if (!isPrintMetaData)
-                    EvaluateSingle(input);
+                    ParseSingle(input);
             }
-            else EvaluateSingle(input);
+            else ParseSingle(input);
+        }
+        internal object Evaluate(string expression, string currentScriptFile, string nugetRepoIdentifier)
+        {
+            if (expression.TrimStart().StartsWith('#'))  // Line-style comment
+                return null;
+            else if (ImportModuleRegex().IsMatch(expression))
+                return null;
+            else if (IncludeScriptRegex().IsMatch(expression))
+                return null;
+            else if (HelpItemRegex().IsMatch(expression))
+                return null;
+            else return ParseSingle(expression, false);
+        }
+        #endregion
 
-            // Remark-cz: Things like "using" statement cannot be put in the middle of code block like other statements and require special treatment
-            void EvaluateSingle(string singleEvaluation)
+        #region Parsing Helper
+        /// <remarks>
+        /// Remark-cz: Things like "using" statement cannot be put in the middle of code block like other statements and require special treatment
+        /// </remarks>
+        private object ParseSingle(string script, bool printToConsole = true)
+        {
+            try
             {
-                try
+                // Remark-cz: This will NOT work with actions that modifies state by calling host functions
+                // Basically, host functions cannot and should not have side-effects on the state object directly
+                State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
+                if (State.ReturnValue != null)
                 {
-                    // Remark-cz: This will NOT work with actions that modifies state by calling host functions
-                    // Basically, host functions cannot and should not have side-effects on the state object directly
-                    State = State.ContinueWithAsync(SyntaxWrap(singleEvaluation)).Result;
-                    if (State.ReturnValue != null)
+                    if (printToConsole)
                         PrintReturnValuePreviews(State.ReturnValue);
-                }
-                catch (Exception e)
-                {
-                    e = e.InnerException ?? e;
-                    Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
-                    if (e is not ApplicationException && e is not CompilationErrorException)
-                            Console.WriteLine(e.StackTrace);
+                    return State.ReturnValue;
                 }
             }
-            void AddReference(Assembly assembly)
-                => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;
-            void AddImport(string import)
-                => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddImports(import)).Result;
-            void PrintReturnValuePreviews(object returnValue)
+            catch (Exception e)
             {
-                // Print string items preview
-                if (returnValue is System.Collections.IList list)
-                {
-                    Console.WriteLine($"{returnValue} (Count: {list.Count})");
-                    if (list.Count < 10)
-                        foreach (var item in list)
-                            Console.WriteLine(item.ToString());
-                    else
-                    {
-                        for (int i = 0; i < 7; i++)
-                            Console.WriteLine(list[i].ToString());
-                        Console.WriteLine(".");
-                        Console.WriteLine(".");
-                        Console.WriteLine(".");
-                        for (int i = 3; i > 0; i--)
-                            Console.WriteLine(list[list.Count - i].ToString());
-                    }
-                }
-                // Print general preview of primitives and type
-                else
-                    Console.WriteLine(returnValue.ToString());
+                e = e.InnerException ?? e;
+                Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
+                if (e is not ApplicationException && e is not CompilationErrorException)
+                    Console.WriteLine(e.StackTrace);
             }
+            return null;
+        }
+        private void AddReference(Assembly assembly)
+            => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;
+        private void AddImport(string import)
+            => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddImports(import)).Result;
+        private static void PrintReturnValuePreviews(object returnValue)
+        {
+            // Print string items preview
+            if (returnValue is System.Collections.IList list)
+            {
+                Console.WriteLine($"{returnValue} (Count: {list.Count})");
+                if (list.Count < 10)
+                    foreach (var item in list)
+                        Console.WriteLine(item.ToString());
+                else
+                {
+                    for (int i = 0; i < 7; i++)
+                        Console.WriteLine(list[i].ToString());
+                    Console.WriteLine(".");
+                    Console.WriteLine(".");
+                    Console.WriteLine(".");
+                    for (int i = 3; i > 0; i--)
+                        Console.WriteLine(list[list.Count - i].ToString());
+                }
+            }
+            // Print general preview of primitives and type
+            else
+                Console.WriteLine(returnValue.ToString());
         }
         #endregion
 

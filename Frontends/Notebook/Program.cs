@@ -82,12 +82,12 @@ namespace Notebook
                 {
                     case CellType.CSharp:
                         foreach (var script in Interpreter.SplitScripts(cell.Content))
-                            interpreter.Evaluate(script);
+                            interpreter.Parse(script);
                         break;
                     case CellType.Python:
-                        interpreter.Evaluate("Import(Python)");
-                        interpreter.Evaluate($"""""
-                                Evaluate("""
+                        interpreter.Parse("Import(Python)");
+                        interpreter.Parse($"""""
+                                Python.Main.Parse("""
                                 {cell.Content}
                                 """);
                                 """"");

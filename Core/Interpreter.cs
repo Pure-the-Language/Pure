@@ -11,7 +11,7 @@ namespace Core
     public class Interpreter
     {
         #region Versioning
-        public static readonly string CoreVersion = "v0.2.0";
+        public static readonly string CoreVersion = "v0.3.0";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -22,6 +22,8 @@ namespace Core
             * v0.1.1: Implement `Evaluate()` as part of Construct; Enhance `Help` outputs.
             * v0.1.2: Update handling of search paths for dll and scripts.
             * v0.2.0: Update definition of `Vector` type.
+            ======Breaking Change======
+            * v0.3.0: Rename Evaluate() to Parse(); Implement Interpreter.Evaluate() for expressions.
             """;
         #endregion
 
@@ -64,10 +66,12 @@ namespace Core
             UpdateScriptArguments(Arguments);
             if (StartingScripts != null)
                 foreach (var script in StartingScripts)
-                    Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
+                    Context.Parse(script, ScriptFile, NugetRepoIdentifier);
         }
-        public void Evaluate(string script)
-            => Context.Evaluate(script, ScriptFile, NugetRepoIdentifier);
+        public void Parse(string script)
+            => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
+        public object Evaluate(string expression)
+            => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
         #endregion
 
         #region Updaters
@@ -84,19 +88,19 @@ namespace Core
             Arguments = arguments;
             if (arguments != null && arguments.Length != 0)
             {
-                Context.Evaluate($"""
+                Context.Parse($"""
                     string[] Arguments = new string[{arguments.Length}];
                     """, ScriptFile, NugetRepoIdentifier);
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     string argument = arguments[i];
-                    Context.Evaluate($"""
+                    Context.Parse($"""
                         Arguments[{i}] = @"{argument.Replace("\"", "\\\"")}";
                         """, ScriptFile, NugetRepoIdentifier);
                 }
             }
             else
-                Context.Evaluate($"""
+                Context.Parse($"""
                     string[] Arguments = Array.Empty<string>();
                     """, ScriptFile, NugetRepoIdentifier);
         }
