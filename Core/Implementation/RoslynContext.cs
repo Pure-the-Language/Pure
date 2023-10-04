@@ -266,9 +266,7 @@ namespace Core
         #region Method
         internal void Parse(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
-            if (input.TrimStart().StartsWith('#'))
-                return; // Skip line-style comment
-            else if (ImportModuleRegex().IsMatch(input))
+            if (ImportModuleRegex().IsMatch(input))
             {
                 // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
                 var match = ImportModuleRegex().Match(input);
@@ -344,9 +342,7 @@ namespace Core
         }
         internal object Evaluate(string expression, string currentScriptFile, string nugetRepoIdentifier)
         {
-            if (expression.TrimStart().StartsWith('#'))  // Line-style comment
-                return null;
-            else if (ImportModuleRegex().IsMatch(expression))
+            if (ImportModuleRegex().IsMatch(expression))
                 return null;
             else if (IncludeScriptRegex().IsMatch(expression))
                 return null;
