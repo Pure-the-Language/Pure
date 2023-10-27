@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Core;
+using RestSharp;
 
 namespace CentralSnippets
 {
@@ -17,7 +18,9 @@ namespace CentralSnippets
         public static void Pull(string snippetIdentifier, bool disableSSL = false)
         {
             string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier, disableSSL);
-            Core.Utilities.Construct.Parse(content);
+            // Remark-cz: We need to split script first to allow handling of specific Pure constructs (e.g. Import)
+            foreach(var segment in Interpreter.SplitScripts(content))
+                Core.Utilities.Construct.Parse(segment);
         }
         public static void Preview(string snippetIdentifier, bool disableSSL = false)
         {
