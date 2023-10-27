@@ -10,4 +10,4 @@ $env:https_proxy="http://your_proxy_server:your_port"
 $env:no_proxy="localhost,127.0.0.1,other_addresses"
 ```
 
-Alternatively, call `DisableSSLCheck()`.
+Alternatively, call pass `true` to `disableSSL` check parameter of `Preview()` or `Pull()`.
