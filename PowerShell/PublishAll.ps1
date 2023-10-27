@@ -32,6 +32,7 @@ $PublishLibraries = @(
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"
     "StandardLibraries\Razor\Razor.csproj"
+    "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
 )
 foreach ($Item in $PublishLibraries)
 {
@@ -43,6 +44,7 @@ $PublishNugets = @(
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"
     "StandardLibraries\Razor\Razor.csproj"
+    "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
 )
 foreach ($Item in $PublishNugets)
 {
