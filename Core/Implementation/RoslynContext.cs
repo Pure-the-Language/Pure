@@ -180,6 +180,7 @@ namespace Core
         private List<string> ImportedModules { get; set; } = new List<string>();
         private string TotalScript = string.Empty;// Remark-cz: Notice we intentionally use a string instead of a StringBuilder to keep in sync the state with ScriptState
         private ScriptState<object> State { get; set; }
+        private bool ContextLock { get; set; }
         /// <summary>
         /// Remark-cz: We require RoslynContext to be a singleton for some good reason - what was it?
         /// (There are a few likely reasons, pending further investigation: 
@@ -364,12 +365,17 @@ namespace Core
         /// </remarks>
         private object ParseSingle(string script, bool printToConsole = true)
         {
+            if (ContextLock)
+                throw new ApplicationException("Cannot parse when already parsing!");
+
             try
             {
+                ContextLock = true;
                 // Remark-cz: This will NOT work with actions that modifies state by calling host functions
                 // Basically, host functions cannot and should not have side-effects on the state object directly
                 State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
                 TotalScript += string.IsNullOrEmpty(TotalScript) ? State.Script.Code : (Environment.NewLine + State.Script.Code);
+                ContextLock = false;
                 if (State.ReturnValue != null)
                 {
                     if (printToConsole)
@@ -383,6 +389,7 @@ namespace Core
                 Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
                 if (e is not ApplicationException && e is not CompilationErrorException)
                     Console.WriteLine(e.StackTrace);
+                ContextLock = false;
             }
             return null;
         }
