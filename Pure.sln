@@ -60,7 +60,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plot", "StandardLibraries\P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Python", "StandardLibraries\Python\Python.csproj", "{4E817DB6-708C-4B6A-A309-C25F048B914D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreTest", "UnitTests\CoreTest\CoreTest.csproj", "{157ADFE5-A786-4C9E-BF6F-06E237FDDC36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreTest", "UnitTests\CoreTest\CoreTest.csproj", "{157ADFE5-A786-4C9E-BF6F-06E237FDDC36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralSnippets", "StandardLibraries\CentralSnippets\CentralSnippets.csproj", "{F7E27F4C-CBE5-4F15-8D25-F8F46383181D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralSnippetsTest", "ManualTests\LibraryTests\CentralSnippetsTest\CentralSnippetsTest.csproj", "{35FDFACF-EF3D-4F08-A55E-C77770C732B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,6 +132,14 @@ Global
 		{157ADFE5-A786-4C9E-BF6F-06E237FDDC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{157ADFE5-A786-4C9E-BF6F-06E237FDDC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{157ADFE5-A786-4C9E-BF6F-06E237FDDC36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E27F4C-CBE5-4F15-8D25-F8F46383181D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E27F4C-CBE5-4F15-8D25-F8F46383181D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E27F4C-CBE5-4F15-8D25-F8F46383181D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E27F4C-CBE5-4F15-8D25-F8F46383181D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35FDFACF-EF3D-4F08-A55E-C77770C732B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FDFACF-EF3D-4F08-A55E-C77770C732B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35FDFACF-EF3D-4F08-A55E-C77770C732B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35FDFACF-EF3D-4F08-A55E-C77770C732B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +164,8 @@ Global
 		{D700DB74-B9EC-4C56-BA3B-A86DD6443016} = {66A19951-0B64-4CDA-9283-DF42F000BB81}
 		{4E817DB6-708C-4B6A-A309-C25F048B914D} = {66A19951-0B64-4CDA-9283-DF42F000BB81}
 		{157ADFE5-A786-4C9E-BF6F-06E237FDDC36} = {375FF2F3-5CB1-48AA-84FA-2B7A57015858}
+		{F7E27F4C-CBE5-4F15-8D25-F8F46383181D} = {66A19951-0B64-4CDA-9283-DF42F000BB81}
+		{35FDFACF-EF3D-4F08-A55E-C77770C732B1} = {9D9D1730-0BA6-447B-A521-E9CF3AD984FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B113BF9D-0A5B-43D7-A132-D1CCD6AC46DA}
