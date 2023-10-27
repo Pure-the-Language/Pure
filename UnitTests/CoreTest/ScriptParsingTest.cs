@@ -172,6 +172,11 @@ namespace CoreTest
             Core.Utilities.Construct.Parse(""""
                 Parse("WriteLine(5)");
                 """");
+
+            Assert.Equal("""
+                string[] Arguments = Array.Empty<string>();
+                WriteLine(5)
+                """.Replace("\r\n", "\n"), interpreter.GetState().Replace("\r\n", "\n"));
         }
     }
 }
