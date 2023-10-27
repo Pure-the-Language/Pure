@@ -28,7 +28,7 @@ namespace Core
             * v0.4.0: Remove `#` style line comment (potential conflict with #region due to how we parse it).
             * v0.5.0: Add add-on standard library CentralSnippets. Implement construct `Pull()` and `Preview()`.
             * v0.5.1: Enhance Roslyn Context with script record.
-            * v0.5.2: Implement `ParseUnsafe()`.
+            * v0.5.2: Implement language level `Parse()` and `Pull()` handling.
             """;
         #endregion
 
@@ -75,8 +75,6 @@ namespace Core
         }
         public void Parse(string script)
             => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
-        internal void ParseUnsafe(string script)
-            => Context.ParseUnsafe(script, ScriptFile, NugetRepoIdentifier);
         public object Evaluate(string expression)
             => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
         public string GetState()
@@ -141,7 +139,7 @@ namespace Core
                 if (!currentLineIsInBlockComment &&
                     (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
-                    || RoslynContext.ParseScriptRegex().IsMatch(line)   // Remark-cz: This means that our `Parse()` function when executed inside a script can only be on its own line
+                    || RoslynContext.IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(line)   // Remark-cz: This means that our `Parse()` function etc. when executed inside a script can only be on its own line
                     || RoslynContext.HelpItemRegex().IsMatch(line)))
                 {
                     if (scriptBuilder.Length != 0)

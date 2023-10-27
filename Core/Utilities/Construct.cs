@@ -25,15 +25,6 @@ namespace Core.Utilities
 
         #region Runtime Parsing
         internal static Interpreter CurrentInterpreter;
-        /// <summary>
-        /// Compared to Parse, this will ignore context lock
-        /// </summary>
-        public static void ParseUnsafe(string script)
-        {
-            if (CurrentInterpreter != null)
-                CurrentInterpreter.ParseUnsafe(script);
-            else throw new ApplicationException("Interpreter is not initialized.");
-        }
         public static void Parse(string script)
         {
             if (CurrentInterpreter != null)
