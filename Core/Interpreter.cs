@@ -11,7 +11,7 @@ namespace Core
     public class Interpreter
     {
         #region Versioning
-        public static readonly string CoreVersion = "v0.5.0";
+        public static readonly string CoreVersion = "v0.5.2";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -28,6 +28,7 @@ namespace Core
             * v0.4.0: Remove `#` style line comment (potential conflict with #region due to how we parse it).
             * v0.5.0: Add add-on standard library CentralSnippets. Implement construct `Pull()` and `Preview()`.
             * v0.5.1: Enhance Roslyn Context with script record.
+            * v0.5.2: Implement `ParseUnsafe()`.
             """;
         #endregion
 
@@ -74,6 +75,8 @@ namespace Core
         }
         public void Parse(string script)
             => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
+        internal void ParseUnsafe(string script)
+            => Context.ParseUnsafe(script, ScriptFile, NugetRepoIdentifier);
         public object Evaluate(string expression)
             => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
         public string GetState()
@@ -138,6 +141,7 @@ namespace Core
                 if (!currentLineIsInBlockComment &&
                     (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
+                    || RoslynContext.ParseScriptRegex().IsMatch(line)   // Remark-cz: This means that our `Parse()` function when executed inside a script can only be on its own line
                     || RoslynContext.HelpItemRegex().IsMatch(line)))
                 {
                     if (scriptBuilder.Length != 0)

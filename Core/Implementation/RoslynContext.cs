@@ -273,79 +273,26 @@ namespace Core
         internal void Parse(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (ImportModuleRegex().IsMatch(input))
-            {
-                // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
-                var match = ImportModuleRegex().Match(input);
-                string dllName = match.Groups[1].Value.Trim('"');
-                bool importNamespaces = string.IsNullOrWhiteSpace(match.Groups[2].Value) 
-                    || bool.Parse(match.Groups[4].Value.ToLower());
-
-                string filePath = dllName;
-                if (!File.Exists(dllName))
-                    filePath = TryFindDLLFile(dllName, nugetRepoIdentifier);
-
-                List<string> statements = new();
-                if (filePath != null && File.Exists(filePath))
-                {
-                    if (ImportedModules.Contains(filePath)) return;
-                    else ImportedModules.Add(filePath);
-
-                    // Remark-cz: Add the moment this fails to deal with most scenarios when the package is NOT properly including the single runtime i.e. there is a "runtimes" folder which contains corresponding runtimes (The Target runtime is selected as "Portable" instead of specifc runtime). In this case it will say "<Some module> is not supported on this platform" when the module is actually available in the published build.
-                    // Potential reference: https://stackoverflow.com/questions/1373100/how-to-add-folder-to-assembly-search-path-at-runtime-in-net
-                    Assembly assembly = Assembly.LoadFrom(filePath); // Remark: Might load from within the Roslyn state's context//app domain?
-                    AddReference(assembly);
-
-                    if (importNamespaces)
-                        foreach (var ns in assembly.GetTypes().Where(t => t.IsVisible)
-                                .Select(t => t.Namespace).Distinct())
-                            AddImport(ns);
-                    // Special handle Main class
-                    Type mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
-                    if (mainType != null)
-                    {
-                        // Expose all functions at top level for the "Main" interface
-                        AddImport($"{mainType.Namespace}.Main");
-                        // Execute "StartUp" if any
-                        MethodInfo startUp = mainType.GetMethod("StartUp", BindingFlags.NonPublic | BindingFlags.Static);
-                        if (startUp != null && startUp.GetParameters().Length == 0 && startUp.IsPrivate == true)
-                            startUp.Invoke(null, null);
-                        // Handle "ShutDown" if any
-                        MethodInfo shutDown = mainType.GetMethod("ShutDown", BindingFlags.NonPublic | BindingFlags.Static);
-                        if (shutDown != null && shutDown.GetParameters().Length == 0 && shutDown.IsPrivate == true)
-                            ShutdownEvents += (Action)Delegate.CreateDelegate(typeof(Action), shutDown);
-                    }
-                }
-                else Console.WriteLine($"Cannot find package: {dllName}");
-
-                return;
-            }
+                ImportModule(input, nugetRepoIdentifier);
             else if (IncludeScriptRegex().IsMatch(input))
-            {
-                // Remark-cz: Include search order: Current working directory, script file path (if any), PUREPATH
-                var match = IncludeScriptRegex().Match(input);
-                string scriptName = match.Groups[1].Value.Trim('"');
-                
-                string scriptPath = scriptName;
-                if (!File.Exists(scriptName))
-                    scriptPath = PathHelper.FindScriptFileFromEnvPath(scriptName, currentScriptFile);
-
-                if (!File.Exists(scriptPath))
-                    throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
-
-                string text = File.ReadAllText(scriptPath);
-                foreach (var code in Interpreter.SplitScripts(text))
-                    // Remark-cz: This will cause issue with interrupting parsing state
-                    Parse(code, scriptPath, nugetRepoIdentifier);
-            }
+                IncludeScript(input, currentScriptFile, nugetRepoIdentifier);
             else if (HelpItemRegex().IsMatch(input))
-            {
-                var match = HelpItemRegex().Match(input);
-                string name = match.Groups[1].Value;
-                bool isPrintMetaData = PrintName(name);
-                if (!isPrintMetaData)
-                    ParseSingle(input);
-            }
+                HelpItem(input);
+            else if (ParseScriptRegex().IsMatch(input))
+                ParseSingle(input);
             else ParseSingle(input);
+        }
+        internal void ParseUnsafe(string input, string currentScriptFile, string nugetRepoIdentifier)
+        {
+            if (ImportModuleRegex().IsMatch(input))
+                ImportModule(input, nugetRepoIdentifier);
+            else if (IncludeScriptRegex().IsMatch(input))
+                IncludeScript(input, currentScriptFile, nugetRepoIdentifier);
+            else if (HelpItemRegex().IsMatch(input))
+                HelpItem(input);
+            else if (ParseScriptRegex().IsMatch(input))
+                ParseSingle(input);
+            else ParseSingleUnsafe(input);
         }
         internal object Evaluate(string expression, string currentScriptFile, string nugetRepoIdentifier)
         {
@@ -353,9 +300,86 @@ namespace Core
                 return null;
             else if (IncludeScriptRegex().IsMatch(expression))
                 return null;
+            else if (ParseScriptRegex().IsMatch(expression))
+                return ParseSingle(expression, false); // Parse is safe when executed on its own (without side effect before or after, but with side effect to the context)
             else if (HelpItemRegex().IsMatch(expression))
                 return null;
-            else return ParseSingle(expression, false);
+            else 
+                return ParseSingle(expression, false);
+        }
+        #endregion
+
+        #region Subroutines
+        private void ImportModule(string input, string nugetRepoIdentifier)
+        {
+            // Remark-cz: Notice you might think we can do something similarly to how System.Reflection.Assembly.LoadFrom() works inside the script to load the assembly into the context of the script - indeed that will work for the assembly loading part, but more crucially, we want to import the namespaces as well, and that cannot be done programmatically, and is better done with interpretation.
+            var match = ImportModuleRegex().Match(input);
+            string dllName = match.Groups[1].Value.Trim('"');
+            bool importNamespaces = string.IsNullOrWhiteSpace(match.Groups[2].Value)
+                || bool.Parse(match.Groups[4].Value.ToLower());
+
+            string filePath = dllName;
+            if (!File.Exists(dllName))
+                filePath = TryFindDLLFile(dllName, nugetRepoIdentifier);
+
+            List<string> statements = new();
+            if (filePath != null && File.Exists(filePath))
+            {
+                if (ImportedModules.Contains(filePath)) return;
+                else ImportedModules.Add(filePath);
+
+                // Remark-cz: Add the moment this fails to deal with most scenarios when the package is NOT properly including the single runtime i.e. there is a "runtimes" folder which contains corresponding runtimes (The Target runtime is selected as "Portable" instead of specifc runtime). In this case it will say "<Some module> is not supported on this platform" when the module is actually available in the published build.
+                // Potential reference: https://stackoverflow.com/questions/1373100/how-to-add-folder-to-assembly-search-path-at-runtime-in-net
+                Assembly assembly = Assembly.LoadFrom(filePath); // Remark: Might load from within the Roslyn state's context//app domain?
+                AddReference(assembly);
+
+                if (importNamespaces)
+                    foreach (var ns in assembly.GetTypes().Where(t => t.IsVisible)
+                            .Select(t => t.Namespace).Distinct())
+                        AddImport(ns);
+                // Special handle Main class
+                Type mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
+                if (mainType != null)
+                {
+                    // Expose all functions at top level for the "Main" interface
+                    AddImport($"{mainType.Namespace}.Main");
+                    // Execute "StartUp" if any
+                    MethodInfo startUp = mainType.GetMethod("StartUp", BindingFlags.NonPublic | BindingFlags.Static);
+                    if (startUp != null && startUp.GetParameters().Length == 0 && startUp.IsPrivate == true)
+                        startUp.Invoke(null, null);
+                    // Handle "ShutDown" if any
+                    MethodInfo shutDown = mainType.GetMethod("ShutDown", BindingFlags.NonPublic | BindingFlags.Static);
+                    if (shutDown != null && shutDown.GetParameters().Length == 0 && shutDown.IsPrivate == true)
+                        ShutdownEvents += (Action)Delegate.CreateDelegate(typeof(Action), shutDown);
+                }
+            }
+            else Console.WriteLine($"Cannot find package: {dllName}");
+        }
+        private void IncludeScript(string input, string currentScriptFile, string nugetRepoIdentifier)
+        {
+            // Remark-cz: Include search order: Current working directory, script file path (if any), PUREPATH
+            var match = IncludeScriptRegex().Match(input);
+            string scriptName = match.Groups[1].Value.Trim('"');
+
+            string scriptPath = scriptName;
+            if (!File.Exists(scriptName))
+                scriptPath = PathHelper.FindScriptFileFromEnvPath(scriptName, currentScriptFile);
+
+            if (!File.Exists(scriptPath))
+                throw new ArgumentException($"File {scriptPath ?? scriptName} doesn't exist.");
+
+            string text = File.ReadAllText(scriptPath);
+            foreach (var code in Interpreter.SplitScripts(text))
+                // Remark-cz: This will cause issue with interrupting parsing state
+                Parse(code, scriptPath, nugetRepoIdentifier);
+        }
+        private void HelpItem(string input)
+        {
+            var match = HelpItemRegex().Match(input);
+            string name = match.Groups[1].Value;
+            bool isPrintMetaData = PrintName(name);
+            if (!isPrintMetaData)
+                ParseSingle(input);
         }
         #endregion
 
@@ -366,7 +390,7 @@ namespace Core
         private object ParseSingle(string script, bool printToConsole = true)
         {
             if (ContextLock)
-                throw new ApplicationException("Cannot parse when already parsing!");
+                throw new RecursiveParsingException("Cannot parse when already parsing!");
 
             try
             {
@@ -385,6 +409,8 @@ namespace Core
             }
             catch (Exception e)
             {
+                if (e.InnerException is RecursiveParsingException)
+                    throw e.InnerException;
                 e = e.InnerException ?? e;
                 Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
                 if (e is not ApplicationException && e is not CompilationErrorException)
@@ -392,6 +418,28 @@ namespace Core
                 ContextLock = false;
             }
             return null;
+        }
+        /// <summary>
+        /// Parse without enforcing context lock;
+        /// Also will not log code
+        /// </summary>
+        private void ParseSingleUnsafe(string script)
+        {
+            try
+            {
+                State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
+                if (State.ReturnValue != null)
+                    PrintReturnValuePreviews(State.ReturnValue);
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is RecursiveParsingException)
+                    throw e.InnerException;
+                e = e.InnerException ?? e;
+                Console.WriteLine(Regex.Replace(e.Message, @"error CS\d\d\d\d: ", string.Empty));
+                if (e is not ApplicationException && e is not CompilationErrorException)
+                    Console.WriteLine(e.StackTrace);
+            }
         }
         private void AddReference(Assembly assembly)
             => State = State.ContinueWithAsync(string.Empty, State.Script.Options.AddReferences(assembly)).Result;
@@ -602,14 +650,22 @@ namespace Core
         #region Regex
         [GeneratedRegex(@"^Import\((.*?)(, ?(.*?))?\);?$")]
         public static partial Regex ImportModuleRegex();
+
         [GeneratedRegex(@"^Include\((.*?)(, ?(.*?))?\);?$")]
         public static partial Regex IncludeScriptRegex();
+
+        [GeneratedRegex(@"^Parse\((.*?)(, ?(.*?))?\);?$")]
+        public static partial Regex ParseScriptRegex();
+
         [GeneratedRegex(@"^Help\((.*?)\)$")]
         public static partial Regex HelpItemRegex();
+
         [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
         public static partial Regex ArrayVariableCreationRegex();
+
         [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((?<Numeral>\d+),\s*?){2,}((?<Numeral>\d+)\s*?)\]")]
         public static partial Regex LiteralArrayRegex();
+
         [GeneratedRegex(@"^(\S*)?\s*[a-zA-Z0-9_]+\s*=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();
         #endregion

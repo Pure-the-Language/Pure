@@ -171,18 +171,11 @@ namespace CoreTest
                 var segments = Interpreter.SplitScripts(script);
                 // The first pass will seem to work but NOT really because state is already messed up
                 foreach (var a in segments)
-                    Parse(a);
+                    ParseUnsafe(a);
                 """");
 
             string expected = """"
                 string[] Arguments = Array.Empty<string>();
-
-                string Build(string markdown)
-                {
-                    var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                    var document = Markdown.ToHtml("This is a text with some *emphasis*", pipeline);
-                    return document;
-                }
                 using Core;
                 string script = """
                     Import(Markdig)
@@ -197,7 +190,7 @@ namespace CoreTest
                 var segments = Interpreter.SplitScripts(script);
                 // The first pass will seem to work but NOT really because state is already messed up
                 foreach (var a in segments)
-                    Parse(a);
+                    ParseUnsafe(a);
                 """".Replace("\r\n", "\n");
             string currentState = interpreter.GetState().Replace("\r\n", "\n");
             Assert.Equal(expected, currentState);
@@ -208,11 +201,24 @@ namespace CoreTest
                 // Because the `Import` construct will think the library is imported so won't import it again, 
                 // but since the namespace isn't really imported, so it will fail during execution
                 foreach (var a in segments)
-                    Parse(a);
+                    ParseUnsafe(a);
                 """";
             Core.Utilities.Construct.Parse(secondScript);
             currentState = interpreter.GetState().Replace("\r\n", "\n");
             Assert.Equal((expected + Environment.NewLine + secondScript).Replace("\r\n", "\n"), currentState);
+        }
+        [Fact]
+        public void ParsingScriptInsideInterpreterShouldNOTWork2()
+        {
+            Interpreter interpreter = new(null, null, null, null, null);
+            interpreter.Start();
+
+            Assert.Throws<RecursiveParsingException>(() =>
+            {
+                Core.Utilities.Construct.Parse(""""
+                Parse("WriteLine(5)");
+                """");
+            });
         }
     }
 }
