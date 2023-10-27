@@ -11,7 +11,7 @@ namespace Pure
             if (args.Length == 0)
             {
                 var interpreter = new Interpreter($"""
-                    Interactive Pure Interpreter (REPL) v0.0.4 (Core Version: {Interpreter.CoreVersion})
+                    Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.CoreVersion})
                     This is the frontend to Pure, the scripting language.
                     """, null, null, null, null);
                 interpreter.Start();

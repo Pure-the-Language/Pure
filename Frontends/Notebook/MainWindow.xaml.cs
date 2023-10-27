@@ -28,8 +28,8 @@ namespace Notebook
 
             // Remark-cz: 1st argument is executable path (aka. Notebook.exe), 2nd argument is taken to be open file path
             var args = Environment.GetCommandLineArgs();
-            Interpreter = new Interpreter("""
-                    Pure v0.0.1
+            Interpreter = new Interpreter($"""
+                    Pure Notebook (Core Version: {Interpreter.CoreVersion})
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null, null, null);
             Interpreter.Start(OutputHandlerNonMainThread);
 
