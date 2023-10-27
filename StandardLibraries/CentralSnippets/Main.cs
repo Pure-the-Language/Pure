@@ -14,37 +14,27 @@ namespace CentralSnippets
         /// </summary>
         public static string SnippetsRootFolder { get; set; } = @"Snippets";
 
-        public static void Pull(string snippetIdentifier)
+        #region Methods
+        public static void Pull(string snippetIdentifier, bool disableSSL = false)
         {
-            string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier);
+            string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier, disableSSL);
             Core.Utilities.Construct.Parse(content);
         }
-        public static void Preview(string snippetIdentifier)
+        public static void Preview(string snippetIdentifier, bool disableSSL = false)
         {
-            string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier);
+            string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier, disableSSL);
             Console.WriteLine(content);
         }
-        public static void SetProxy(string httpProxy, string httpsProxy, string noProxy)
-        {
-            Environment.SetEnvironmentVariable("http_proxy", httpProxy, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable("https_proxy", httpsProxy, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable("no_proxy", noProxy, EnvironmentVariableTarget.Process);
-        }
-        public static void DisableSSLCheck()
-        {
-            ServicePointManager.ServerCertificateValidationCallback +=
-                (sender, certificate, chain, sslPolicyErrors) => true;
-        }
+        #endregion
 
         #region Private Helpers
-        private static string GetContent(string url, string rootFolder, string secondaryPath)
+        private static string GetContent(string url, string rootFolder, string secondaryPath, bool disableSSL = false)
         {
             if (url.ToLower().StartsWith("http"))
             {
-                var options = new RestClientOptions(url)
-                {
-                    RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
-                };
+                var options = new RestClientOptions(url);
+                if (disableSSL)
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
                 var client = new RestClient(options);   // Remark-cz: Notice we can't automatically and easily append ".cs" to the file name, so for network snippets, full names are required
                 RestRequest request = string.IsNullOrEmpty(rootFolder) ? new (secondaryPath) : new($"{rootFolder}/{secondaryPath}");
                 string response = client.Get(request).Content;
