@@ -1,5 +1,4 @@
 ﻿using RestSharp;
-using System.Net;
 
 namespace CentralSnippets
 {
@@ -25,9 +24,53 @@ namespace CentralSnippets
             string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier, disableSSL);
             Console.WriteLine(content);
         }
+        /// <summary>
+        /// Download text or binary content
+        /// </summary>
+        public static void Download(string resourceIdentifier, string outputPath, bool disableSSL = false)
+        {
+            DownloadContent(SnippetsHostSite, SnippetsRootFolder, resourceIdentifier, outputPath, disableSSL);
+        }
+        /// <summary>
+        /// Download from HTTP
+        /// </summary>
+        public static void DownloadUrl(string url, string outputPath, bool disableSSL = false)
+        {
+            var options = new RestClientOptions(url);
+            if (disableSSL)
+                options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+            var client = new RestClient(options);
+            RestRequest request = new();
+            var bytes = client.DownloadData(request);
+            File.WriteAllBytes(outputPath, bytes);
+        }
         #endregion
 
         #region Private Helpers
+        private static void DownloadContent(string url, string rootFolder, string secondaryPath, string outputPath, bool disableSSL = false)
+        {
+            if (url.ToLower().StartsWith("http"))
+            {
+                var options = new RestClientOptions("https://centralsnippets.pure.totalimagine.com");
+                if (disableSSL)
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+                var client = new RestClient(options);
+                string path = string.IsNullOrEmpty(rootFolder) ? secondaryPath : $"{rootFolder}/{secondaryPath}";
+                RestRequest request = new($"Snippets/Demos/HelloWorld.cs");
+                var bytes = client.DownloadData(request);
+                if (bytes == null)
+                    throw new Exception($"Cannot get data from: {url}/{path} (Try disable SSL and see whether it works)");
+                File.WriteAllBytes(outputPath, bytes);
+            }
+            else if (Directory.Exists(url))
+            {
+                string filePath = string.IsNullOrEmpty(rootFolder) ? Path.Combine(url, secondaryPath) : Path.Combine(url, rootFolder, secondaryPath);
+                if (File.Exists(filePath))
+                    File.Copy(filePath, outputPath);
+                else throw new ArgumentException($"Cannot locate file: {filePath}");
+            }
+            else throw new ArgumentException($"Cannot parse url: {url}");
+        }
         private static string GetContent(string url, string rootFolder, string secondaryPath, bool disableSSL = false)
         {
             if (url.ToLower().StartsWith("http"))
