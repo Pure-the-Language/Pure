@@ -178,6 +178,7 @@ namespace Core
     {
         #region Private States
         private List<string> ImportedModules { get; set; } = new List<string>();
+        private string TotalScript = string.Empty;// Remark-cz: Notice we intentionally use a string instead of a StringBuilder to keep in sync the state with ScriptState
         private ScriptState<object> State { get; set; }
         /// <summary>
         /// Remark-cz: We require RoslynContext to be a singleton for some good reason - what was it?
@@ -264,6 +265,10 @@ namespace Core
         #endregion
 
         #region Method
+        internal string GetState()
+        {
+            return TotalScript.ToString().TrimEnd();
+        }
         internal void Parse(string input, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (ImportModuleRegex().IsMatch(input))
@@ -328,6 +333,7 @@ namespace Core
 
                 string text = File.ReadAllText(scriptPath);
                 foreach (var code in Interpreter.SplitScripts(text))
+                    // Remark-cz: This will cause issue with interrupting parsing state
                     Parse(code, scriptPath, nugetRepoIdentifier);
             }
             else if (HelpItemRegex().IsMatch(input))
@@ -363,6 +369,7 @@ namespace Core
                 // Remark-cz: This will NOT work with actions that modifies state by calling host functions
                 // Basically, host functions cannot and should not have side-effects on the state object directly
                 State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
+                TotalScript += string.IsNullOrEmpty(TotalScript) ? State.Script.Code : (Environment.NewLine + State.Script.Code);
                 if (State.ReturnValue != null)
                 {
                     if (printToConsole)

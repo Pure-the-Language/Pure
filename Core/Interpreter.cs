@@ -27,6 +27,7 @@ namespace Core
             ======Breaking Change======
             * v0.4.0: Remove `#` style line comment (potential conflict with #region due to how we parse it).
             * v0.5.0: Add add-on standard library CentralSnippets. Implement construct `Pull()` and `Preview()`.
+            * v0.5.1: Enhance Roslyn Context with script record.
             """;
         #endregion
 
@@ -75,6 +76,8 @@ namespace Core
             => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
         public object Evaluate(string expression)
             => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
+        public string GetState()
+            => Context.GetState();
         #endregion
 
         #region Updaters
@@ -113,6 +116,10 @@ namespace Core
         /// <summary>
         /// Split a large script into executable units for Roslyn
         /// </summary>
+        /// <remarks>
+        /// Notice due to state issues we can ONLY use this function (when combined with Construct.Parse())
+        /// inside hosting contexts that spawns the Interpreter and should NOT use it inside anything that's already being parsed
+        /// </remarks>
         public static string[] SplitScripts(string text)
         {
             string[] lines = text
