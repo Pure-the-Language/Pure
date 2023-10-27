@@ -282,18 +282,6 @@ namespace Core
                 ParseSingleUnsafe(input);
             else ParseSingle(input);
         }
-        internal void ParseUnsafe(string input, string currentScriptFile, string nugetRepoIdentifier)
-        {
-            if (ImportModuleRegex().IsMatch(input))
-                ImportModule(input, nugetRepoIdentifier);
-            else if (IncludeScriptRegex().IsMatch(input))
-                IncludeScript(input, currentScriptFile, nugetRepoIdentifier);
-            else if (HelpItemRegex().IsMatch(input))
-                HelpItem(input);
-            else if (IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(input))
-                ParseSingleUnsafe(input);
-            else ParseSingleUnsafe(input);
-        }
         internal object Evaluate(string expression, string currentScriptFile, string nugetRepoIdentifier)
         {
             if (ImportModuleRegex().IsMatch(expression))
