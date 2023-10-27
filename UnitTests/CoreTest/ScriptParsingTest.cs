@@ -208,6 +208,20 @@ namespace CoreTest
             Assert.Equal((expected + Environment.NewLine + secondScript).Replace("\r\n", "\n"), currentState);
         }
         [Fact]
+        public void ParseUnsafeShouldNotBeRecorded()
+        {
+            Interpreter interpreter = new(null, null, null, null, null);
+            interpreter.Start();
+
+            Core.Utilities.Construct.ParseUnsafe(""""
+                WriteLine("Hello World.");
+                """");
+
+            string expected = "string[] Arguments = Array.Empty<string>();";
+            string currentState = interpreter.GetState().Replace("\r\n", "\n");
+            Assert.Equal(expected, currentState);
+        }
+        [Fact]
         public void ParsingScriptInsideInterpreterShouldNOTWork2()
         {
             Interpreter interpreter = new(null, null, null, null, null);

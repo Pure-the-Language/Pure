@@ -278,8 +278,8 @@ namespace Core
                 IncludeScript(input, currentScriptFile, nugetRepoIdentifier);
             else if (HelpItemRegex().IsMatch(input))
                 HelpItem(input);
-            else if (ParseScriptRegex().IsMatch(input))
-                ParseSingle(input);
+            else if (IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(input))
+                ParseSingleUnsafe(input);
             else ParseSingle(input);
         }
         internal void ParseUnsafe(string input, string currentScriptFile, string nugetRepoIdentifier)
@@ -290,8 +290,8 @@ namespace Core
                 IncludeScript(input, currentScriptFile, nugetRepoIdentifier);
             else if (HelpItemRegex().IsMatch(input))
                 HelpItem(input);
-            else if (ParseScriptRegex().IsMatch(input))
-                ParseSingle(input);
+            else if (IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(input))
+                ParseSingleUnsafe(input);
             else ParseSingleUnsafe(input);
         }
         internal object Evaluate(string expression, string currentScriptFile, string nugetRepoIdentifier)
@@ -300,8 +300,11 @@ namespace Core
                 return null;
             else if (IncludeScriptRegex().IsMatch(expression))
                 return null;
-            else if (ParseScriptRegex().IsMatch(expression))
-                return ParseSingle(expression, false); // Parse is safe when executed on its own (without side effect before or after, but with side effect to the context)
+            else if (IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(expression))
+            {
+                ParseSingleUnsafe(expression); // Parse is safe when executed on its own (without side effect before or after, but with side effect to the context)
+                return null;
+            }
             else if (HelpItemRegex().IsMatch(expression))
                 return null;
             else 
@@ -427,7 +430,8 @@ namespace Core
         {
             try
             {
-                State = State.ContinueWithAsync(SyntaxWrap(script)).Result;
+                // Just execute without modifying state
+                State.ContinueWithAsync(SyntaxWrap(script));
                 if (State.ReturnValue != null)
                     PrintReturnValuePreviews(State.ReturnValue);
             }
@@ -654,8 +658,8 @@ namespace Core
         [GeneratedRegex(@"^Include\((.*?)(, ?(.*?))?\);?$")]
         public static partial Regex IncludeScriptRegex();
 
-        [GeneratedRegex(@"^Parse\((.*?)(, ?(.*?))?\);?$")]
-        public static partial Regex ParseScriptRegex();
+        [GeneratedRegex(@"^(Parse\((.*?)(, ?(.*?))?\);?)|(Pull\((.*?)(, ?(.*?))?\);?)$")]
+        public static partial Regex IsolatedScriptLineForSpecialFunctionsRegex();
 
         [GeneratedRegex(@"^Help\((.*?)\)$")]
         public static partial Regex HelpItemRegex();

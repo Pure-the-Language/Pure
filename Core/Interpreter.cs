@@ -141,7 +141,7 @@ namespace Core
                 if (!currentLineIsInBlockComment &&
                     (RoslynContext.ImportModuleRegex().IsMatch(line)
                     || RoslynContext.IncludeScriptRegex().IsMatch(line)
-                    || RoslynContext.ParseScriptRegex().IsMatch(line)   // Remark-cz: This means that our `Parse()` function when executed inside a script can only be on its own line
+                    || RoslynContext.IsolatedScriptLineForSpecialFunctionsRegex().IsMatch(line)   // Remark-cz: This means that our `Parse()` function etc. when executed inside a script can only be on its own line
                     || RoslynContext.HelpItemRegex().IsMatch(line)))
                 {
                     if (scriptBuilder.Length != 0)
