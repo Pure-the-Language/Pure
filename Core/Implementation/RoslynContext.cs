@@ -419,7 +419,7 @@ namespace Core
             try
             {
                 // Just execute without modifying state
-                State.ContinueWithAsync(SyntaxWrap(script));
+                var result = State.ContinueWithAsync(SyntaxWrap(script)).Result;
                 if (State.ReturnValue != null)
                     PrintReturnValuePreviews(State.ReturnValue);
             }
