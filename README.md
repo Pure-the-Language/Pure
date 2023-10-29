@@ -1,32 +1,54 @@
 # Pure - Lightweight Native C# Scripting Environment for .Net 7
 
-(Definition) Pure is the scripting version of C# with:
+Pure is a lightweight scripting environment based on Roslyn, offering some standard libraries for quick common tasks, and provides a handy scripting (REPL and Notebook) interface.  
+The Notebook interface is only usable for Window - but one can easily develop one for other desktop environments using cross-platform techniques. I didn't bother because I am the only one using Pure.
+
+Pure is the scripting version of C# with:
 
 1. Default global scope Math functions
-2. Minimalist syntactic sugar for more friendly REPL usage
-3. Native 1D "Vector" for numerical data processing
-4. Making simple and common things simpler
+2. Top level function and variable definitions, in addition to classes and all other common constructs of C#
+3. Making simple and common things simpler
+4. Macros to support text-based parsing, file inclusion and module import.
 
 Features:
 
 * Single-word package names.
-* Syntactic sugars.
-* On prompto package invokation (through `Import`).
+* On-prompto package invokation (through `Import`).
 * Pure uses `PUREPATH` to search for scripts when using `Include` and when executing script file directly from command line as the first argument.
 
-(Additional) Standard Libraries:
+I have highlighted the difference/advantage compared to traditional programming/scripting platforms:
 
-* ODBC
-* Python
-* Pipeline
-* Razor
+|Platform|Pure|C#|Python|PowerShell|Perl|
+|-|-|-|-|-|-|
+|Installation Size|Required .Net 7 (ASP.Net) Runtime; Distributable is around 100Mb|Proper development with an IDE (Visual Studio or IntelliJ) takes forever to install.|Too many versions.|Super easy to install and use.|Super lightweight and fast.|
+|Stability|C# .Net 7 based, will probably never change, very stable (depends on underlying C#); Very little new language constructs. Easily migratable to proper C#|Very stable as long as one doesn't bother GUI.|Fairly stable.|Fairly stable.|(PENDING)|
+|Package Management/Functionalities|Zero-hassle package management and functionalities import; Single-file throughout.|Many button-clicks (in IDE) or commands or csproj file modification to install pckages. Self-contained dependancy environment; Fast and lightweight.|Package management is troublesome, messy distributable/end script environments.|Batteries packed and I think generally bad idea to import additional non-official functionalities.|(PENDING)|
+|Summary|Provides most efficient short-snippet authoring capabilities.|Best for strongly typed and highly articulated solutions.|Lack of advanced language constructs; Ubiquitous support.|Good process automation; Syntax not suited for efficient OOP programming.|(PENIDNG)|
 
-Syntax & Special Commands:
+Some earlier experimental features are being deprecated:
 
-* Use `Import()` to import modules from PATH; Use `Include()` to transclude scripts from file name
-* Use `Help(name)` to get help about namespaces, types, and specific variables
-* Create 2D arrays of doubles directly using the syntax `var name = [<elements>]`
-* (Only applicable at REPL) For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted
+1. Minimalist syntactic sugar for more friendly REPL usage
+2. Native 1D "Vector" for numerical data processing: Create arrays of doubles directly using the syntax `var name = [<elements>]`
+3. Top-level import of static `Main` class from DLL libraries
+
+Pure provides the following standard libraries for "making things easier":
+
+|Library|Purpose|Status|
+|-|-|-|
+|ODBC|Database connection.|Stable|
+|Python|Python interoperation.|Experimental|
+|Pipeline|Shell-level task automation.|Experimental|
+|Razor|Single-entry exposure of Razor template engine.|Experimental|
+|CentralSnippets|Endpoint for [Central Snippets](https://centralsnippets.pure.totalimagine.com/) public sharing.|Experimental|
+
+Certain macros/syntax are provided to implement language level scripting constructs:
+
+|Macro/Syntax|Function|Remark|
+|-|-|-|
+|`Import()`|Import modules from PATH, and automatically download packages from NuGet|Must be on its own line|
+|`Include()`|transclude scripts from file path|Must be on its own line|
+|`Help(name)`|Get help about namespaces, types, and specific variables||
+|Expresison evaluation|For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted|Only applicable at REPL|
 
 ## Installation
 
@@ -35,44 +57,45 @@ The source code can be built on Windows/Linux with .Net 7 SDK.
 * To use on Windows, just download prebuilt executables from [Release](./releases/latest).
 * To build on Linux, either try `PublishAll.ps1` (require `pwsh`), or just do `otnet publish Frontends/Pure/Pure.csproj --use-current-runtime --output Publish`.
 
-## TODO
-
-- [ ] (Core)(Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
-- [ ] (Data Library) Provide `Data` (standalone).
-- [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
-
-## Technicalities
-
-### URGENT
-
-Currently Pure has two main issues that stops it from being used for production use (but it's OK right now to use it for one-liners and quick REPL purpose):
-
-1. The REPL interpreter right now (along with the core engine) aka. Pure.exe cannot parse statements that span multiple lines, this makes stuff like defining functions or classes very inconvinient if not at all impossible. The Pure.exe program itself apparently needs work, along with tne engine code - as a full re-write/replacement, we are yet to integrate BaseRepl from CSharpRepl and implement codename Aurora, though we must be careful to make sure the runtime and startup speed of Pure is acceptible, because at the moment the startup time of Pure is much slower than Python, Elixir or other cli programs.
-2. Importing and consuming Nuget packages is functional but not fully streamlined/safe yet.
-3. Currently `Help` is not showing extension methods.
-
-Currently for simplifying parsing of scripts we require script C# syntaxes - however it's really NOT nice to have semi-colons in scripts. Ideally we can work around that but it's hard. (In practice when authoring long scripts this is not an issue)
-
 ## Create a Library for Use in Pure
+
+There are three types of ready-to-use libraries for Pure:
+
+* Any regular C# Net 7 DLL, as published on [Nuget](https://www.nuget.org/).
+* Any user-authored scripts that may be included using `Inlcude` macro.
+* Any user-shared snippets published on [Central Snippets](https://github.com/Pure-the-Language/CentralSnippets) or similar places.
 
 The intended usage scenario of Pure is like this:
 
 * Pure provides a complete syntax and all of the standard features of .Net 7 runtime
-* On top of the basics, Pure provides some syntactic sugars and global utility methods (those features are optional when using **Purer**)
+* On top of the basics, Pure provides some standard libraries to further streamline common tasks
 * On top of that, Pure provides native support for library importing (using `Import()`) and scripting importing (using `Include()`)
 * When extending existing functionalities of Pure or simply developing libraries around re-usable code, a developer would write actual C# Class Library projects and expose those as DLLs for end consumption in Pure.
 
-A library is just any regular C# Net 7 DLL.
+As such, to create a library for Pure is very easy - just like creating any standard C# library. A convention is used that a static class named `Main` inside the library assembly will have all its static members made available globally when using `Import()` in Pure.  
+By default, when importing in Pure, all namespaces of the DLL module containing public classes will be imported.
 
-Create a static class named `Main` - all static members will be available globally when using `Import()` in Pure. By default, when importing in Pure, all namespaces of the DLL module containing public classes will be imported.
-
-### Troubleshooting
+**Troubleshooting**
 
 Pure is written in Net 7. However, when loading external DLLs, it's currently only safe to assume only Net Standard 2.0 and maybe Net Core 3.1 contexts are supported (i.e. just loading Net 7 may not work out of the box). For instance, System.Data.Odbc will throw exception "Platform not Supported" even though the platform (e.g. win64) is supported - it's the runtime that's causing the issue. A temporary workaround is when developing plugin/libraries, all plugins should target Net Standard 2.0+ or Net Core 3.1+ or Net Framework 4.6.1+. In reality, the issue is NOT within Net 7 as hosting context - THE RUNTIME IS INDEED 7.0.1 (within Roslyn), and [CSharpREPL](https://github.com/waf/CSharpRepl) (our reference interpreter) can consume System.Data.Odbc without problem, so we should be able to load Net 7 assemblies, it's just due to the way we handle DLL loading, we need to load exactly the correct DLL and cannot load an "entry" dll. We use CSharpREPL to find the correct DLL that we need (e.g. for ODBC, it should be `AppData\Roaming\.csharprepl\packages\System.Data.Odbc.7.0.0\runtimes\win\lib\net7.0\System.Data.Odbc.dll`).
 
 System.Drawing is not (directly) supported on this platform. Notice the scenario is like that when using ODBC libraries - likely because it has many runtime versions. This is because at the moment "Import" cannot properly make use of the likely-redirection dlls. One solution for this is to select specific runtime when build instead of target "Portable" runtime.
 
 Library Authoring Requirements: Note that any (plug-in) libraries being authored CANNOT (and thus should not) directly target (or indirectly target) *.Net 7 Windows* because the hosting environment (aka. Pure) target *.Net 7* (without specifying windows as target). The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
+
+## TODO
+
+(CONSIDER PUTTING THEM ALL INTO GITHUB ISSUES)
+
+The current state of Pure is very OK to be used for one-liners and quick REPL commands. The two frontends (one REPL/CLI and the other Notebook) are generally very stable right now.
+
+- [ ] The REPL interpreter (along with the core engine) aka. Pure.exe cannot parse statements that span multiple lines, this makes stuff like defining functions or classes very inconvinient if not at all impossible - this is not an issue when using Pure to execute script files, but is a hassle when using the REPL. The Pure.exe program itself apparently needs work, along with tne engine code - as a full re-write/replacement, we are yet to integrate BaseRepl from CSharpRepl and implement codename Aurora, though we must be careful to make sure the runtime and startup speed of Pure is acceptible, because at the moment the startup time of Pure is much slower than Python, Elixir or other cli programs. By all means, due to lack of development resources, we might not bother more advanced REPL because it's not worth it and Pure is very efficient without it for majority of use cases.
+- [ ] Importing and consuming Nuget packages is functional but not fully streamlined/safe yet - at the moment it's stable if we consume individual packages, but there is no built-in mechanism to safe-guard against potential dependency issues.
+- [ ] Currently `Help` is not showing extension methods.
+
+- [ ] (Core)(Pipeline Library) Provide Utilities.Run that streamlines running command and gets output as string.
+- [ ] (Data Library) Provide `Data` (standalone).
+- [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
 
 # (Wiki) Pure - The Scripting Language
 
