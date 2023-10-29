@@ -114,6 +114,9 @@ The current state of Pure is very OK to be used for one-liners and quick REPL co
 - [ ] (Data Library) Provide `Data` (standalone).
 - [ ] (Core) Enhance "Arguments" with all kinds of command line argument utilities like Elixir and how we usually use it.
 
+- [ ] (Documentation) Create basic usage YouTube demo
+- [ ] (Documentation) Create standard library YouTube usage tutorial
+
 # (Wiki) Pure - The Scripting Language
 
 <!-- This will be the main book for Pure usage; Consider it as a user guide; This shall be written independent from the rest of Pure solution documentations. -->
