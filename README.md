@@ -50,6 +50,23 @@ Certain macros/syntax are provided to implement language level scripting constru
 |`Help(name)`|Get help about namespaces, types, and specific variables||
 |Expresison evaluation|For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted|Only applicable at REPL|
 
+```mermaid
+timeline
+    Title Roadmap (Subject to Change)
+    v0.1: Misc.
+    v0.2: Misc.
+    v0.3: Dynamic parsing.
+    v0.4: Misc.
+    v0.5: CentralSnippets
+    v0.6: Stablization and issue fixing.
+    v0.7: Notebook enhancement/trouble shooting.
+    v0.8: CLI cross-platform support.
+    v0.9: Standard library completion and code structure clean up.
+    v1.0: Stable release, version unification.
+```
+
+At the moment, the version of Pure suites shall be identified/associated with [Core version](https://github.com/search?q=repo%3APure-the-Language/Pure%20CoreVersion&type=code).
+
 ## Installation
 
 The source code can be built on Windows/Linux with .Net 7 SDK.
