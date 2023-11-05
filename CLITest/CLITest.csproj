@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CLI\CLI.csproj" />
+    <ProjectReference Include="..\StandardLibraries\CLI\CLI.csproj" />
   </ItemGroup>
 
 </Project>
