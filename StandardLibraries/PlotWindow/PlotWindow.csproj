@@ -8,6 +8,7 @@
 	  <UseWPF>true</UseWPF>
 	  <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <PublishReadyToRun>true</PublishReadyToRun>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

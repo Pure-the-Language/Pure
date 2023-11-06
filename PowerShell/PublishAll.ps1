@@ -53,18 +53,22 @@ foreach ($Item in $PublishNugets)
     dotnet pack $PSScriptRoot\..\$Item --output $NugetPublishFolder
 }
 
+# Validation
+$pureExePath = Join-Path $PublishFolder "Pure.exe"
+if (-Not (Test-Path $pureExePath))
+{
+    Write-Host "Build failed."
+    Exit
+}
+
+# Generate Documentation
+& $pureExePath $PSScriptRoot\GenerateDocumentation.cs $LibraryPublishFolder $PublishFolder\APIDoc.md
+
 # Create archive
 $Date = Get-Date -Format yyyyMMdd
 $ArchiveFolder = "$PublishFolder\..\Packages"
 $ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_Windows_B$Date.zip"
 New-Item -ItemType Directory -Force -Path $ArchiveFolder
 Compress-Archive -Path $PublishFolder\* -DestinationPath $ArchivePath -Force
-
-# Validation
-if (-Not (Test-Path (Join-Path $PublishFolder "Pure.exe")))
-{
-    Write-Host "Build failed."
-    Exit
-}
 
 Set-Location $PrevPath
