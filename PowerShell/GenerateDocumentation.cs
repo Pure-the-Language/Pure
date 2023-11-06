@@ -43,7 +43,7 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     StringBuilder builder = new();
     builder.AppendLine("# Pure API Documentation\n");
 
-    foreach(var doc in docs.OrderBy(d => d.Name))
+    foreach(var doc in docs.OrderBy(d => d.AssemblyName))
     {
         builder.AppendLine($"## {doc.AssemblyName}\n");
         

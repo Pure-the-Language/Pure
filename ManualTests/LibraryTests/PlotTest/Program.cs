@@ -8,8 +8,8 @@
             var y = x.Select(v => v*2).ToArray();
             var z = x.Select(v => v*v).ToArray();
 
-            Plot.Plotters.Scatter(x, new List<double[]> { x, y, z}, "--Labels", "X", "Y", "Z");
-            Plot.Plotters.Signal(x, 5, "Output_Signal.png");
+            Graphing.Plotters.Scatter(x, new List<double[]> { x, y, z}, "--Labels", "X", "Y", "Z");
+            Graphing.Plotters.Signal(x, 5, "Output_Signal.png");
         }
     }
 }

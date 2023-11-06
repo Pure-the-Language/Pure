@@ -1,4 +1,4 @@
-﻿using Plot;
+﻿using Graphing;
 
 namespace PlotWindow
 {
