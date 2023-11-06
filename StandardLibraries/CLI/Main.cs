@@ -48,9 +48,9 @@ namespace CLI
 
             // Initialize all arrays
             foreach (var p in properties.Where(p => p.Value.PropertyType.IsArray))
-                p.Value.SetValue(instance, Array.CreateInstance(p.Value.PropertyType, 0));
+                p.Value.SetValue(instance, Array.CreateInstance(p.Value.PropertyType.GetElementType(), 0));
             foreach (var a in attributes.Where(a => a.Value.FieldType.IsArray))
-                a.Value.SetValue(instance, Array.CreateInstance(a.Value.FieldType, 0));
+                a.Value.SetValue(instance, Array.CreateInstance(a.Value.FieldType.GetElementType(), 0));
 
             Dictionary<string, string[]> mapping = MapMany(true, arguments);
             foreach ((string Key, string[] Values) in mapping)
@@ -155,9 +155,14 @@ namespace CLI
             if (type.IsArray)
             {
                 Type elementType = type.GetElementType();
-                return values
-                    .Select(v => Convert.ChangeType(ConvertSingle(elementType, v), elementType))
-                    .ToArray();
+                var array = Array.CreateInstance(elementType, values.Length);
+                for (int i = 0; i < values.Length; i++)
+                {
+                    string valueString = values[i];
+                    object value = ConvertSingle(elementType, valueString);
+                    array.SetValue(value, i);
+                }
+                return array;
             }
             else if (type != typeof(string) && !type.IsValueType)
                 throw new ArgumentException($"{name} must be value type.");
