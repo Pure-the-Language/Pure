@@ -4,7 +4,12 @@
     {
         static void Main(string[] args)
         {
-            Plot.Plotters.Scatter(new double[] { 1, 2, 3}, new double[] {4, 5, 6 });
+            var x = Enumerable.Range(0, 100).Select(v => (double)v).ToArray();
+            var y = x.Select(v => v*2).ToArray();
+            var z = x.Select(v => v*v).ToArray();
+
+            Plot.Plotters.Scatter(x, new List<double[]> { x, y, z}, "--Labels", "X", "Y", "Z");
+            Plot.Plotters.Signal(x, 5, "Output_Signal.png");
         }
     }
 }
