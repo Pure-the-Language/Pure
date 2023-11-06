@@ -28,6 +28,7 @@ foreach ($Item in $PublishWindowsExecutables)
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
+    "StandardLibraries\Vector\Vector.csproj"
     "StandardLibraries\Python\Python.csproj"
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"
@@ -50,6 +51,7 @@ foreach ($Item in $PublishWindowsLibraryComponents)
 }
 # Publish Nugets
 $PublishNugets = @(
+    "StandardLibraries\Vector\Vector.csproj"
     "StandardLibraries\Python\Python.csproj"
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"
