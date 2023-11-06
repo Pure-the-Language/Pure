@@ -1,6 +1,6 @@
 ﻿namespace Math
 {
-    public partial class Vector : IList<double>
+    public partial class Vector1D : IList<double>
     {
         #region Statistical Measures
         /// <summary>
@@ -73,7 +73,7 @@
         /// <summary>
         /// Compute correlation
         /// </summary>
-        public double Correlation(Vector other)
+        public double Correlation(Vector1D other)
         {
             double covariance = Covariance(other);
             double std1 = PopulationSTD;   // Always use n-1 for population
@@ -83,7 +83,7 @@
         /// <summary>
         /// Compute covariance
         /// </summary>
-        public double Covariance(Vector other)
+        public double Covariance(Vector1D other)
         {
             if (Values.Length != other.Values.Length)
                 throw new ArgumentException("Vector size doesn't match");

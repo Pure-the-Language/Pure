@@ -7,7 +7,7 @@ namespace Math
     /// This provides base container and operations.
     /// Data type is immutable.
     /// </remarks>
-    public partial class Vector : IList<double>
+    public partial class Vector1D : IList<double>
     {
         #region Properties
         private double[] Values { get; set; }
@@ -17,23 +17,42 @@ namespace Math
         /// <summary>
         /// Construct empty.
         /// </summary>
-        public Vector() 
+        public Vector1D() 
             => Values = Array.Empty<double>();
         /// <summary>
         /// Construct from (copy of) values.
         /// </summary>
-        /// <param name="values"></param>
-        public Vector(IEnumerable<double> values)
+        public Vector1D(IEnumerable<double> values)
             => Values = values.ToArray();
+        /// <summary>
+        /// Construct from (copy of) values.
+        /// </summary>
+        public Vector1D(IEnumerable<int> values)
+            => Values = values.Select(v => (double)v).ToArray();
+        /// <summary>
+        /// Construct from (copy of) values.
+        /// </summary>
+        public Vector1D(IEnumerable<bool> values)
+            => Values = values.Select(v => v ? 1.0 : 0.0).ToArray();
+        /// <summary>
+        /// Construct from (copy of) values.
+        /// </summary>
+        public Vector1D(IEnumerable<float> values)
+            => Values = values.Select(v => (double)v).ToArray();
+        /// <summary>
+        /// Construct from (copy of) values.
+        /// </summary>
+        public Vector1D(IEnumerable<string> values)
+            => Values = values.Select(v => double.Parse(v)).ToArray();
         /// <summary>
         /// Construct from param arguments.
         /// </summary>
-        public Vector(params double[] values)
+        public Vector1D(params double[] values)
             => Values = values;
         /// <summary>
         /// Construct from string, either comma delimited or space delimited.
         /// </summary>
-        public Vector(string values)
+        public Vector1D(string values)
             => Values = values.Contains(',')
                 ? values.Split(',', StringSplitOptions.TrimEntries).Select(double.Parse).ToArray()
                 : values.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(double.Parse).ToArray();
@@ -62,97 +81,97 @@ namespace Math
         /// <summary>
         /// Identity (no copy is made)
         /// </summary>
-        public static Vector operator +(Vector a) => a;
+        public static Vector1D operator +(Vector1D a) => a;
         /// <summary>
         /// Gets negative
         /// </summary>
-        public static Vector operator -(Vector a) => new(a.Values.Select(v => -v));
+        public static Vector1D operator -(Vector1D a) => new(a.Values.Select(v => -v));
         /// <summary>
         /// Adds two vectors
         /// </summary>
-        public static Vector operator +(Vector a, Vector b)
+        public static Vector1D operator +(Vector1D a, Vector1D b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
-            return new Vector(a.Zip(b, (a, b) => a + b));
+            return new Vector1D(a.Zip(b, (a, b) => a + b));
         }
         /// <summary>
         /// Adds a scalar to every element
         /// </summary>
-        public static Vector operator +(Vector a, double v)
+        public static Vector1D operator +(Vector1D a, double v)
         {
-            return new Vector(a.Select(a => a + v));
+            return new Vector1D(a.Select(a => a + v));
         }
         /// <summary>
         /// Subtract two vectors
         /// </summary>
-        public static Vector operator -(Vector a, Vector b)
+        public static Vector1D operator -(Vector1D a, Vector1D b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
-            return new Vector(a.Zip(b, (a, b) => a - b));
+            return new Vector1D(a.Zip(b, (a, b) => a - b));
         }
         /// <summary>
         /// Subtract a scalar to every element
         /// </summary>
-        public static Vector operator -(Vector a, double v)
+        public static Vector1D operator -(Vector1D a, double v)
         {
-            return new Vector(a.Select(a => a - v));
+            return new Vector1D(a.Select(a => a - v));
         }
         /// <summary>
         /// Multiply element-wise
         /// </summary>
-        public static Vector operator *(Vector a, Vector b)
+        public static Vector1D operator *(Vector1D a, Vector1D b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
-            return new Vector(a.Zip(b, (a, b) => a * b));
+            return new Vector1D(a.Zip(b, (a, b) => a * b));
         }
         /// <summary>
         /// Multiply every element by a scalar
         /// </summary>
-        public static Vector operator *(Vector a, double v)
+        public static Vector1D operator *(Vector1D a, double v)
         {
-            return new Vector(a.Select(a => a * v));
+            return new Vector1D(a.Select(a => a * v));
         }
         /// <summary>
         /// Divide element-wise
         /// </summary>
-        public static Vector operator /(Vector a, Vector b)
+        public static Vector1D operator /(Vector1D a, Vector1D b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
-            return new Vector(a.Zip(b, (a, b) => b == 0 ? throw new DivideByZeroException() : a / b));
+            return new Vector1D(a.Zip(b, (a, b) => b == 0 ? throw new DivideByZeroException() : a / b));
         }
         /// <summary>
         /// Multiply every element by a scalar
         /// </summary>
-        public static Vector operator /(Vector a, double v)
+        public static Vector1D operator /(Vector1D a, double v)
         {
             if (v == 0)
                 throw new DivideByZeroException();
-            return new Vector(a.Select(a => a / v));
+            return new Vector1D(a.Select(a => a / v));
         }
         /// <summary>
         /// Exponent element-wise
         /// </summary>
-        public static Vector operator ^(Vector a, double v)
+        public static Vector1D operator ^(Vector1D a, double v)
         {
-            return new Vector(a.Select(a => System.Math.Pow(a, v)));
+            return new Vector1D(a.Select(a => System.Math.Pow(a, v)));
         }
         /// <summary>
         /// Append an element
         /// </summary>
-        public static Vector operator |(Vector a, double v)
+        public static Vector1D operator |(Vector1D a, double v)
         {
-            return new Vector(a.Append(v));
+            return new Vector1D(a.Append(v));
         }
         /// <summary>
         /// Append an entire vector
         /// </summary>
-        public static Vector operator |(Vector a, Vector b)
+        public static Vector1D operator |(Vector1D a, Vector1D b)
         {
-            return new Vector(a.Concat(b));
+            return new Vector1D(a.Concat(b));
         }
         #endregion
 
@@ -160,37 +179,37 @@ namespace Math
         /// <summary>
         /// Apply element-wise arbitrary function
         /// </summary>
-        public Vector Apply(Func<double, double> fun)
+        public Vector1D Apply(Func<double, double> fun)
             => new(Values.Select(fun));
         /// <summary>
         /// Compute cos element-wise
         /// </summary>
-        public Vector Cos()
+        public Vector1D Cos()
             => new(Values.Select(System.Math.Cos));
         /// <summary>
         /// Compute cosh element-wise
         /// </summary>
-        public Vector Cosh()
+        public Vector1D Cosh()
             => new(Values.Select(System.Math.Cosh));
         /// <summary>
         /// Compute sin element-wise
         /// </summary>
-        public Vector Sin()
+        public Vector1D Sin()
             => new(Values.Select(System.Math.Sin));
         /// <summary>
         /// Compute sinh element-wise
         /// </summary>
-        public Vector Sinh()
+        public Vector1D Sinh()
             => new(Values.Select(System.Math.Sinh));
         /// <summary>
         /// Compute pow element-wise
         /// </summary>
-        public Vector Pow(double expo)
+        public Vector1D Pow(double expo)
             => new(Values.Select(v => System.Math.Pow(v, expo)));
         /// <summary>
         /// Compute sqrt element-wise
         /// </summary>
-        public Vector Sqrt()
+        public Vector1D Sqrt()
             => new(Values.Select(System.Math.Sqrt));
         #endregion
 
@@ -198,7 +217,7 @@ namespace Math
         /// <summary>
         /// Make a copy
         /// </summary>
-        public Vector Copy()
+        public Vector1D Copy()
             => new (this);
         #endregion
 
