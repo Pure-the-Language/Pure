@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Core.Math
+namespace Math
 {
     /// <remarks>
     /// Design: Syntax elegancy is more important than performance

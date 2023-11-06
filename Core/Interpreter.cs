@@ -30,6 +30,8 @@ namespace Core
             * v0.5.1: Enhance Roslyn Context with script record.
             * v0.5.2: Implement language level `Parse()` and `Pull()` handling.
             * v0.5.3: Simplify Help output for methods of specific type.
+            ======Breaking Change======
+            * v0.6.0: Remove syntactic wrap for vector/array creation. Move and enhance Vector type to standard library.
             """;
         #endregion
 
