@@ -10,3 +10,13 @@ Variations:
 
 * `Plot(X, Y, Type, Settings)`
 * `Plot(X, Y1-Y20, Type, Settings)`
+
+General configurations:
+
+* `Title`
+* `XAxis`
+* `YAxis`
+
+Available plot types:
+
+* Signal: affects `SignalSampleRate` option.

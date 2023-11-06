@@ -47,13 +47,14 @@ namespace Plot
             // Options
             writer.Write(data.Options.WindowWidth);
             writer.Write(data.Options.WindowHeight);
+            writer.Write(data.Options.Interactive);
+            writer.Write(data.Options.OutputImage);
             writer.Write(data.Options.DrawTitle);
             writer.Write(data.Options.DrawAxies);
-            writer.Write(data.Options.SaveImage);
             writer.Write(data.Options.Title);
             writer.Write(data.Options.XAxis);
             writer.Write(data.Options.YAxis);
-            writer.Write(data.Options.ImageOutput);
+            writer.Write(data.Options.SignalSampleRate);
         }
         public static InteractivePlotData ReadFromStream(BinaryReader reader)
         {
@@ -80,13 +81,14 @@ namespace Plot
             {
                 WindowWidth = reader.ReadInt32(),
                 WindowHeight = reader.ReadInt32(),
+                Interactive = reader.ReadBoolean(),
+                OutputImage = reader.ReadString(),
                 DrawTitle = reader.ReadBoolean(),
                 DrawAxies = reader.ReadBoolean(),
-                SaveImage = reader.ReadBoolean(),
                 Title = reader.ReadString(),
                 XAxis = reader.ReadString(),
                 YAxis = reader.ReadString(),
-                ImageOutput = reader.ReadString(),
+                SignalSampleRate = reader.ReadInt32(),
             };
 
             return data;

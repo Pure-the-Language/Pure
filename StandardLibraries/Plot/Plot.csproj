@@ -17,5 +17,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Core.csproj" />
+		<ProjectReference Include="..\CLI\CLI.csproj" />
 	</ItemGroup>
 </Project>

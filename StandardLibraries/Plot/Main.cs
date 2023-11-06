@@ -1,5 +1,4 @@
 ﻿using Core.Helpers;
-using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -11,50 +10,47 @@ namespace Plot
     public static class Plotters
     {
         /// <summary>
-        /// Default plot options
-        /// </summary>
-        public static PlotOptions DefaultOptions => new();
-
-        /// <summary>
         /// Draw or render a scatter plot; Currently looks the same as line chart
         /// </summary>
         public static void Scatter(double[] x, double[] y, params string[] settings)
-            => GeneralRoutine(PlotType.Scatter, x, new List<double[]> { y }, settings);
+            => GeneralParsingRoutine(PlotType.Scatter, x, new List<double[]> { y }, settings);
+        /// <summary>
+        /// Draw or render a scatter plot; Currently looks the same as line chart
+        /// </summary>
+        public static void Scatter(double[] x, List<double[]> ys, params string[] settings)
+            => GeneralParsingRoutine(PlotType.Scatter, x, ys, settings);
+        /// <summary>
+        /// Draw or render a line chart
+        /// </summary>
+        public static void LineChart(double[] x, List<double[]> ys, params string[] settings)
+            => GeneralParsingRoutine(PlotType.LineChart, x, ys, settings);
         /// <summary>
         /// Draw or render a line chart
         /// </summary>
         public static void LineChart(double[] x, double[] y, params string[] settings)
-            => GeneralRoutine(PlotType.LineChart, x, new List<double[]> { y }, settings);
+            => GeneralParsingRoutine(PlotType.LineChart, x, new List<double[]> { y }, settings);
+        /// <summary>
+        /// Draw a signal chart
+        /// </summary>
+        public static void Signal(double[] v, int sampleRate, params string[] additionalSettings)
+            => GeneralParsingRoutine(PlotType.Signal, null, new List<double[]> { v }, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString(), }).ToArray());
+        /// <summary>
+        /// Draw a signal chart
+        /// </summary>
+        public static void Signal(List<double[]> vs, int sampleRate, params string[] additionalSettings)
+            => GeneralParsingRoutine(PlotType.Signal, null, vs, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString(), }).ToArray());
 
         #region Routines
-        private static void GeneralRoutine(PlotType plotType, double[] x, List<double[]> ys, params string[] settings)
+        private static void GeneralParsingRoutine(PlotType plotType, double[] x, List<double[]> ys, params string[] settings)
         {
+            // Parse arguments
             if (settings.Length == 0)
-                settings = new string[] { "--interactive" };
-
-            PlotOptions options = DefaultOptions;
-            foreach (string setting in settings)
-            {
-                if (setting.EndsWith(".png"))
-                {
-                    options.SaveImage = true;
-                    options.ImageOutput = setting;
-                }
-                switch (setting)
-                {
-                    case "--interactive":
-                        SummonInteractiveWindow(plotType, x, ys, options);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ScottPlot.Plot plt = InitializePlot(plotType, x, ys, options);
-            if (options.SaveImage)
-                plt.SaveFig(options.ImageOutput);
+                settings = new string[] { $"--{nameof(PlotOptions.Interactive)}" };
+            else if (!settings.First().StartsWith("--"))
+                settings = new string[] { $"--{nameof(PlotOptions.OutputImage)}" }.Concat(settings).ToArray();
+            var options = CLI.Main.Parse<PlotOptions>(settings);
+            Main.Execute(plotType, x, ys, options);
         }
-
         /// <summary>
         /// Initialize plot based on type and data
         /// </summary>
@@ -72,6 +68,10 @@ namespace Plot
                     foreach (var y in ys)
                         plot.AddScatter(x, y);
                     break;
+                case PlotType.Signal:
+                    foreach (var y in ys)
+                        plot.AddSignal(y, options.SignalSampleRate);
+                    break;
                 default:
                     break;
             }
@@ -80,7 +80,10 @@ namespace Plot
         #endregion
 
         #region Interactivity
-        public static void SummonInteractiveWindow(PlotType plotType, double[] x, IList<double[]> ys, PlotOptions options)
+        /// <summary>
+        /// Create display using interactive window
+        /// </summary>
+        public static void SummonInteractiveWindow(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options)
         {
             string executableName = "PlotWindow.exe";
             string defaultPath = Path.Combine(GetAssemblyFolder(), executableName);
@@ -102,7 +105,7 @@ namespace Plot
             {
                 PlotType = plotType,
                 X = x,
-                Ys = ys.ToList(),
+                Ys = ys,
                 Options = options
             }, filePath);
 
@@ -130,6 +133,69 @@ namespace Plot
     /// </summary>
     public static class Main
     {
+        #region Defaults
+        /// <summary>
+        /// Default plot options
+        /// </summary>
+        public static PlotOptions DefaultOptions => new();
+        #endregion
 
+        #region Plot
+        /// <summary>
+        /// Plot interaactively
+        /// </summary>
+        public static void Plot(string plotType, double[] x, List<double[]> ys, PlotOptions options = null)
+            => Plot(Enum.Parse<PlotType>(plotType), x, ys, options);
+        /// <summary>
+        /// Plot interaactively
+        /// </summary>
+        public static void Plot(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options = null)
+        {
+            options ??= DefaultOptions;
+            options.Interactive = true;
+
+            Execute(plotType, x, ys, options);
+        }
+        #endregion
+
+        #region Save
+        /// <summary>
+        /// Save to image
+        /// </summary>
+        public static void Save(string plotType, double[] x, List<double[]> ys, string output, PlotOptions options = null)
+            => Save(Enum.Parse<PlotType>(plotType), x, ys, output, options);
+        /// <summary>
+        /// Save to image
+        /// </summary>
+        public static void Save(PlotType plotType, double[] x, List<double[]> ys, string output, PlotOptions options = null)
+        {
+            options ??= DefaultOptions;
+            options.OutputImage = output;
+
+            Execute(plotType, x, ys, options);
+        }
+        #endregion
+
+        #region Routine
+        /// <summary>
+        /// Execute graphing per options and plot type.
+        /// </summary>
+        public static void Execute(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options)
+        {
+            // Basic inputs check
+            if (plotType != PlotType.Signal
+                && ys.Any(y => y.Length != x.Length))
+                throw new ArgumentException($"Mismatch data point size {ys.First(y => y.Length != x.Length).Length} (from y) vs {x.Length} (from x).");
+
+            // Generate output or display
+            if (options.OutputImage != null && options.OutputImage.EndsWith(".png"))
+            {
+                ScottPlot.Plot plt = Plotters.InitializePlot(plotType, x, ys, options);
+                plt.SaveFig(options.OutputImage);
+            }
+            if (options.Interactive)
+                Plotters.SummonInteractiveWindow(plotType, x, ys, options);
+        }
+        #endregion
     }
 }
