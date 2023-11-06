@@ -1,162 +1,205 @@
 ﻿using System.Collections;
 
-namespace Core.Math
+namespace Math
 {
     /// <remarks>
-    /// Design: Syntax elegancy is more important than performance
+    /// Design: Syntax elegancy is more important than performance.
+    /// This provides base container and operations.
+    /// Data type is immutable.
     /// </remarks>
-    public class Vector : IList<double>
+    public partial class Vector : IList<double>
     {
         #region Properties
         private double[] Values { get; set; }
         #endregion
 
         #region Construction
-        public Vector() { Values = Array.Empty<double>(); }
+        /// <summary>
+        /// Construct empty.
+        /// </summary>
+        public Vector() 
+            => Values = Array.Empty<double>();
+        /// <summary>
+        /// Construct from (copy of) values.
+        /// </summary>
+        /// <param name="values"></param>
         public Vector(IEnumerable<double> values)
-        {
-            Values = values.ToArray();
-        }
+            => Values = values.ToArray();
+        /// <summary>
+        /// Construct from param arguments.
+        /// </summary>
         public Vector(params double[] values)
-        {
-            Values = values;
-        }
+            => Values = values;
+        /// <summary>
+        /// Construct from string, either comma delimited or space delimited.
+        /// </summary>
+        public Vector(string values)
+            => Values = values.Contains(',')
+                ? values.Split(',', StringSplitOptions.TrimEntries).Select(double.Parse).ToArray()
+                : values.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(double.Parse).ToArray();
+        #endregion
+
+        #region Query
+        /// <summary>
+        /// Get length of vector
+        /// </summary>
         public int Length => Values.Length;
+        /// <summary>
+        /// Another name for length
+        /// </summary>
+        public int Norm() => Length;
+        /// <summary>
+        /// Get string representation of size.
+        /// </summary>
         public string Size => $"Vector: {Values.Length} elements";
+        /// <summary>
+        /// ToString override
+        /// </summary>
         public override string ToString() => $"[{string.Join(", ", Values)}]";
         #endregion
 
         #region Operator Operations
+        /// <summary>
+        /// Identity (no copy is made)
+        /// </summary>
         public static Vector operator +(Vector a) => a;
-        public static Vector operator -(Vector a) => new Vector(a.Values.Select(v => -v));
+        /// <summary>
+        /// Gets negative
+        /// </summary>
+        public static Vector operator -(Vector a) => new(a.Values.Select(v => -v));
+        /// <summary>
+        /// Adds two vectors
+        /// </summary>
         public static Vector operator +(Vector a, Vector b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
             return new Vector(a.Zip(b, (a, b) => a + b));
         }
+        /// <summary>
+        /// Adds a scalar to every element
+        /// </summary>
         public static Vector operator +(Vector a, double v)
         {
             return new Vector(a.Select(a => a + v));
         }
+        /// <summary>
+        /// Subtract two vectors
+        /// </summary>
         public static Vector operator -(Vector a, Vector b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
             return new Vector(a.Zip(b, (a, b) => a - b));
         }
+        /// <summary>
+        /// Subtract a scalar to every element
+        /// </summary>
         public static Vector operator -(Vector a, double v)
         {
             return new Vector(a.Select(a => a - v));
         }
+        /// <summary>
+        /// Multiply element-wise
+        /// </summary>
         public static Vector operator *(Vector a, Vector b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
             return new Vector(a.Zip(b, (a, b) => a * b));
         }
+        /// <summary>
+        /// Multiply every element by a scalar
+        /// </summary>
         public static Vector operator *(Vector a, double v)
         {
             return new Vector(a.Select(a => a * v));
         }
+        /// <summary>
+        /// Divide element-wise
+        /// </summary>
         public static Vector operator /(Vector a, Vector b)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector size doesn't match");
             return new Vector(a.Zip(b, (a, b) => b == 0 ? throw new DivideByZeroException() : a / b));
         }
+        /// <summary>
+        /// Multiply every element by a scalar
+        /// </summary>
         public static Vector operator /(Vector a, double v)
         {
             if (v == 0)
                 throw new DivideByZeroException();
             return new Vector(a.Select(a => a / v));
         }
+        /// <summary>
+        /// Exponent element-wise
+        /// </summary>
         public static Vector operator ^(Vector a, double v)
         {
             return new Vector(a.Select(a => System.Math.Pow(a, v)));
         }
+        /// <summary>
+        /// Append an element
+        /// </summary>
+        public static Vector operator |(Vector a, double v)
+        {
+            return new Vector(a.Append(v));
+        }
+        /// <summary>
+        /// Append an entire vector
+        /// </summary>
+        public static Vector operator |(Vector a, Vector b)
+        {
+            return new Vector(a.Concat(b));
+        }
         #endregion
 
-        #region Numerical Operations
+        #region Basic Numerical Operations
+        /// <summary>
+        /// Apply element-wise arbitrary function
+        /// </summary>
+        public Vector Apply(Func<double, double> fun)
+            => new(Values.Select(fun));
+        /// <summary>
+        /// Compute cos element-wise
+        /// </summary>
         public Vector Cos()
-            => new(Values.Select(v => System.Math.Cos(v)));
+            => new(Values.Select(System.Math.Cos));
+        /// <summary>
+        /// Compute cosh element-wise
+        /// </summary>
         public Vector Cosh()
-            => new(Values.Select(v => System.Math.Cosh(v)));
+            => new(Values.Select(System.Math.Cosh));
+        /// <summary>
+        /// Compute sin element-wise
+        /// </summary>
         public Vector Sin()
-            => new(Values.Select(v => System.Math.Sin(v)));
+            => new(Values.Select(System.Math.Sin));
+        /// <summary>
+        /// Compute sinh element-wise
+        /// </summary>
         public Vector Sinh()
-            => new(Values.Select(v => System.Math.Sinh(v)));
+            => new(Values.Select(System.Math.Sinh));
+        /// <summary>
+        /// Compute pow element-wise
+        /// </summary>
         public Vector Pow(double expo)
             => new(Values.Select(v => System.Math.Pow(v, expo)));
+        /// <summary>
+        /// Compute sqrt element-wise
+        /// </summary>
         public Vector Sqrt()
-            => new(Values.Select(v => System.Math.Sqrt(v)));
-        #endregion
-
-        #region Statistics
-        public double Min => Values.Min();
-        public double Mean => Values.Average();
-        public double Max => Values.Max();
-        public double Sum => Values.Sum();
-        public double Variance
-        {
-            get
-            {
-                double variance = 0.0;
-                if (Values.Count() > 1)
-                {
-                    double avg = Values.Average();
-                    variance += Values.Sum(value => System.Math.Pow(value - avg, 2.0));
-                }
-                // For population, use n-1, for sample, use n
-                return variance / Values.Length;
-            }
-        }
-        public double STD => System.Math.Sqrt(Variance);
-        public double PopulationVariance
-        {
-            get
-            {
-                double variance = 0.0;
-                if (Values.Count() > 1)
-                {
-                    double avg = Values.Average();
-                    variance += Values.Sum(value => System.Math.Pow(value - avg, 2.0));
-                }
-                // For population, use n-1, for sample, use n
-                return variance / (Values.Length - 1);
-            }
-        }
-        public double PopulationSTD => System.Math.Sqrt(Variance);
-
-        public double Correlation(Vector other)
-        {
-            double covariance = Covariance(other);
-            double std1 = PopulationSTD;   // Always use n-1 for population
-            double std2 = other.PopulationSTD;
-            return covariance / (std1 * std2);
-        }
-        public double Covariance(Vector other)
-        {
-            if (Values.Length != other.Values.Length)
-                throw new ArgumentException("Vector size doesn't match");
-
-            double variance = 0.0;
-            if (Values.Count() > 1)
-            {
-                double avg1 = Values.Average();
-                double avg2 = Values.Average();
-                for (int i = 0; i < Values.Length; i++)
-                    variance += (Values[i] - avg1) * (other.Values[i] - avg2);
-            }
-            return variance / (Values.Length - 1); // Always use n-1 for population
-        }
+            => new(Values.Select(System.Math.Sqrt));
         #endregion
 
         #region Construction
+        /// <summary>
+        /// Make a copy
+        /// </summary>
         public Vector Copy()
-        { 
-            return new Vector(this); 
-        }
+            => new (this);
         #endregion
 
         #region IList Interface

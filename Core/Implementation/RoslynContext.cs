@@ -234,7 +234,6 @@ namespace Core
                     "System.IO", 
                     "System.Linq")
                 // Pure language essential namespaces, types, and global static functions
-                .AddImports($"{nameof(Core)}.{nameof(Math)}")
                 .AddImports($"{nameof(Core)}.{nameof(Utilities)}")
                 .AddImports($"{nameof(Core)}.{nameof(Utilities)}.{nameof(Construct)}");
             // Additional commonly used but secondary imports
@@ -478,26 +477,6 @@ namespace Core
         #region Routine
         private static string SyntaxWrap(string input)
         {
-            // Numerical array creation  // Remark-cz-2023-Aug: This is troublesome, consider deprecate this feature.
-            var match = ArrayVariableCreationRegex().Match(input);
-            if (match.Success)
-            {
-                string varName = match.Groups[1].Value;
-                string[] values = match.Groups[2].Value
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(v => v.Trim())
-                    .Where(v => !string.IsNullOrWhiteSpace(v))
-                    .ToArray();
-                if (values.All(v => double.TryParse(v, out _)))
-                    input = $"var {varName} = new Vector(new double[] {{{string.Join(",", values)}}})";
-            }
-            // Literal numerical array  // Remark-cz-2023-Aug: This is troublesome, consider deprecate this feature.
-            input = LiteralArrayRegex().Replace(input, m =>
-            {
-                if (m.Groups["Numeral"].Captures.All(c => double.TryParse(c.Value, out _)))
-                    return $"new double[]{{{string.Join(", ", m.Groups["Numeral"].Captures.Select(c => c.Value))}}}";
-                return m.Value;
-            });
             // Single line assignment
             if (LineAssignmentRegex().IsMatch(input))
                 return $"{input};";
@@ -659,12 +638,6 @@ namespace Core
 
         [GeneratedRegex(@"^Help\((.*?)\)$")]
         public static partial Regex HelpItemRegex();
-
-        [GeneratedRegex(@"^var ([^ ]+?) *= *\[(.*?)\] *$")]
-        public static partial Regex ArrayVariableCreationRegex();
-
-        [GeneratedRegex(@"(?<=[^a-zA-Z0-9])\[((?<Numeral>\d+),\s*?){2,}((?<Numeral>\d+)\s*?)\]")]
-        public static partial Regex LiteralArrayRegex();
 
         [GeneratedRegex(@"^(\S*)?\s*[a-zA-Z0-9_]+\s*=.*[^;]$")]
         public static partial Regex LineAssignmentRegex();

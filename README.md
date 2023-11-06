@@ -27,9 +27,8 @@ I have highlighted the difference/advantage compared to traditional programming/
 
 Some earlier experimental features are being deprecated:
 
-1. Minimalist syntactic sugar for more friendly REPL usage
-2. Native 1D "Vector" for numerical data processing: Create arrays of doubles directly using the syntax `var name = [<elements>]`
-3. Top-level import of static `Main` class from DLL libraries
+1. Minimalist syntactic sugar for more friendly REPL usage (specifically, semi-colon usage)
+2. Top-level import of static `Main` class from DLL libraries
 
 Pure provides the following standard libraries for "making things easier":
 
@@ -157,16 +156,16 @@ A library is a collection of C# functionalities. ~~It can optionally expose a st
 
 ### 1D Vectot Numerics
 
-Pure supports simple MATLAB like vector numerics.
-
-You can define a vector this way: `var a = [1, 2, 3, 4, 5]`. That is, use square brackets of numerical values to assign to a variable.
-
-Vectors support arithmetics: 
+Pure supports simple vector numerics through a library. See Vector library for more details. Below is some basic example:
 
 ```c#
-var a = [1, 2, 3]
-var b = 5
+// Define vectors using values or strings
+var a = Vector(1, 2, 3)
+var b = Vector("2 3 4")
+
+// Vectors support arithmetics using operators
 a + b
+a * 5
 ```
 
 ## Chapter 2 - REPL
