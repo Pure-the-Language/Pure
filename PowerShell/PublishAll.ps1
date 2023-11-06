@@ -34,10 +34,19 @@ $PublishLibraries = @(
     "StandardLibraries\Razor\Razor.csproj"
     "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
     "StandardLibraries\CLI\CLI.csproj"
+    "StandardLibraries\Plot\Plot.csproj"
 )
 foreach ($Item in $PublishLibraries)
 {
     dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $LibraryPublishFolder
+}
+# Publish Windows-only Library Components
+$PublishWindowsLibraryComponents = @(
+    "StandardLibraries\PlotWindow\PlotWindow.csproj"
+)
+foreach ($Item in $PublishWindowsLibraryComponents)
+{
+    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $PublishFolder
 }
 # Publish Nugets
 $PublishNugets = @(

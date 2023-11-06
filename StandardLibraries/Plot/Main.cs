@@ -15,7 +15,7 @@ namespace Plot
             plt.AddScatter(x, y);
             if (settings.Length == 0)
                 SummonInteractiveWindow(PlotType.Scatter, x, new List<double[]> { y });
-            foreach (var setting in settings)
+            foreach (string setting in settings)
             {
                 if (setting.EndsWith(".png"))
                     plt.SaveFig(setting);
@@ -57,7 +57,7 @@ namespace Plot
         public static string GetAssemblyFolder()
         {
             string codeBase = Assembly.GetExecutingAssembly().Location;
-            UriBuilder uri = new UriBuilder(codeBase);
+            UriBuilder uri = new(codeBase);
             string path = Uri.UnescapeDataString(uri.Path);
             return Path.GetDirectoryName(path);
         }
