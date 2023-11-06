@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Security.AccessControl;
 
 namespace CLI
 {
@@ -86,9 +85,6 @@ namespace CLI
         /// </summary>
         public static Dictionary<string, string[]> MapMany(bool trim, params string[] arguments)
         {
-            if (arguments.Length % 2 != 0)
-                throw new ArgumentException("Non-even number of arguments.");
-
             Dictionary<string, List<string>> map = new();
             string key = null;
             for (int i = 0; i < arguments.Length; i++)

@@ -64,5 +64,11 @@ namespace CLITest
         {
             Assert.NotNull(CLI.Main.Parse<TestRecord001>().Outputs);
         }
+        [Fact]
+        public void MapManyShouldHandleToggles()
+        {
+            Dictionary<string, string[]> result = CLI.Main.MapMany(true, "--Name", "Jason", "--Toggle");
+            Assert.Empty(result["Toggle"]);
+        }
     }
 }
