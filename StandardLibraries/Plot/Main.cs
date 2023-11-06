@@ -1,4 +1,5 @@
 ﻿using Core.Helpers;
+using ScottPlot;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -43,11 +44,13 @@ namespace Plot
         #region Routines
         private static void GeneralParsingRoutine(PlotType plotType, double[] x, List<double[]> ys, params string[] settings)
         {
-            // Parse arguments
-            if (settings.Length == 0)
+            // Prepare arguments
+            if (settings.Length == 0 || !settings.Any(s => s.EndsWith(".png")))
                 settings = new string[] { $"--{nameof(PlotOptions.Interactive)}" };
             else if (!settings.First().StartsWith("--"))
                 settings = new string[] { $"--{nameof(PlotOptions.OutputImage)}" }.Concat(settings).ToArray();
+
+            // Parse arguments
             var options = CLI.Main.Parse<PlotOptions>(settings);
             Main.Execute(plotType, x, ys, options);
         }
@@ -61,20 +64,43 @@ namespace Plot
             switch (plotType)
             {
                 case PlotType.Scatter:
-                    foreach (var y in ys)
+                    for (int i = 0; i < ys.Count; i++)
+                    {
+                        double[] y = ys[i];
+                        if (i < options.Labels.Length)
+                            plot.AddScatter(x, y, label: options.Labels[i]);
+                        else
                         plot.AddScatter(x, y);
+                    }
                     break;
                 case PlotType.LineChart:
-                    foreach (var y in ys)
-                        plot.AddScatter(x, y);
+                    for (int i = 0; i < ys.Count; i++)
+                    {
+                        double[] y = ys[i];
+                        if (i < options.Labels.Length)
+                            plot.AddScatter(x, y, label: options.Labels[i]);
+                        else
+                            plot.AddScatter(x, y);
+                    }
                     break;
                 case PlotType.Signal:
-                    foreach (var y in ys)
-                        plot.AddSignal(y, options.SignalSampleRate);
+                    for (int i = 0; i < ys.Count; i++)
+                    {
+                        double[] y = ys[i];
+                        if (i < options.Labels.Length)
+                            plot.AddSignal(y, options.SignalSampleRate, label: options.Labels[i]);
+                        else
+                            plot.AddSignal(y, options.SignalSampleRate);
+                    }
                     break;
                 default:
                     break;
             }
+
+            // Enable additional drawing
+            if (options.Labels.Length > 0)
+                plot.Legend();
+
             return plot;
         }
         #endregion
