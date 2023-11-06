@@ -571,8 +571,12 @@ namespace Core
                         foreach (var method in type.GetMethods())
                             if (method.Name == name)
                                 methodInfos.Add(method);
+
+                bool isMethodsNonUnique = methodInfos.Select(m => m.DeclaringType).Distinct().Count() > 1;
+                if (!isMethodsNonUnique)
+                    Console.WriteLine($"From type {methodInfos.Select(m => m.DeclaringType).Distinct().Single().Name}: ");
                 foreach (var method in methodInfos)
-                    Console.WriteLine(PrintMethod(method));
+                    Console.WriteLine(PrintMethod(method, isMethodsNonUnique)); // Is method is defined in many types, we print types names
                 return true;
             }
             return false;
@@ -593,7 +597,7 @@ namespace Core
                 .ToArray();
             var publicMethods = type
                 .GetMethods()
-                .Select(PrintMethod)
+                .Select(t => PrintMethod(t, false))
                 .Distinct()
                 .OrderBy(t => t)
                 .ToArray();
@@ -616,7 +620,7 @@ namespace Core
                       {string.Join(Environment.NewLine + "  ", publicMethods)}
                     """);
         }
-        public static string PrintMethod(MethodInfo m)
+        public static string PrintMethod(MethodInfo m, bool printTypeName = false)
         {
             string name = m.Name;
             string type = m.ReflectedType.Name;
@@ -627,15 +631,19 @@ namespace Core
             if (m.ReturnType.GenericTypeArguments.Length != 0)
             {
                 var generics = m.ReturnType.GetGenericArguments().Select(t => t.Name);
-                returnType = $" : {m.ReturnType.Name}<{string.Join(", ", generics)}>";
+                returnType = $": {m.ReturnType.Name}<{string.Join(", ", generics)}>";
             }
             if (m.ContainsGenericParameters)
             {
                 var generics = m.GetGenericArguments().Select(t => t.Name);
-                return $"{type}: {name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}";
+                return printTypeName 
+                    ? $"{type}: {name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}"
+                    : $"{name}<{string.Join(", ", generics)}>({string.Join(", ", arguments)}){returnType}";
             }
             else 
-                return $"{type}: {name}({string.Join(", ", arguments)}){returnType}";
+                return printTypeName
+                    ? $"{type}: {name}({string.Join(", ", arguments)}){returnType}"
+                    : $"{name}({string.Join(", ", arguments)}){returnType}";
         }
         #endregion
 
