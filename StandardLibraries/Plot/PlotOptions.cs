@@ -1,4 +1,4 @@
-﻿namespace Plot
+﻿namespace Graphing
 {
     /// <summary>
     /// Available plot types

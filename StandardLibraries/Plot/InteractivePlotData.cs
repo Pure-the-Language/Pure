@@ -1,7 +1,7 @@
 ﻿using K4os.Compression.LZ4.Streams;
 using System.Text;
 
-namespace Plot
+namespace Graphing
 {
     /// <summary>
     /// Main interoperability data transfer between this library and display backend (frontend)

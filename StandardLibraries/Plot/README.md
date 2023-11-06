@@ -20,3 +20,7 @@ General configurations:
 Available plot types:
 
 * Signal: affects `SignalSampleRate` option.
+
+Technical note:
+
+* Namespace is Graphing because one of the main method is called `Plot`; If we keep both there will be naming conflict that require fully denoting the names which is inconvinient to use in Pure.

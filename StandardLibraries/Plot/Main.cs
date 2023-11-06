@@ -3,7 +3,7 @@ using ScottPlot;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Plot
+namespace Graphing
 {
     /// <summary>
     /// Static class of various specific plotting types
