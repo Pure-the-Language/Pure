@@ -4,26 +4,6 @@ using System.Text;
 namespace Plot
 {
     /// <summary>
-    /// Available plot types
-    /// </summary>
-    public enum PlotType
-    {
-        /// <summary>
-        /// Basic scatter plog
-        /// </summary>
-        Scatter
-    }
-
-    /// <summary>
-    /// General configurations for plots, certain values are only applicable to specific plots
-    /// </summary>
-    public struct PlotOptions
-    {
-        public string Title { get; set; }
-        public string XAxis { get; set; }
-    }
-
-    /// <summary>
     /// Main interoperability data transfer between this library and display backend (frontend)
     /// </summary>
     public class InteractivePlotData
@@ -65,6 +45,15 @@ namespace Plot
                     writer.Write(y);
             }
             // Options
+            writer.Write(data.Options.WindowWidth);
+            writer.Write(data.Options.WindowHeight);
+            writer.Write(data.Options.DrawTitle);
+            writer.Write(data.Options.DrawAxies);
+            writer.Write(data.Options.SaveImage);
+            writer.Write(data.Options.Title);
+            writer.Write(data.Options.XAxis);
+            writer.Write(data.Options.YAxis);
+            writer.Write(data.Options.ImageOutput);
         }
         public static InteractivePlotData ReadFromStream(BinaryReader reader)
         {
@@ -87,6 +76,18 @@ namespace Plot
                 data.Ys.Add(y);
             }
             // Options
+            data.Options = new PlotOptions()
+            {
+                WindowWidth = reader.ReadInt32(),
+                WindowHeight = reader.ReadInt32(),
+                DrawTitle = reader.ReadBoolean(),
+                DrawAxies = reader.ReadBoolean(),
+                SaveImage = reader.ReadBoolean(),
+                Title = reader.ReadString(),
+                XAxis = reader.ReadString(),
+                YAxis = reader.ReadString(),
+                ImageOutput = reader.ReadString(),
+            };
 
             return data;
         }
