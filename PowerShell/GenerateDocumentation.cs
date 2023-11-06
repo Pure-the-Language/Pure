@@ -43,7 +43,7 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     StringBuilder builder = new();
     builder.AppendLine("# Pure API Documentation\n");
 
-    foreach(var doc in docs)
+    foreach(var doc in docs.OrderBy(d => d.Name))
     {
         builder.AppendLine($"## {doc.AssemblyName}\n");
         
@@ -57,11 +57,12 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     // Save MD
     string markdown = builder.ToString().TrimEnd();
     string documentationName = Path.GetFileNameWithoutExtension(outputFilePath);
-    File.WriteAllText($"{documentationName}.md", markdown);
+    strinrg outputFolder = Path.GetDirectory(outputFilePath);
+    File.WriteAllText(Path.Combine(outputFolder, $"{documentationName}.md"), markdown);
 
     // Save HTMl
     var html = Markdown.ToHtml(markdown);
-    File.WriteAllText($"{documentationName}.html", html);
+    File.WriteAllText(Path.Combine(outputFolder, $"{documentationName}.html"), html);
 }
 
 if (Arguments.Length != 2)
