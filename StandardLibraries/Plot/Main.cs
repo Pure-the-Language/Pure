@@ -4,7 +4,10 @@ using System.Reflection;
 
 namespace Plot
 {
-    public static class Main
+    /// <summary>
+    /// Static class of various specific plotting types
+    /// </summary>
+    public static class Plotters
     {
         public static void Scatter(double[] x, double[] y, params string[] settings)
         {
@@ -59,5 +62,13 @@ namespace Plot
             return Path.GetDirectoryName(path);
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Standard library entry
+    /// </summary>
+    public static class Main
+    {
+
     }
 }

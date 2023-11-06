@@ -1,10 +1,11 @@
-﻿# Plot Library
+﻿# (Experimental) Plot Library
 
 Status: Usable, Expect Changes
 
-Provides an experimental single-entry straightforward 2D plotting functionalities for numerical data: `Plot(XAxis, AXisSeries, Settings)`. This is NOT part of Pure standard and may be removed without further notice.
+Provides an experimental single-entry straightforward easy-to-use and remember 1D/2D plotting functionalities for numerical and catagorical data: `Plot(XAxis, Optional AXisSeries, Type, Settings)`.  
+This is NOT part of Pure standard and may be removed without further notice.
 
 Variations:
 
-* `Plot(X, Y, Settings)`
-* `Plot(X, Y1-Y20, Settings)`
+* `Plot(X, Y, Type, Settings)`
+* `Plot(X, Y1-Y20, Type, Settings)`
