@@ -23,7 +23,7 @@ public static Documentation ParseXML(string filePath)
         .OfType<XmlElement>()
         .Select(e => {
             string name = e.GetAttribute("name");
-            string summary = e.SelectSingleNode("summary").InnerText.Trim();
+            string summary = e.SelectSingleNode("summary")?.InnerText.Trim() ?? string.Empty;
             summary = Regex.Replace(summary, @"^\s+", string.Empty, RegexOptions.Multiline);
             return new Member(name, summary);
         })
@@ -47,7 +47,7 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     {
         builder.AppendLine($"## {doc.AssemblyName}\n");
         
-        foreach(var member in doc.Members)
+        foreach(var member in doc.Members.OrderBy(m => m.Name))
         {
             builder.AppendLine($"### `{member.Name}`\n");
             builder.AppendLine(member.Summary + '\n');
@@ -57,7 +57,7 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     // Save MD
     string markdown = builder.ToString().TrimEnd();
     string documentationName = Path.GetFileNameWithoutExtension(outputFilePath);
-    string outputFolder = Path.GetDirectory(outputFilePath);
+    string outputFolder = Path.GetDirectoryName(outputFilePath);
     File.WriteAllText(Path.Combine(outputFolder, $"{documentationName}.md"), markdown);
 
     // Save HTMl
