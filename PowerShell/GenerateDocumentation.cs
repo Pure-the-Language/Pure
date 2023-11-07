@@ -57,7 +57,7 @@ public static void OutputDocumentations(string outputFilePath, Documentation[] d
     // Save MD
     string markdown = builder.ToString().TrimEnd();
     string documentationName = Path.GetFileNameWithoutExtension(outputFilePath);
-    strinrg outputFolder = Path.GetDirectory(outputFilePath);
+    string outputFolder = Path.GetDirectory(outputFilePath);
     File.WriteAllText(Path.Combine(outputFolder, $"{documentationName}.md"), markdown);
 
     // Save HTMl
