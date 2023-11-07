@@ -11,6 +11,10 @@ namespace Math
     {
         #region Properties
         private double[] Values { get; set; }
+        /// <summary>
+        /// Get raw data.
+        /// </summary>
+        public double[] Raw => Values;
         #endregion
 
         #region Construction
