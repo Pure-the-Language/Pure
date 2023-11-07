@@ -24,25 +24,38 @@ namespace Graphing
         /// Draw or render a line chart
         /// </summary>
         public static void LineChart(double[] x, List<double[]> ys, params string[] settings)
-            => GeneralParsingRoutine(PlotType.LineChart, x, ys, settings);
+            => GeneralParsingRoutine(PlotType.Line, x, ys, settings);
         /// <summary>
         /// Draw or render a line chart
         /// </summary>
         public static void LineChart(double[] x, double[] y, params string[] settings)
-            => GeneralParsingRoutine(PlotType.LineChart, x, new List<double[]> { y }, settings);
+            => GeneralParsingRoutine(PlotType.Line, x, new List<double[]> { y }, settings);
+        /// <summary>
+        /// Plot histogram into given number of bars.
+        /// </summary>
+        public static void Histogram(double[] v, int slots, params string[] additionalSettings)
+            => GeneralParsingRoutine(PlotType.Histogram, null, new List<double[]> { v }, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.HistogramBars)}", slots.ToString() }).ToArray());
         /// <summary>
         /// Draw a signal chart
         /// </summary>
         public static void Signal(double[] v, int sampleRate, params string[] additionalSettings)
-            => GeneralParsingRoutine(PlotType.Signal, null, new List<double[]> { v }, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString(), }).ToArray());
+            => GeneralParsingRoutine(PlotType.Signal, null, new List<double[]> { v }, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString() }).ToArray());
         /// <summary>
         /// Draw a signal chart
         /// </summary>
         public static void Signal(List<double[]> vs, int sampleRate, params string[] additionalSettings)
-            => GeneralParsingRoutine(PlotType.Signal, null, vs, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString(), }).ToArray());
+            => GeneralParsingRoutine(PlotType.Signal, null, vs, additionalSettings.Concat(new string[] { $"--{nameof(PlotOptions.SignalSampleRate)}", sampleRate.ToString() }).ToArray());
 
         #region Routines
         private static void GeneralParsingRoutine(PlotType plotType, double[] x, List<double[]> ys, params string[] settings)
+        {
+            PlotOptions options = CookOptions(settings);
+            Main.Execute(plotType, x, ys, options);
+        }
+        /// <summary>
+        /// Make options from string arguments.
+        /// </summary>
+        public static PlotOptions CookOptions(string[] settings)
         {
             // Prepare arguments
             if (settings.Length == 0 || !settings.Any(s => s.EndsWith(".png")))
@@ -52,7 +65,7 @@ namespace Graphing
 
             // Parse arguments
             var options = CLI.Main.Parse<PlotOptions>(settings);
-            Main.Execute(plotType, x, ys, options);
+            return options;
         }
         /// <summary>
         /// Initialize plot based on type and data
@@ -73,7 +86,7 @@ namespace Graphing
                         plot.AddScatter(x, y);
                     }
                     break;
-                case PlotType.LineChart:
+                case PlotType.Line:
                     for (int i = 0; i < ys.Count; i++)
                     {
                         double[] y = ys[i];
@@ -93,11 +106,24 @@ namespace Graphing
                             plot.AddSignal(y, options.SignalSampleRate);
                     }
                     break;
+                case PlotType.Histogram:
+                    double[] v = ys.Single();
+                    ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: options.HistogramBars);
+                    hist.AddRange(v);
+                    plot.AddBar(values: hist.Counts, positions: hist.Bins);
+                    break;
                 default:
                     break;
             }
 
             // Enable additional drawing
+            if (options.DrawTitle)
+                plot.Title(options.Title);
+            if (options.DrawAxies)
+            {
+                plot.XAxis.Label(options.XAxis);
+                plot.YAxis.Label(options.YAxis);
+            }
             if (options.Labels.Length > 0)
                 plot.Legend();
 
@@ -166,7 +192,25 @@ namespace Graphing
         public static PlotOptions DefaultOptions => new();
         #endregion
 
+        #region Utilities
+        /// <summary>
+        /// Make a list.
+        /// </summary>
+        public static List<double[]> Make(params double[][] vs)
+            => vs.ToList();
+        /// <summary>
+        /// Make options.
+        /// </summary>
+        public static PlotOptions Make(string arguments)
+            => Plotters.CookOptions(arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        #endregion
+
         #region Plot
+        /// <summary>
+        /// Plot interaactively
+        /// </summary>
+        public static void Plot(double[] x, params double[][] ys)
+            => Plot(PlotType.Line, x, ys.ToList());
         /// <summary>
         /// Plot interaactively
         /// </summary>

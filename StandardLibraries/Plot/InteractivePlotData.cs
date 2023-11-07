@@ -9,25 +9,46 @@ namespace Graphing
     public class InteractivePlotData
     {
         #region Data
+        /// <summary>
+        /// Plot type.
+        /// </summary>
         public PlotType PlotType { get; set; }
+        /// <summary>
+        /// Main X-axis numerical data.
+        /// </summary>
         public double[] X { get; set; }
+        /// <summary>
+        /// Main Y-axis values.
+        /// </summary>
         public List<double[]> Ys { get; set; }
+        /// <summary>
+        /// Additional customization options.
+        /// </summary>
         public PlotOptions Options { get; set; }
         #endregion
 
         #region Serialization
+        /// <summary>
+        /// Load plot data from compressed file.
+        /// </summary>
         public static InteractivePlotData LoadData(string filepath)
         {
             using LZ4DecoderStream source = LZ4Stream.Decode(File.OpenRead(filepath));
             using BinaryReader reader = new(source, Encoding.UTF8, false);
             return ReadFromStream(reader);
         }
+        /// <summary>
+        /// Save plot data as compressed file.
+        /// </summary>
         public static void SaveData(InteractivePlotData data, string filepath)
         {
             using LZ4EncoderStream stream = LZ4Stream.Encode(File.Create(filepath));
             using BinaryWriter writer = new(stream, Encoding.UTF8, false);
             WriteToStream(writer, data);
         }
+        /// <summary>
+        /// Save plot data to stream.
+        /// </summary>
         public static void WriteToStream(BinaryWriter writer, InteractivePlotData data)
         {
             // Plot type
@@ -54,8 +75,15 @@ namespace Graphing
             writer.Write(data.Options.Title);
             writer.Write(data.Options.XAxis);
             writer.Write(data.Options.YAxis);
+            writer.Write(data.Options.Labels.Length);
+            foreach (string label in data.Options.Labels)
+                writer.Write(label);
+            writer.Write(data.Options.HistogramBars);
             writer.Write(data.Options.SignalSampleRate);
         }
+        /// <summary>
+        /// Read plot data from stream.
+        /// </summary>
         public static InteractivePlotData ReadFromStream(BinaryReader reader)
         {
             InteractivePlotData data = new();
@@ -88,6 +116,10 @@ namespace Graphing
                 Title = reader.ReadString(),
                 XAxis = reader.ReadString(),
                 YAxis = reader.ReadString(),
+                Labels = Enumerable.Range(0, reader.ReadInt32())
+                    .Select(i => reader.ReadString())
+                    .ToArray(),
+                HistogramBars = reader.ReadInt32(),
                 SignalSampleRate = reader.ReadInt32(),
             };
 

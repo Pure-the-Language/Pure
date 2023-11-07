@@ -12,15 +12,20 @@
         /// <summary>
         /// Basic line charat
         /// </summary>
-        LineChart,
+        Line,
         /// <summary>
         /// Evenlly sampled with sample rate
         /// </summary>
-        Signal
+        Signal,
+        /// <summary>
+        /// Histogram
+        /// </summary>
+        Histogram
     }
 
     /// <summary>
-    /// General configurations for plots, certain values are only applicable to specific plots
+    /// General configurations for plots, certain values are only applicable to specific plots.
+    /// Serialized in <see cref="InteractivePlotData"/>
     /// </summary>
     public class PlotOptions
     {
@@ -49,6 +54,10 @@
         #endregion
 
         #region Plot Type Specific
+        /// <summary>
+        /// Number of bars for histogram; Input data must have more than this number of elements otherwise the value is not used.
+        /// </summary>
+        public int HistogramBars { get; set; } = 20;
         /// <summary>
         /// Applies to Signal type plot
         /// </summary>
