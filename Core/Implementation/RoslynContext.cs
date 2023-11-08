@@ -211,7 +211,7 @@ namespace Core
         #endregion
 
         #region Construction
-        public RoslynContext(bool importAdditional, Action<string> outputHandler)
+        public RoslynContext(bool importAdditional, Action<string> outputHandler, IEnumerable<Assembly> additionalReferences = null)
         {
             if (_Singleton != null)
                 throw new InvalidOperationException("Roslyn Context is already initialized.");
@@ -236,6 +236,9 @@ namespace Core
                 // Pure language essential namespaces, types, and global static functions
                 .AddImports($"{nameof(Core)}.{nameof(Utilities)}")
                 .AddImports($"{nameof(Core)}.{nameof(Utilities)}.{nameof(Construct)}");
+            // Add additional assembly references (won't automatically import namespaces)
+            if (additionalReferences != null )
+                options.AddReferences(additionalReferences.ToArray());
             // Additional commonly used but secondary imports
             if (importAdditional)
             {

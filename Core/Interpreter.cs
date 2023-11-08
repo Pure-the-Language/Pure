@@ -2,6 +2,7 @@
 using System.Text;
 using Console = Colorful.Console;
 using Core.Utilities;
+using System.Reflection;
 
 namespace Core
 {
@@ -11,7 +12,7 @@ namespace Core
     public class Interpreter
     {
         #region Versioning
-        public static readonly string CoreVersion = "v0.6.2";
+        public static readonly string CoreVersion = "v0.6.3";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -34,6 +35,7 @@ namespace Core
             * v0.6.0: Remove syntactic wrap for vector/array creation. Move and enhance Vector type to standard library.
             * v0.6.1: Enhance output message for Importing module.
             * v0.6.2: Publish Core as NuGet.
+            * v0.6.3: Allow adding additional assembly references upon interpreter initialization.
             """;
         #endregion
 
@@ -67,9 +69,9 @@ namespace Core
         #endregion
 
         #region Methods
-        public void Start(Action<string> outputHandler = null)
+        public void Start(Action<string> outputHandler = null, IEnumerable<Assembly> additionalReferences = null)
         {
-            Context = new RoslynContext(true, outputHandler);
+            Context = new RoslynContext(true, outputHandler, additionalReferences);
             if (!string.IsNullOrWhiteSpace(WelcomeMessage))
                 Console.WriteLine(WelcomeMessage);
 
