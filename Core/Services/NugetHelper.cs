@@ -41,6 +41,8 @@ namespace Core.Services
                 Directory.Delete(packageFolder, true);
             Directory.CreateDirectory(packageFolder);
 
+            string output;
+            string errors;
             try
             {
                 string scriptPath = Path.Combine(packageFolder, "Script.ps1");
@@ -50,7 +52,7 @@ namespace Core.Services
                     dotnet add package {packageName}
                     dotnet build --runtime win-x64 --no-self-contained --output ..\CompiledDLLs
                     """);
-                IssuePowerShellCommands(scriptPath);
+                IssuePowerShellCommands(scriptPath, out output, out errors);
             }
             catch (Exception)
             {
@@ -61,11 +63,19 @@ namespace Core.Services
             {
                 Console.WriteLine($"Cannot locate package DLL - the package is built successfully but the package DLL cannot be found at {dllPath}");
                 Console.WriteLine($"Consult folder {Path.Combine(packageFolder, "CompiledDLLs")} for information on entrance dll name and use overload of `Import` to import proper dll.");
+                Console.WriteLine("(If the module you are trying to import targets specific platforms e.g. Windows, then the generated .csproj file might be the cause of error)");
                 Console.WriteLine("Syntax: `Import(LibraryName as DLLName)`, e.g. `Import(pythonnet as Python.Runtime)`");
+                Console.WriteLine($"""
+                    This is the output/error from build process:
+                    {output}
+
+                    [Errors]
+                    {errors}
+                    """);
             }
             return dllPath;
 
-            static void IssuePowerShellCommands(string scriptFile)
+            static void IssuePowerShellCommands(string scriptFile, out string output, out string errors)
             {
                 scriptFile = Path.GetFullPath(scriptFile);
                 Process process = new()
@@ -83,8 +93,8 @@ namespace Core.Services
                 };
                 process.Start();
 
-                string output = process.StandardOutput.ReadToEnd();
-                string errors = process.StandardError.ReadToEnd();
+                output = process.StandardOutput.ReadToEnd();
+                errors = process.StandardError.ReadToEnd();
             }
             static string SpecialHandlePackages(string packageName, string loadDllAs)
             {
