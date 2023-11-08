@@ -17,10 +17,10 @@ namespace PlotWindow
                       PlotWindow <Input CSV> <Formatting>: Draw an interactive window from data read from CSV file.
                     """);
             }
+            else if (args.Length > 1 || args.First().EndsWith(".csv"))
+                PlotAsCLI(args);
             else if (args.Length == 1)
                 PlotAsBackend(args.Single());
-            else if (args.Length > 1)
-                PlotAsCLI(args);
         }
         #endregion
 
@@ -42,9 +42,9 @@ namespace PlotWindow
         {
             // Read CSV
             string csvFile = args[0];
-            string configurations = args[1];
+            string[] configurations = args.Skip(1).ToArray();
             (double[] X, List<double[]> Ys) values = GetData(csvFile);
-            InteractivePlotData data = new InteractivePlotData()
+            InteractivePlotData data = new()
             {
                 X = values.X,
                 Ys = values.Ys,
@@ -68,19 +68,29 @@ namespace PlotWindow
             List<List<double>> ys = new();
             foreach (var line in File.ReadLines(csvFile))
             {
-                double[] values = line.Split(',').Select(p => double.Parse(p)).ToArray();
-                x.Add(values.First());
-                foreach (var item in values.Skip(1).Skip(ys.Count))
-                    ys.Add(new());
-                for (int i = 1; i < values.Length; i++)
-                    ys[i - 1].Add(values[i]);
+                string[] parts = line.Split(',');
+                try
+                {
+                    double[] values = parts.Select(double.Parse).ToArray();
+                    x.Add(values.First());
+                    foreach (var item in values.Skip(1).Skip(ys.Count))
+                        ys.Add(new());
+                    for (int i = 1; i < values.Length; i++)
+                        ys[i - 1].Add(values[i]);
+                }
+                catch (Exception)
+                {
+                    // Remark-cz: Silently skip header lines and invalid lines.
+                    Console.WriteLine($"Skip line: {line}");
+                    continue;
+                }
             }
             return (x.ToArray(), ys.Select(y => y.ToArray()).ToList());
         }
-        private static PlotOptions GetPlotOptions(string configurations)
+        private static PlotOptions GetPlotOptions(string[] configurations)
         {
             var options = CLI.Main.Parse<PlotOptions>(configurations);
-            if (string.IsNullOrEmpty(configurations))
+            if (configurations.Length == 0)
                 options.Interactive = true;
             return options;
         }
