@@ -51,6 +51,8 @@ foreach ($Item in $PublishWindowsLibraryComponents)
 }
 # Publish Nugets
 $PublishNugets = @(
+    "Core\Core.csproj"
+
     "StandardLibraries\Vector\Vector.csproj"
     "StandardLibraries\Python\Python.csproj"
     "StandardLibraries\ODBC\ODBC.csproj"
