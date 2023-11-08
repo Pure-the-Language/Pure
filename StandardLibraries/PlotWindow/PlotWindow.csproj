@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CLI\CLI.csproj" />
     <ProjectReference Include="..\Plot\Plot.csproj" />
   </ItemGroup>
 	
