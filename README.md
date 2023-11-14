@@ -99,6 +99,57 @@ System.Drawing is not (directly) supported on this platform. Notice the scenario
 
 Library Authoring Requirements: Note that any (plug-in) libraries being authored CANNOT (and thus should not) directly target (or indirectly target) *.Net 7 Windows* because the hosting environment (aka. Pure) target *.Net 7* (without specifying windows as target). The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
 
+## Visual Studio Development
+
+For quick on-demand develpment, it's recommended to use [Notebook](./Frontends/Notebook/) for that purpose.
+
+For slightly more involved scripts, one can use Visual Studio for debugging purpose. (For more advanced applications, it's recommended to use proper C#). Notice it's recommended to keep everything in single file and do not commit csproj and sln files to version control.
+
+Create a C# Console project with .Net 7 while making sure *Do not use top level statements* is toggled off.
+
+![VSDevSetup_Step1](./docs/Images/VSDevSetup_Step1.png)
+![VSDevSetup_Step2](./docs/Images/VSDevSetup_Step2.png)
+
+It's recommended to specify `<Nullable>disable</Nullable>` in `.csproj` file, as shown below:
+
+![VSDevSetup_Step3](./docs/Images/VSDevSetup_Step3.png)
+
+To reference Pure libraries in this environment, you just need to setup Nuget source to point to the installation folder of Pure, which contains a folder of Nugets.
+
+![VSDevSetup_Step4](./docs/Images/VSDevSetup_Step4.png)
+
+Afterwards, installing packages is just like with any other C# project.
+
+![VSDevSetup_Step5](./docs/Images/VSDevSetup_Step5.png)
+
+After this setup, you are able to write and debug Pure scripts directly in Visual Studio:
+
+![VSDevSetup_Step6](./docs/Images/VSDevSetup_Step6.png)
+
+Notice there are a few notable differences:
+
+1. You will not be able to use `Import`, which automatically finds the library and sets the static `using`.
+2. C# top level statements require type definitions (e.g. records) at the bottom of all other functions and statements, while in Pure you can do it anywhere.
+3. You need to explicitly state `using static System.Console;` in order to expose those names to the file scope, while in Pure this is done automatically.
+
+Here is the complete script:
+
+```c#
+// Notice `Import(PackageName)` macro is only available in Pure
+Import(ODBC)
+using static System.Console;
+using static ODBC.Main;
+
+DSN = "SQLITE";
+Row[] rows = Select<Row>("""
+    SELECT *
+    FROM MyTable
+    """);
+foreach (var row in rows)
+    WriteLine(row.Name);
+public record Row(string Name, double Value);
+```
+
 ## TODO
 
 (CONSIDER PUTTING THEM ALL INTO GITHUB ISSUES)
