@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using System.Data;
 using System.Data.Odbc;
 
@@ -7,14 +6,16 @@ namespace ODBC
 {
     public class Transaction: IDisposable
     {
-        private OdbcTransaction OdbcTransaction;
-        private OdbcConnection OdbcConnection;
+        #region Fields
+        private readonly OdbcTransaction OdbcTransaction;
+        private readonly OdbcConnection OdbcConnection;
         private string DSN;
+        #endregion
 
         #region Lifetime Management
-        public Transaction(string dSN)
+        public Transaction(string dsn)
         {
-            DSN = dSN;
+            DSN = dsn ?? throw new ArgumentNullException($"DSN is null");
 
             OdbcConnection = new OdbcConnection($"DSN={DSN}");
             OdbcConnection.Open();

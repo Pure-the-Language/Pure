@@ -4,9 +4,15 @@ using System.Text;
 
 namespace ODBC
 {
+    /// <summary>
+    /// Provides extension methods for DataTable
+    /// </summary>
     public static class DataTableHelper
     {
         #region Conversion
+        /// <summary>
+        /// Convert DataTable to CSV string
+        /// </summary>
         public static string ToCSV(this DataTable dt)
         {
             StringBuilder sb = new StringBuilder();
@@ -32,6 +38,9 @@ namespace ODBC
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Print DataTable using ConsoleTables
+        /// </summary>
         public static string Print(this DataTable dataTable)
         {
             var consoleTable = new ConsoleTable();
