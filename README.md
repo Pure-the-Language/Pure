@@ -150,6 +150,24 @@ foreach (var row in rows)
 public record Row(string Name, double Value);
 ```
 
+When converting C# projects to Pure scripts, note the following differences:
+
+```C#
+// Import(ODBC)
+
+using static System.Console;
+using static ODBC.Main;
+
+// Include(MyScript.cs)
+string[] Arguments = new string[] { "--help" };
+```
+
+Where, 
+
+1. `Import()` and `Include()` doesn't work, but one can use Nuget and project files to achieve the same effect.
+2. `using` statements must be at the top of the script in both C# and Pure.
+3. One needs to define an auxiliary `string[] Arguments` which is supplemented by Pure otherwise.
+
 ## TODO
 
 (CONSIDER PUTTING THEM ALL INTO GITHUB ISSUES)

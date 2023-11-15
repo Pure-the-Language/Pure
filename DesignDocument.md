@@ -27,3 +27,7 @@ In particular, this include:
 However, we try to avoid clustering namespaces and global state of Pure scripts, and deep composition is not a recommended approach for Pure (it's recommended we encapsulate shared logic into proper C# assemblies as early as possible). At the moment, the functionality of `Include` is implemented as a frontend-level implementation detail rather than a language-level-feature.
 
 Because there is no immediate justifiable need for exposing such higher level variables, we are holding this proposal.
+
+## 20231115 Utility of `Import()`
+
+The current handling of Import aka. by compiling seperate DLLs are actually good in the sense that from a single Nuget identifier (aka. a single script file), it can mix and use different assemblies at will - this is especially useful when using e.g. Notebook's default file, where we may experiment with different Nuget libraries independently.
