@@ -267,7 +267,7 @@ FROM MyValues
 """); // Returns an array
 ```
 
-## Chapter N - Proper Usage Tipcs
+## Chapter N - Proper Usage Tipcs -> Best Practice
 
 Pure is designed for quick one-shot scripts that are short and functional. As a rule of thumb, it's intended for things that do not exceed a few hundred lines - assuming proper code management is already implemented.
 
@@ -275,3 +275,5 @@ As scripts grows and code is refactored for proper management, one might use `In
 
 1. Refactor shared code into proper C# DLL as library;
 2. Refactor code project into a proper standalone C# solution.
+
+New: "Develop in Visual Studio, Run in Pure" methodology. For easier debugging and styling for beginners.
