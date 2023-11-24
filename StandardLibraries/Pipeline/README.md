@@ -2,7 +2,7 @@
 
 (THIS IS WORK-IN-PROGRESS AND NOT EVEN ALPHA YET, INTERFACE MAY CHANGE ANYTIME)
 
-Run CLI commands perl style. Streamlines running command and gets output as string.
+Run CLI commands perl style. Streamlines running command and gets output as string. A cool feature is the chaining operator `|` that provides Elixir like data transformation syntax.
 
 Provides:
 
@@ -20,3 +20,4 @@ Versions:
 
 * v0.0.1/v0.1.0: Pre-Alpha
 * v0.2.0: Support standard input redirect from string; Implement Pipeline Fluent API.
+* v0.3.0: Implement chaining/pipeline operator `|`; Add doc.
