@@ -38,3 +38,8 @@ Notebook is stored in native (GitHub Flavoured) Markdown/HTML including document
 	2. `Python`
 	3. Code block with starting line as: `(Collapsed)`
 	4. `Output Cache`
+
+## Changelog
+
+* v0.0.2: Initial release.
+* v0.1.0: Fix a context issue, avoid blocking the interface, print exception message originating from context evaluation.

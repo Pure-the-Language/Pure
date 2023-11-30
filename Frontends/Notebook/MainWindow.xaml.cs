@@ -429,24 +429,36 @@ namespace Notebook
                     throw new InvalidOperationException($"Invalid cell type: {cell.CellType}");
 
                 Dispatcher.Invoke(() => GenerateOutputCell(cell, string.Empty, true));
-                switch (cell.CellType)
+
+                try
                 {
-                    case CellType.CSharp:
-                        foreach (var script in Interpreter.SplitScripts(scriptContent))
-                            Interpreter.Parse(script);
-                        break;
-                    case CellType.Python:
-                        Interpreter.Parse("Import(Python)");
-                        Interpreter.Parse($"""""
+                    switch (cell.CellType)
+                    {
+                        case CellType.CSharp:
+                            foreach (var script in Interpreter.SplitScripts(scriptContent))
+                                Interpreter.Parse(script);
+                            break;
+                        case CellType.Python:
+                            Interpreter.Parse("Import(Python)");
+                            Interpreter.Parse($"""""
                         Python.Main.Parse("""
                         {scriptContent}
                         """);
                         """"");
-                        break;
-                    case CellType.Markdown:
-                    case CellType.CacheOutput:
-                    default:
-                        throw new ArgumentException($"Invalid cell type: {cell.CellType}");
+                            break;
+                        case CellType.Markdown:
+                        case CellType.CacheOutput:
+                        default:
+                            throw new ArgumentException($"Invalid cell type: {cell.CellType}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"""
+                        Some serious error happened during interpretative execution using scripting engines and it's not handled properly by the scripting context. This indicates an error within the implementation of script-evaluation routines.
+                        Details:
+                        {e}
+                        """);
                 }
                 CurrentExecutingCell = null;
             }
