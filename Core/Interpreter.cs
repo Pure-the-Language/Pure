@@ -36,6 +36,7 @@ namespace Core
             * v0.6.1: Enhance output message for Importing module.
             * v0.6.2: Publish Core as NuGet.
             * v0.6.3: Allow adding additional assembly references upon interpreter initialization.
+            * v0.6.4: Specify framework version when generating NuGet package compilation project during import.
             """;
         #endregion
 

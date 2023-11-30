@@ -47,7 +47,7 @@ namespace Core.Services
             {
                 string scriptPath = Path.Combine(packageFolder, "Script.ps1");
                 File.WriteAllText(scriptPath, $"""
-                    dotnet new console --language C# --name TempProject
+                    dotnet new console --language C# --name TempProject --framework net7.0
                     cd TempProject
                     dotnet add package {packageName}
                     dotnet build --runtime win-x64 --no-self-contained --output ..\CompiledDLLs
