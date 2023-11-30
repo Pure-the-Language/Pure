@@ -38,6 +38,7 @@ namespace Core
             * v0.6.3: Allow adding additional assembly references upon interpreter initialization.
             * v0.6.4: Specify framework version when generating NuGet package compilation project during import.
             * v0.6.5: Fix issue whem importing libraries containing types in null namespace (e.g. Octokit).
+            * v0.6.6: Rename Interpreter.ScriptFile to Interpreter.ScriptPath for semantic clarity.
             """;
         #endregion
 
@@ -47,7 +48,10 @@ namespace Core
 
         #region Properties
         public string WelcomeMessage { get; private set; }
-        public string ScriptFile { get; private set; }
+        /// <summary>
+        /// Path of script, used for resolving relative paths
+        /// </summary>
+        public string ScriptPath { get; private set; }
         public string[] Arguments { get; private set; }
         public string[] StartingScripts { get; private set; }
         /// <summary>
@@ -57,10 +61,10 @@ namespace Core
         #endregion
 
         #region Constructor
-        public Interpreter(string welcomeMessage, string scriptFile, string[] arguments, string[] startingScripts, string nugetRepoIdentifier)
+        public Interpreter(string welcomeMessage, string scriptPath, string[] arguments, string[] startingScripts, string nugetRepoIdentifier)
         {
             WelcomeMessage = welcomeMessage;
-            ScriptFile = scriptFile;
+            ScriptPath = scriptPath;
             Arguments = arguments;
             StartingScripts = startingScripts;
             NugetRepoIdentifier = nugetRepoIdentifier;
@@ -80,12 +84,12 @@ namespace Core
             UpdateScriptArguments(Arguments);
             if (StartingScripts != null)
                 foreach (var script in StartingScripts)
-                    Context.Parse(script, ScriptFile, NugetRepoIdentifier);
+                    Context.Parse(script, ScriptPath, NugetRepoIdentifier);
         }
         public void Parse(string script)
-            => Context.Parse(script, ScriptFile, NugetRepoIdentifier);
+            => Context.Parse(script, ScriptPath, NugetRepoIdentifier);
         public object Evaluate(string expression)
-            => Context.Evaluate(expression, ScriptFile, NugetRepoIdentifier);
+            => Context.Evaluate(expression, ScriptPath, NugetRepoIdentifier);
         public string GetState()
             => Context.GetState();
         #endregion
@@ -93,7 +97,7 @@ namespace Core
         #region Updaters
         public void UpdateScriptFilePath(string scriptFile)
         {
-            ScriptFile = scriptFile;
+            ScriptPath = scriptFile;
         }
         public void UpdateNugetRepositoryIdentifier(string nugetRepoIdentifier)
         {
@@ -106,19 +110,19 @@ namespace Core
             {
                 Context.Parse($"""
                     string[] Arguments = new string[{arguments.Length}];
-                    """, ScriptFile, NugetRepoIdentifier);
+                    """, ScriptPath, NugetRepoIdentifier);
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     string argument = arguments[i];
                     Context.Parse($"""
                         Arguments[{i}] = @"{argument.Replace("\"", "\\\"")}";
-                        """, ScriptFile, NugetRepoIdentifier);
+                        """, ScriptPath, NugetRepoIdentifier);
                 }
             }
             else
                 Context.Parse($"""
                     string[] Arguments = Array.Empty<string>();
-                    """, ScriptFile, NugetRepoIdentifier);
+                    """, ScriptPath, NugetRepoIdentifier);
         }
         #endregion
 
