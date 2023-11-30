@@ -37,6 +37,7 @@ namespace Core
             * v0.6.2: Publish Core as NuGet.
             * v0.6.3: Allow adding additional assembly references upon interpreter initialization.
             * v0.6.4: Specify framework version when generating NuGet package compilation project during import.
+            * v0.6.5: Fix issue whem importing libraries containing types in null namespace (e.g. Octokit).
             """;
         #endregion
 

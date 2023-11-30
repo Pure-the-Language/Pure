@@ -327,8 +327,11 @@ namespace Core
                 AddReference(assembly);
 
                 if (importNamespaces)
-                    foreach (var ns in assembly.GetTypes().Where(t => t.IsVisible)
-                            .Select(t => t.Namespace).Distinct())
+                    foreach (var ns in assembly.GetTypes()
+                            .Where(t => t.IsVisible)
+                            .Select(t => t.Namespace)
+                            .Where(ns => !string.IsNullOrEmpty(ns))
+                            .Distinct())
                         AddImport(ns);
                 // Special handle Main class
                 Type mainType = assembly.GetTypes().FirstOrDefault(t => t.Name == "Main" && t.IsVisible && t.IsAbstract && t.IsSealed);
