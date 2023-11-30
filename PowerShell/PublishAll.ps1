@@ -1,3 +1,4 @@
+# Use command line toggle --incremental to skip deleting publish folder and skip creating archive, thus making build faster.
 $PrevPath = Get-Location
 
 Write-Host "Publish for Final Packaging build."
@@ -8,7 +9,9 @@ $LibraryPublishFolder = "$PublishFolder\Libraries"
 $NugetPublishFolder = "$PublishFolder\Nugets"
 
 # Delete current data
-Remove-Item $PublishFolder -Recurse -Force
+if ($Args[0] -ne '--incremental') {
+    Remove-Item $PublishFolder -Recurse -Force
+}
 
 # Publish Executables
 $PublishExecutables = @(
@@ -78,10 +81,12 @@ if (-Not (Test-Path $pureExePath))
 & $pureExePath $PSScriptRoot\GenerateDocumentation.cs $LibraryPublishFolder $PublishFolder\APIDoc.md
 
 # Create archive
-$Date = Get-Date -Format yyyyMMdd
-$ArchiveFolder = "$PublishFolder\..\Packages"
-$ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_Windows_B$Date.zip"
-New-Item -ItemType Directory -Force -Path $ArchiveFolder
-Compress-Archive -Path $PublishFolder\* -DestinationPath $ArchivePath -Force
+if ($Args[0] -ne '--incremental') {
+    $Date = Get-Date -Format yyyyMMdd
+    $ArchiveFolder = "$PublishFolder\..\Packages"
+    $ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_Windows_B$Date.zip"
+    New-Item -ItemType Directory -Force -Path $ArchiveFolder
+    Compress-Archive -Path $PublishFolder\* -DestinationPath $ArchivePath -Force
+}
 
 Set-Location $PrevPath
