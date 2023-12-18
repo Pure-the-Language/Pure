@@ -245,25 +245,9 @@ namespace Core
                 // Commonly used .Net namespace
                 options = options.AddImports("System.Math");
                 options = options.AddImports("System.Console");
-                // Pure core standard libraries
-                AddDefaultLibraryFolderToEnvironmentPath();
             }
 
             State = CSharpScript.RunAsync(string.Empty, options).Result;
-
-            static void AddDefaultLibraryFolderToEnvironmentPath()
-            {
-                // Remark-cz: The Core will be decoupled better if we don't rely on such env variables so explicitly, or at least don't modify it this way
-                // TODO: We should probably just pass in during context/interpreter initialization some external "additional" library folders instead of explicitly search for it in Core. Instead, we can search for it and initialize it as an optional option in Interpreter, which is shared by both Pure (REPL) and Notebook
-                string path = Path.Combine(AssemblyHelper.AssemblyDirectory, "Libraries");
-                if (!Directory.Exists(path))
-                    path = Path.Combine(Directory.GetCurrentDirectory(), "Libraries");
-                if (Directory.Exists(path))
-                    Environment.SetEnvironmentVariable("PATH", 
-                        Environment.GetEnvironmentVariable("PATH") != null 
-                        ? (Environment.GetEnvironmentVariable("PATH") + ";" + path)
-                        : path);
-            }
         }
         #endregion
 
