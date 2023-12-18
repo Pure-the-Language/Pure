@@ -39,6 +39,8 @@ namespace Core
             * v0.6.4: Specify framework version when generating NuGet package compilation project during import.
             * v0.6.5: Fix issue whem importing libraries containing types in null namespace (e.g. Octokit).
             * v0.6.6: Rename Interpreter.ScriptFile to Interpreter.ScriptPath for semantic clarity.
+            ======Runtime Change======
+            * v0.7.0: Upgrade to .Net 8.
             """;
         #endregion
 
