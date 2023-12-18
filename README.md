@@ -39,6 +39,13 @@ Pure provides the following standard libraries for "making things easier":
 |Pipeline|Shell-level task automation.|Experimental|
 |Razor|Single-entry exposure of Razor template engine.|Experimental|
 |CentralSnippets|Endpoint for [Central Snippets](https://centralsnippets.pure.totalimagine.com/) public sharing.|Experimental|
+|Vector|Add-on style vector (numerical array) processing, providing wide range of utility calculations targeting finance and other areas; This library prefers utility over efficiency and is a shorthand way (during scripting) compared to more involved Math.Net etc.|Experimental|
+
+Some non-official libraries are provided as experimental/for convinience purpose that may not have reliable support:
+
+|Library|Purpose|
+|-|-|
+|Plot|Easy plotting.|
 
 Certain macros/syntax are provided to implement language level scripting constructs:
 
