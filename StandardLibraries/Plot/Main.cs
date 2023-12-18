@@ -138,7 +138,7 @@ namespace Graphing
         public static void SummonInteractiveWindow(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options)
         {
             string executableName = "PlotWindow.exe";
-            string defaultPath = Path.Combine(GetAssemblyFolder(), executableName);
+            string defaultPath = Path.Combine(GetAssemblyFolder(), "Windows", executableName);
             string secondaryPath = PathHelper.FindDLLFileFromEnvPath(executableName);
 
             // Find plot window executable
