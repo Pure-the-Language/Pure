@@ -16,9 +16,5 @@ namespace Core
         public RecursiveParsingException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
-        protected RecursiveParsingException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

@@ -33,6 +33,14 @@ namespace CLITest
         }
 
         [Fact]
+        public void ShouldSupportHyphensOrDashesOrUnderscores()
+        {
+            Assert.True(CLI.Main.Parse<TestRecord001>("--SkipFirstLine").SkipFirstLine);
+            Assert.True(CLI.Main.Parse<TestRecord001>("--skip-first-line").SkipFirstLine);
+            Assert.True(CLI.Main.Parse<TestRecord001>("--skip_first_line").SkipFirstLine);
+        }
+
+        [Fact]
         public void ParsingShouldBeCaseInsensitive()
         {
             var p1 = CLI.Main.Parse<TestRecord001>("--inputPath", "Input.csv", "--skipFirstLine", "False");
