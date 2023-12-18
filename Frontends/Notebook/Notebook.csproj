@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<StartupObject>Notebook.Program</StartupObject>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<Version>0.1.0</Version>
 		<Nullable>disable</Nullable>
 		<UseWPF>true</UseWPF>
