@@ -178,6 +178,8 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+# On Linux it's case sensitive
+Publish
 
 # Publish Web Output
 *.[Pp]ublish.xml
