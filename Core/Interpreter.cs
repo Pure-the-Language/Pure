@@ -3,6 +3,7 @@ using System.Text;
 using Console = Colorful.Console;
 using Core.Utilities;
 using System.Reflection;
+using Core.Services;
 
 namespace Core
 {
@@ -12,7 +13,7 @@ namespace Core
     public class Interpreter
     {
         #region Versioning
-        public static readonly string CoreVersion = "v0.6.3";
+        public static readonly string CoreVersion = "v0.7.0";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -39,6 +40,8 @@ namespace Core
             * v0.6.4: Specify framework version when generating NuGet package compilation project during import.
             * v0.6.5: Fix issue whem importing libraries containing types in null namespace (e.g. Octokit).
             * v0.6.6: Rename Interpreter.ScriptFile to Interpreter.ScriptPath for semantic clarity.
+            ======Runtime Change======
+            * v0.7.0: Upgrade to .Net 8; Refactor code for adding default Libraries folder to PATH from RoslynContext to Interpreter.
             """;
         #endregion
 
@@ -75,8 +78,14 @@ namespace Core
         #endregion
 
         #region Methods
-        public void Start(Action<string> outputHandler = null, IEnumerable<Assembly> additionalReferences = null)
+        public void Start(Action<string> outputHandler = null, IEnumerable<Assembly> additionalReferences = null, string[] additionalLibraryDllPaths = null)
         {
+            // Pure core standard libraries
+            AddDefaultLibraryFolderToEnvironmentPath();
+            if (additionalLibraryDllPaths != null)
+                foreach (var path in additionalLibraryDllPaths)
+                    AddToEnvironmentPath(path);
+
             Context = new RoslynContext(true, outputHandler, additionalReferences);
             if (!string.IsNullOrWhiteSpace(WelcomeMessage))
                 Console.WriteLine(WelcomeMessage);
@@ -85,6 +94,16 @@ namespace Core
             if (StartingScripts != null)
                 foreach (var script in StartingScripts)
                     Context.Parse(script, ScriptPath, NugetRepoIdentifier);
+
+            static void AddDefaultLibraryFolderToEnvironmentPath()
+            {
+                // Explicitly add "Libraries" to PATH
+                string path = Path.Combine(AssemblyHelper.ExecutingAssemblyDirectory, "Libraries");
+                if (!Directory.Exists(path))
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "Libraries");
+                if (Directory.Exists(path))
+                    AddToEnvironmentPath(path);
+            }
         }
         public void Parse(string script)
             => Context.Parse(script, ScriptPath, NugetRepoIdentifier);
@@ -182,6 +201,16 @@ namespace Core
                 scripts.Add(new string('\n', totalLineCounter) + scriptBuilder.ToString().Trim());
 
             return scripts.ToArray();
+        }
+        #endregion
+
+        #region Helpers
+        public static void AddToEnvironmentPath(string additionalPath)
+        {
+            Environment.SetEnvironmentVariable("PATH",
+                Environment.GetEnvironmentVariable("PATH") != null
+                ? (Environment.GetEnvironmentVariable("PATH") + ";" + additionalPath)
+                : additionalPath);
         }
         #endregion
     }

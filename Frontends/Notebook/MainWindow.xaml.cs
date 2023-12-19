@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Helpers;
+using Core.Services;
 using ICSharpCode.AvalonEdit;
 using Microsoft.Win32;
 using System;
@@ -31,7 +32,10 @@ namespace Notebook
             Interpreter = new Interpreter($"""
                     Pure Notebook (Core Version: {Interpreter.CoreVersion})
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null, null, null);
-            Interpreter.Start(OutputHandlerNonMainThread);
+            // Remark-cz: Update for Notebook post .Net 8 upgrade, where we build Notebook.exe in dedicated Windows folder
+            string assemblyParentFolder = Path.GetDirectoryName(AssemblyHelper.ExecutingAssemblyDirectory);
+            string librariesPath = Path.Combine(assemblyParentFolder, "Libraries");
+            Interpreter.Start(OutputHandlerNonMainThread, additionalLibraryDllPaths: Directory.Exists(librariesPath) ? [librariesPath] : null);
 
             if (args.Length >= 2)
             {

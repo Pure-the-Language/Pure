@@ -1,4 +1,4 @@
-# Pure - Lightweight Native C# Scripting Environment for .Net 7
+# Pure - Lightweight Native C# Scripting Environment for .Net 8 👩‍💻
 
 Pure is a lightweight scripting environment based on Roslyn, offering some standard libraries for quick common tasks, and provides a handy scripting (REPL and Notebook) interface.  
 The Notebook interface is only usable for Window - but one can easily develop one for other desktop environments using cross-platform techniques. I didn't bother because I am the only one using Pure.
@@ -20,8 +20,8 @@ I have highlighted the difference/advantage compared to traditional programming/
 
 |Platform|Pure|C#|Python|PowerShell|Perl|
 |-|-|-|-|-|-|
-|Installation Size|Required .Net 7 (ASP.Net) Runtime; Distributable is around 100Mb|Proper development with an IDE (Visual Studio or IntelliJ) takes forever to install.|Too many versions.|Super easy to install and use.|Super lightweight and fast.|
-|Stability|C# .Net 7 based, will probably never change, very stable (depends on underlying C#); Very little new language constructs. Easily migratable to proper C#|Very stable as long as one doesn't bother GUI.|Fairly stable.|Fairly stable.|(PENDING)|
+|Installation Size|Required [.Net 8 (ASP.Net) Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0); Distributable is around 100Mb|Proper development with an IDE (Visual Studio or IntelliJ) takes forever to install.|Too many versions.|Super easy to install and use.|Super lightweight and fast.|
+|Stability|C# .Net 8 based, will probably never change, very stable (depends on underlying C#); Very little new language constructs. Easily migratable to proper C#|Very stable as long as one doesn't bother GUI.|Fairly stable.|Fairly stable.|(PENDING)|
 |Package Management/Functionalities|Zero-hassle package management and functionalities import; Single-file throughout.|Many button-clicks (in IDE) or commands or csproj file modification to install pckages. Self-contained dependancy environment; Fast and lightweight.|Package management is troublesome, messy distributable/end script environments.|Batteries packed and I think generally bad idea to import additional non-official functionalities.|(PENDING)|
 |Summary|Provides most efficient short-snippet authoring capabilities.|Best for strongly typed and highly articulated solutions.|Lack of advanced language constructs; Ubiquitous support.|Good process automation; Syntax not suited for efficient OOP programming.|(PENIDNG)|
 
@@ -39,6 +39,13 @@ Pure provides the following standard libraries for "making things easier":
 |Pipeline|Shell-level task automation.|Experimental|
 |Razor|Single-entry exposure of Razor template engine.|Experimental|
 |CentralSnippets|Endpoint for [Central Snippets](https://centralsnippets.pure.totalimagine.com/) public sharing.|Experimental|
+|Vector|Add-on style vector (numerical array) processing, providing wide range of utility calculations targeting finance and other areas; This library prefers utility over efficiency and is a shorthand way (during scripting) compared to more involved Math.Net etc.|Experimental|
+
+Some non-official libraries are provided as experimental/for convinience purpose that may not have reliable support:
+
+|Library|Purpose|
+|-|-|
+|Plot|Easy plotting.|
 
 Certain macros/syntax are provided to implement language level scripting constructs:
 
@@ -68,7 +75,7 @@ At the moment, the version of Pure suites shall be identified/associated with [C
 
 ## Installation
 
-The source code can be built on Windows/Linux with .Net 7 SDK.
+The source code can be built on Windows/Linux with .Net 8 SDK.
 
 * To use on Windows, just download prebuilt executables from [Release](./releases/latest).
 * To build on Linux, either try `PublishAll.ps1` (require `pwsh`), or just do `otnet publish Frontends/Pure/Pure.csproj --use-current-runtime --output Publish`.
@@ -77,13 +84,13 @@ The source code can be built on Windows/Linux with .Net 7 SDK.
 
 There are three types of ready-to-use libraries for Pure:
 
-* Any regular C# Net 7 DLL, as published on [Nuget](https://www.nuget.org/).
+* Any regular C# Net 8 DLL, as published on [Nuget](https://www.nuget.org/). May work with older versions of .Net Core dlls but use discretion; May even also work with .Net Framework dlls but I observed occassions when behaviors are unpredictable.
 * Any user-authored scripts that may be included using `Inlcude` macro.
 * Any user-shared snippets published on [Central Snippets](https://github.com/Pure-the-Language/CentralSnippets) or similar places.
 
 The intended usage scenario of Pure is like this:
 
-* Pure provides a complete syntax and all of the standard features of .Net 7 runtime
+* Pure provides a complete syntax and all of the standard features of .Net 8 runtime (C# 12)
 * On top of the basics, Pure provides some standard libraries to further streamline common tasks
 * On top of that, Pure provides native support for library importing (using `Import()`) and scripting importing (using `Include()`)
 * When extending existing functionalities of Pure or simply developing libraries around re-usable code, a developer would write actual C# Class Library projects and expose those as DLLs for end consumption in Pure.
@@ -93,11 +100,11 @@ By default, when importing in Pure, all namespaces of the DLL module containing 
 
 **Troubleshooting**
 
-Pure is written in Net 7. However, when loading external DLLs, it's currently only safe to assume only Net Standard 2.0 and maybe Net Core 3.1 contexts are supported (i.e. just loading Net 7 may not work out of the box). For instance, System.Data.Odbc will throw exception "Platform not Supported" even though the platform (e.g. win64) is supported - it's the runtime that's causing the issue. A temporary workaround is when developing plugin/libraries, all plugins should target Net Standard 2.0+ or Net Core 3.1+ or Net Framework 4.6.1+. In reality, the issue is NOT within Net 7 as hosting context - THE RUNTIME IS INDEED 7.0.1 (within Roslyn), and [CSharpREPL](https://github.com/waf/CSharpRepl) (our reference interpreter) can consume System.Data.Odbc without problem, so we should be able to load Net 7 assemblies, it's just due to the way we handle DLL loading, we need to load exactly the correct DLL and cannot load an "entry" dll. We use CSharpREPL to find the correct DLL that we need (e.g. for ODBC, it should be `AppData\Roaming\.csharprepl\packages\System.Data.Odbc.7.0.0\runtimes\win\lib\net7.0\System.Data.Odbc.dll`).
+Pure is written in Net 8. However, when loading external DLLs, it's currently only safe to assume only Net Standard 2.0 and maybe Net Core 3.1 contexts are supported out-of-the-box (i.e. just loading Net 8 dlls may not work right away). For instance, `System.Data.Odbc` will throw exception "Platform not Supported" even though the platform (e.g. win64) is supported - it's the runtime that's causing the issue. A temporary workaround is when developing plugin/libraries, all plugins should target Net Standard 2.0+ or Net Core 3.1+ or Net Framework 4.6.1+. In reality, the issue is NOT within Net 8 as hosting context - THE RUNTIME IS INDEED 8.0.0 (within Roslyn), and [CSharpREPL](https://github.com/waf/CSharpRepl) (our reference interpreter) can consume System.Data.Odbc without problem (in the case of .Net 7), so we should be able to load Net 8 assemblies, it's just due to the way we handle DLL loading, we need to **load exactly the correct DLL** and cannot load an "entry" dll. We can use CSharpREPL to find the correct DLL that we need (e.g. for ODBC targeting .Net 7, it should be `AppData\Roaming\.csharprepl\packages\System.Data.Odbc.7.0.0\runtimes\win\lib\net7.0\System.Data.Odbc.dll`). In practice, when looking at the temporary dotnet build solution, one can find specific dlls under a `runtimes` folder.
 
-System.Drawing is not (directly) supported on this platform. Notice the scenario is like that when using ODBC libraries - likely because it has many runtime versions. This is because at the moment "Import" cannot properly make use of the likely-redirection dlls. One solution for this is to select specific runtime when build instead of target "Portable" runtime.
+System.Drawing is not (directly) supported on this platform. Notice the scenario is like that when using ODBC libraries - likely because it has many runtime versions. This is because at the moment "Import" cannot properly make use of the likely-redirection dlls. One solution for this is to select specific runtime when build instead of target "Portable" runtime. When trying to import modules, Pure will notify the user about such scenarios.
 
-Library Authoring Requirements: Note that any (plug-in) libraries being authored CANNOT (and thus should not) directly target (or indirectly target) *.Net 7 Windows* because the hosting environment (aka. Pure) target *.Net 7* (without specifying windows as target). The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
+Library authoring requirements: Note that any (plug-in) libraries being authored CANNOT (and thus should not) directly target (or indirectly target) *.Net 8 Windows* because the hosting environment (aka. Pure) target *.Net 8* (without specifying windows as target). The solution for this is to isolate such components and trigger as sub-process (so some sort of data tranmission or IPC is needed).
 
 ## Visual Studio Development
 
@@ -105,7 +112,7 @@ For quick on-demand develpment, it's recommended to use [Notebook](./Frontends/N
 
 For slightly more involved scripts, one can use Visual Studio for debugging purpose. (For more advanced applications, it's recommended to use proper C#). Notice it's recommended to keep everything in single file and do not commit csproj and sln files to version control.
 
-Create a C# Console project with .Net 7 while making sure *Do not use top level statements* is toggled off.
+Create a C# Console project with .Net 8 while making sure *Do not use top level statements* is toggled off.
 
 ![VSDevSetup_Step1](./docs/Images/VSDevSetup_Step1.png)
 ![VSDevSetup_Step2](./docs/Images/VSDevSetup_Step2.png)
@@ -219,7 +226,7 @@ b = 7 // Bad: b is not defined
 
 ### Import Libraries
 
-Use `Import(<Library Name>)` to import libraries. Libraries should be available under PATH as .Net 7 (or .Net Standard) DLL files.
+Use `Import(<Library Name>)` to import libraries. Libraries should be available under PATH as .Net 8 (or .Net Standard) DLL files.
 
 A library is a collection of C# functionalities. ~~It can optionally expose a static Main class, the methods of which will become available at global scope upon import~~ (deprecating, consider using `using static` explicitly instead).
 

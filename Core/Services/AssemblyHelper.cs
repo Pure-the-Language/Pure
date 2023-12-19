@@ -2,9 +2,9 @@
 
 namespace Core.Services
 {
-    internal static class AssemblyHelper
+    public static class AssemblyHelper
     {
-        public static string AssemblyDirectory
+        public static string ExecutingAssemblyDirectory
         {
             get
             {

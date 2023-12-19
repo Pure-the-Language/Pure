@@ -5,6 +5,7 @@ Write-Host "Publish for Final Packaging build."
 Set-Location $PSScriptRoot
 
 $PublishFolder = "$PSScriptRoot\..\Publish"
+$WindowsPublishFolder = "$PublishFolder\Windows"
 $LibraryPublishFolder = "$PublishFolder\Libraries"
 $NugetPublishFolder = "$PublishFolder\Nugets"
 
@@ -27,7 +28,8 @@ $PublishWindowsExecutables = @(
 )
 foreach ($Item in $PublishWindowsExecutables)
 {
-    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $PublishFolder
+    # In .Net 8, those windows-specific builds might interfere with other non-windows build
+    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $WindowsPublishFolder
 }
 # Publish Loose Libraries
 $PublishLibraries = @(
@@ -44,13 +46,13 @@ foreach ($Item in $PublishLibraries)
 {
     dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $LibraryPublishFolder
 }
-# Publish Windows-only Library Components
+# Publish Windows-only Library Components (executable)
 $PublishWindowsLibraryComponents = @(
     "StandardLibraries\PlotWindow\PlotWindow.csproj"
 )
 foreach ($Item in $PublishWindowsLibraryComponents)
 {
-    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $PublishFolder
+    dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $WindowsPublishFolder
 }
 # Publish Nugets
 $PublishNugets = @(
@@ -84,7 +86,7 @@ if (-Not (Test-Path $pureExePath))
 if ($Args[0] -ne '--incremental') {
     $Date = Get-Date -Format yyyyMMdd
     $ArchiveFolder = "$PublishFolder\..\Packages"
-    $ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_Windows_B$Date.zip"
+    $ArchivePath = "$ArchiveFolder\Pure_DistributionBuild_B$Date.zip"
     New-Item -ItemType Directory -Force -Path $ArchiveFolder
     Compress-Archive -Path $PublishFolder\* -DestinationPath $ArchivePath -Force
 }

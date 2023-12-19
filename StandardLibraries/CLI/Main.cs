@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Humanizer;
+using System.ComponentModel;
 
 namespace CLI
 {
@@ -40,8 +41,12 @@ namespace CLI
 
             // Instantiate
             object instance;
-            if (type.GetConstructor(Type.EmptyTypes) == null)
-                instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+            if (type.GetConstructor(Type.EmptyTypes) == null && type.GetConstructors().Count() != 0)
+            {
+                System.Reflection.ConstructorInfo constructor = type.GetConstructors().First();
+                object[] constructorDefaults = constructor.GetParameters().Select(p => p.ParameterType).Select(GetDefault).ToArray();
+                instance = Activator.CreateInstance(type, constructorDefaults);
+            }
             else
                 instance = Activator.CreateInstance(type);
 
@@ -63,6 +68,15 @@ namespace CLI
                     throw new ArgumentException($"Cannot find definition for: {Key} in type {type.Name}");
             }
             return (TType)instance;
+
+            static object GetDefault(Type type)
+            {
+                if (type.IsValueType)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                return null;
+            }
         }
 
         /// <summary>
@@ -85,7 +99,7 @@ namespace CLI
         /// </summary>
         public static Dictionary<string, string[]> MapMany(bool trim, params string[] arguments)
         {
-            Dictionary<string, List<string>> map = new();
+            Dictionary<string, List<string>> map = [];
             string key = null;
             for (int i = 0; i < arguments.Length; i++)
             {
@@ -93,8 +107,10 @@ namespace CLI
                 {
                     key = arguments[i];
                     if (trim)
-                        key = key.TrimStart('-');
-                    map[key] = new();
+                        key = key.TrimStart('-')
+                            .Pascalize()
+                            .Replace("-", string.Empty);
+                    map[key] = [];
                 }
                 else
                     map[key].Add(arguments[i]);
