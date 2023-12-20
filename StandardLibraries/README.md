@@ -20,3 +20,7 @@ flowchart TD
 * Experimental Library: Semantical emphasis on the experimental status of the library.
 * Meta-Package: Meta-packages are implemented as proper C# dlls but can have instructions that's running on scripting scope.
 * Frameworks: Intended for complete problem-solving solutions as is.
+
+## Naming Convention
+
+Do not name a class the same as its namespace. As such, for standard libraries, we name the main type the same as module name, but for namespaces, let's denote by its (functional) category.
