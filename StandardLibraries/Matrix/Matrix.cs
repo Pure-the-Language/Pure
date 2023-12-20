@@ -7,7 +7,7 @@ namespace Math
     /// <summary>
     /// Main definition of the Matrix type
     /// </summary>
-    public sealed class Matrix : ExperimentalLibrary, IEnumerable<Vector1D>, IEnumerable
+    public class Matrix : ExperimentalLibrary, IEnumerable<Vector1D>, IEnumerable
     {
         #region Library Metadata
         /// <summary>
