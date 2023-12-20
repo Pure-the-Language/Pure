@@ -34,6 +34,7 @@ if ($IsWindows) {
 # Publish Nugets
 $PublishNugets = @(
     "Core\Core.csproj"
+    "StandardLibraries\CorePackage\CorePackage.csproj"
 
     "StandardLibraries\Vector\Vector.csproj"
     "StandardLibraries\Python\Python.csproj"

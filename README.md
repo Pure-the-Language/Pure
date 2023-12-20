@@ -34,7 +34,7 @@ Pure provides the following standard libraries for "making things easier":
 
 |Library|Purpose|Status|
 |-|-|-|
-|ODBC|Database connection.|Stable|
+|ODBC|Database connection.|Standard Library; Stable|
 |Python|Python interoperation.|Experimental|
 |Pipeline|Shell-level task automation.|Experimental|
 |Razor|Single-entry exposure of Razor template engine.|Experimental|
@@ -52,7 +52,7 @@ Certain macros/syntax are provided to implement language level scripting constru
 |Macro/Syntax|Function|Remark|
 |-|-|-|
 |`Import()`|Import modules from PATH, and automatically download packages from NuGet|Must be on its own line|
-|`Include()`|transclude scripts from file path|Must be on its own line|
+|`Include()`|transclude scripts from file path|Must be on its own line; At the moment it's only safe to include from the top-level, one must assume we cannot have another `include` within included files, otherwise the behavior might be undeterministic, see [issue](https://github.com/Pure-the-Language/Pure/issues/24)|
 |`Help(name)`|Get help about namespaces, types, and specific variables||
 |Expresison evaluation|For single line assignment and variable creation, no need to append `;` at end of line - for script files, it must be properly formatted|Only applicable at REPL|
 
@@ -191,6 +191,10 @@ The current state of Pure is very OK to be used for one-liners and quick REPL co
 
 - [ ] (Documentation) Create basic usage YouTube demo
 - [ ] (Documentation) Create standard library YouTube usage tutorial
+
+- [ ] (Standard libraries) Add/Implement those: CSV (Read Write), Excel (Read Write), DataSource (Read: CSV, Excel, ODBC), InMemoryDB, add Parcel DataGrid standalone package.
+- [ ] (Framework proposal) (Create a README first) Composer (or "Flow") with functional constructs: `Repeat`, `Sequence`, `Parallel`, `Condition`, and `(base class) Services` (as addons, existing ones: Query with pre and post-processing and simple template format, Stage for global state, etc. as basic nodes). Taking either actions or AtomicAction class instance; Auto-logging. (Can we utilize Aspire?)
+- [ ] (Standard Libraries) Preparing for deprecating `Main` by well-encapsulating standard libraries using proper class modules and utilize the abstraction of StandardLibrary, ExperimentalLibrary, etc.
 
 # (Wiki) Pure - The Scripting Language
 
