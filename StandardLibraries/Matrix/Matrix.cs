@@ -21,7 +21,7 @@ namespace Math
         /// <summary>
         /// Version of library
         /// </summary>
-        public override string Version => "v0.1.0";
+        public override string Version => "v0.1.1";
         /// <summary>
         /// Description of library
         /// </summary>

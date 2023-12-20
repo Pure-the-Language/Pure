@@ -12,6 +12,7 @@ $NugetPublishFolder = "$PublishFolder\Nugets"
 $PublishLibraries = @(
     "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
     "StandardLibraries\CLI\CLI.csproj"
+    "StandardLibraries\CSV\CSV.csproj"
     "StandardLibraries\Matrix\Matrix.csproj"
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"
@@ -39,6 +40,7 @@ $PublishNugets = @(
 
     "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
     "StandardLibraries\CLI\CLI.csproj"
+    "StandardLibraries\CSV\CSV.csproj"
     "StandardLibraries\Matrix\Matrix.csproj"
     "StandardLibraries\ODBC\ODBC.csproj"
     "StandardLibraries\Pipeline\Pipeline.csproj"

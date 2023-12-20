@@ -13,7 +13,14 @@
         /// <summary>
         /// The library is experimental
         /// </summary>
-        Experimental = 2
+        Experimental = 2,
+
+        /// <summary>
+        /// WIP
+        /// </summary>
+        InDevelopment = 4,
+        Alpha = 8,
+        Release = 16,
     }
     /// <summary>
     /// Self-description of library type
