@@ -10,14 +10,15 @@ $NugetPublishFolder = "$PublishFolder\Nugets"
 
 # Publish Loose Libraries
 $PublishLibraries = @(
-    "StandardLibraries\Vector\Vector.csproj"
-    "StandardLibraries\Python\Python.csproj"
-    "StandardLibraries\ODBC\ODBC.csproj"
-    "StandardLibraries\Pipeline\Pipeline.csproj"
-    "StandardLibraries\Razor\Razor.csproj"
     "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
     "StandardLibraries\CLI\CLI.csproj"
+    "StandardLibraries\Matrix\Matrix.csproj"
+    "StandardLibraries\ODBC\ODBC.csproj"
+    "StandardLibraries\Pipeline\Pipeline.csproj"
     "StandardLibraries\Plot\Plot.csproj"
+    "StandardLibraries\Python\Python.csproj"
+    "StandardLibraries\Razor\Razor.csproj"
+    "StandardLibraries\Vector\Vector.csproj"
 )
 foreach ($Item in $PublishLibraries) {
     dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $LibraryPublishFolder
@@ -36,13 +37,14 @@ $PublishNugets = @(
     "Core\Core.csproj"
     "StandardLibraries\CorePackage\CorePackage.csproj"
 
-    "StandardLibraries\Vector\Vector.csproj"
-    "StandardLibraries\Python\Python.csproj"
-    "StandardLibraries\ODBC\ODBC.csproj"
-    "StandardLibraries\Pipeline\Pipeline.csproj"
-    "StandardLibraries\Razor\Razor.csproj"
     "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
     "StandardLibraries\CLI\CLI.csproj"
+    "StandardLibraries\Matrix\Matrix.csproj"
+    "StandardLibraries\ODBC\ODBC.csproj"
+    "StandardLibraries\Pipeline\Pipeline.csproj"
+    "StandardLibraries\Python\Python.csproj"
+    "StandardLibraries\Razor\Razor.csproj"
+    "StandardLibraries\Vector\Vector.csproj"
 )
 foreach ($Item in $PublishNugets) {
     dotnet pack $PSScriptRoot\..\$Item --output $NugetPublishFolder
