@@ -30,7 +30,7 @@ namespace Notebook
             // Remark-cz: 1st argument is executable path (aka. Notebook.exe), 2nd argument is taken to be open file path
             var args = Environment.GetCommandLineArgs();
             Interpreter = new Interpreter($"""
-                    Pure Notebook (Core Version: {Interpreter.CoreVersion})
+                    Pure Notebook (Core Version: {Interpreter.DistributionVersion})
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null, null, null);
             // Remark-cz: Update for Notebook post .Net 8 upgrade, where we build Notebook.exe in dedicated Windows folder
             string assemblyParentFolder = Path.GetDirectoryName(AssemblyHelper.ExecutingAssemblyDirectory);

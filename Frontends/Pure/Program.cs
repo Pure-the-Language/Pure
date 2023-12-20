@@ -11,7 +11,7 @@ namespace Pure
             if (args.Length == 1 && args.Single().ToLower() == "--help")
             {
                 Console.WriteLine($"""
-                    Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.CoreVersion})
+                    Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.DistributionVersion})
                     CLI Variants:
                       pure: REPL mode
                       pure --version: Print version
@@ -24,12 +24,12 @@ namespace Pure
             }
             // Version
             else if (args.Length == 1 && args.Single().ToLower() == "--version")
-                Console.WriteLine(Interpreter.CoreVersion);
+                Console.WriteLine(Interpreter.DistributionVersion);
             // REPL mode
             else if (args.Length == 0)
             {
                 var interpreter = new Interpreter($"""
-                    Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.CoreVersion})
+                    Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.DistributionVersion})
                     This is the frontend to Pure, the scripting language.
                     """, null, null, null, null);
                 interpreter.Start();

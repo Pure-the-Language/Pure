@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <PublishReadyToRun>true</PublishReadyToRun>
-    <Version>0.7.1</Version>
+    <Version>0.7.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
