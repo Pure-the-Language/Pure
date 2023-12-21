@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using System.Globalization;
 
-namespace Data
+namespace CSV
 {
     /// <summary>
     /// Entry point

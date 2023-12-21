@@ -1,5 +1,7 @@
 # Standard Libraries
 
+> `Main` should be provided in a namespace the same as library name. This way `Help(LibraryName.Main)` makes sense, and the same `Main` is not conflicting with other libraries.
+
 Lean wrappers and thin dependencies, scripting-oriented. Moving forward we generally do not wish to implement a `Main` in new libraries and rely on meta-packages to expose/import interfaces.
 
 ```mermaid
