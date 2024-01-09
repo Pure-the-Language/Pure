@@ -11,3 +11,8 @@ $env:no_proxy="localhost,127.0.0.1,other_addresses"
 ```
 
 Alternatively, call pass `true` to `disableSSL` check parameter of `Preview()` or `Pull()`.
+
+## TODO
+
+- [ ] Add `List` function to list available categories
+- [ ] Add `Find` function to find and provide snippet path for specific snippets
