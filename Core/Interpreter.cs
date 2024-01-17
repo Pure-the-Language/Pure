@@ -16,7 +16,7 @@ namespace Core
         /// <summary>
         /// The overall distribution version for Pure in general; This should match the version of the Core assembly
         /// </summary>
-        public static readonly string DistributionVersion = "v0.7.2";
+        public static readonly string DistributionVersion = "v0.7.3";
         public static readonly string VersionChangelog = """
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
             * v0.0.3: Add functional Nuget implementation; Add support for `nugetRepoIdentifier:string` parameter for Interpreter and Roslyn Context.
@@ -48,6 +48,7 @@ namespace Core
             * v0.7.1: Fix issue with finding executable assembly folder on Linux.
             ======Breaking Change======
             * v0.7.2: (Core) Rename CoreVersion to DistributionVersion; (Distribution) Standardize and refine standard libraries.
+            * v0.7.3: (Standard Library) Upgrade K4os and ScottPlot version (from v4 to v5).
             """;
         #endregion
 
