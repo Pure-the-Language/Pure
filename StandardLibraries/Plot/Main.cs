@@ -70,9 +70,9 @@ namespace Graphing
         /// <summary>
         /// Initialize plot based on type and data
         /// </summary>
-        public static ScottPlot.Plot InitializePlot(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options)
+        public static Plot InitializePlot(PlotType plotType, double[] x, List<double[]> ys, PlotOptions options)
         {
-            ScottPlot.Plot plot = new(options.WindowWidth, options.WindowHeight);
+            Plot plot = new();
 
             switch (plotType)
             {
@@ -81,9 +81,12 @@ namespace Graphing
                     {
                         double[] y = ys[i];
                         if (i < options.Labels.Length)
-                            plot.AddScatter(x, y, label: options.Labels[i]);
+                        {
+                            var s = plot.Add.Scatter(x, y);
+                            s.Label = options.Labels[i];
+                        }
                         else
-                        plot.AddScatter(x, y);
+                            plot.Add.Scatter(x, y);
                     }
                     break;
                 case PlotType.Line:
@@ -91,9 +94,12 @@ namespace Graphing
                     {
                         double[] y = ys[i];
                         if (i < options.Labels.Length)
-                            plot.AddScatter(x, y, label: options.Labels[i]);
+                        {
+                            var s = plot.Add.Scatter(x, y);
+                            s.Label = options.Labels[i];
+                        }
                         else
-                            plot.AddScatter(x, y);
+                            plot.Add.Scatter(x, y);
                     }
                     break;
                 case PlotType.Signal:
@@ -101,16 +107,19 @@ namespace Graphing
                     {
                         double[] y = ys[i];
                         if (i < options.Labels.Length)
-                            plot.AddSignal(y, options.SignalSampleRate, label: options.Labels[i]);
+                        {
+                            var s = plot.Add.Signal(y, options.SignalSampleRate);
+                            s.Label = options.Labels[i];
+                        }
                         else
-                            plot.AddSignal(y, options.SignalSampleRate);
+                            plot.Add.Signal(y, options.SignalSampleRate);
                     }
                     break;
                 case PlotType.Histogram:
                     double[] v = ys.Single();
                     ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: options.HistogramBars);
                     hist.AddRange(v);
-                    plot.AddBar(values: hist.Counts, positions: hist.Bins);
+                    plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
                     break;
                 default:
                     break;
@@ -119,13 +128,13 @@ namespace Graphing
             // Enable additional drawing
             if (options.DrawTitle)
                 plot.Title(options.Title);
-            if (options.DrawAxies)
+            if (options.DrawAxes)
             {
-                plot.XAxis.Label(options.XAxis);
-                plot.YAxis.Label(options.YAxis);
+                plot.Axes.Left.Label.Text = options.XAxis;
+                plot.Axes.Bottom.Label.Text = options.YAxis;
             }
             if (options.Labels.Length > 0)
-                plot.Legend();
+                plot.Legend.IsVisible = true;
 
             return plot;
         }
@@ -261,7 +270,7 @@ namespace Graphing
             if (options.OutputImage != null && options.OutputImage.EndsWith(".png"))
             {
                 ScottPlot.Plot plt = Plotters.InitializePlot(plotType, x, ys, options);
-                plt.SaveFig(options.OutputImage);
+                plt.SavePng(options.OutputImage, options.WindowWidth, options.WindowHeight);
             }
             if (options.Interactive)
                 Plotters.SummonInteractiveWindow(plotType, x, ys, options);

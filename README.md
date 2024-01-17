@@ -197,6 +197,7 @@ The current state of Pure is very OK to be used for one-liners and quick REPL co
 - [ ] (Documentation) Create very basic YouTube tutorials: Intro, CLI usage, Notebook usage, embedding (using Core to consume scripts), and standard library usage. Pure-The-Language YouTube channel.
 - [ ] (Documentation) Train custom OpenAI model helping new user decide which standard library or existing snippet can help solve specific problem.
 
+- [ ] (Standard Libraries) ScottPlot released version 5, we need to update our reference. This will be a breaking change to users because API is different - if they referenced ScottPlot directly from Pure.
 - [ ] (Standard libraries, Management) Rename CentralSnippets to Snippets; This way it's much quicker to type.
 - [ ] (Standard libraries) Add/Implement those: CSV (Read Write), Excel (Read Write), DataSource (Read: CSV, Excel, ODBC), InMemoryDB, add Parcel DataGrid standalone package.
 - [ ] (Standard libraries, Data Library) Provide `Data` (standalone).
