@@ -301,3 +301,14 @@ As scripts grows and code is refactored for proper management, one might use `In
 2. Refactor code project into a proper standalone C# solution.
 
 New: "Develop in Visual Studio, Run in Pure" methodology. For easier debugging and styling for beginners.
+
+### Scale Up
+
+As code logic becomes more intricate, without a proper debugger (which is planned as a VS Code extension), it's slow to debug compared to traditional compiled languages. In this case, one can utilize the power of `dotnet` CLI utility and Visual Studio to enable quick development.
+
+(In short):
+
+* `dotnet new console`
+* `dotnet run <project-name.csproj>`
+
+This creates a minimum 2-file template for any single file script. Syntax of certain things might need tweaking and referencing Pure standard libraries need tweaking as well (pending documentation).
