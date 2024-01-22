@@ -30,7 +30,7 @@ namespace Pure
             {
                 var interpreter = new Interpreter($"""
                     Interactive Pure Interpreter (REPL) (Core Version: {Interpreter.DistributionVersion})
-                    This is the frontend to Pure, the scripting language.
+                    This is the frontend to Pure, the C# scripting platform.
                     """, null, null, null, null);
                 interpreter.Start();
                 EnterInteractiveMode(interpreter);
