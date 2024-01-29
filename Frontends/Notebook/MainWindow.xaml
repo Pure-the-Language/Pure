@@ -69,6 +69,7 @@
                 <MenuItem Header="Convert Cell to Code (F12)"/>
             </MenuItem>
             <MenuItem Header="Runtime">
+                <MenuItem Header="Preload..." Click="PreloadScriptsMenuItem_Click"/>
                 <MenuItem Header="Arguments..." Click="SetArgumentsMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Execute Cell (F5)" Click="ExecuteCellMenuItem_Click"/>

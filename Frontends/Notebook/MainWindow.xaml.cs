@@ -289,6 +289,21 @@ namespace Notebook
             }
             e.Handled = true;
         }
+        private void PreloadScriptsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new()
+            {
+                Title = "Select the script to load",
+                Filter = "C# (*.cs)|*.cs|All (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filepath = openFileDialog.FileName;
+                string extension = Path.GetExtension(filepath);
+                if (extension == ".cs")
+                    Task.Run(() => ExecuteScriptThreaded(File.ReadAllText(filepath), CellType.CSharp));
+            }
+        }
         private void SetArgumentsMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var window = new EntryWindow(string.Join(" ", Interpreter.Arguments?.Select(a => a.Contains(' ') ? $"\"{a}\"" : a) ?? Array.Empty<string>()))
@@ -425,47 +440,48 @@ namespace Notebook
 
             CurrentExecutingCell = cell;
             string scriptContent = (CurrentEditingCellContext != null && CurrentEditingCellContext.DataContext == cell && !string.IsNullOrWhiteSpace(CurrentEditingCellContext.SelectedText)) ? CurrentEditingCellContext.SelectedText : cell.Content;
-            Task.Run(ExecuteCellThreaded);
+            Task.Run(() => {
+                if (cell.CellType == CellType.CSharp || cell.CellType == CellType.Python)
+                    Dispatcher.Invoke(() => GenerateOutputCell(cell, string.Empty, true));
+                ExecuteScriptThreaded(scriptContent, cell.CellType);
+            });
+        }
+        void ExecuteScriptThreaded(string scriptContent, CellType scriptType)
+        {
+            if (scriptType == CellType.CacheOutput || scriptType == CellType.Markdown)
+                throw new InvalidOperationException($"Invalid cell type: {scriptType}");
 
-            void ExecuteCellThreaded()
+            try
             {
-                if (cell.CellType == CellType.CacheOutput || cell.CellType == CellType.Markdown)
-                    throw new InvalidOperationException($"Invalid cell type: {cell.CellType}");
-
-                Dispatcher.Invoke(() => GenerateOutputCell(cell, string.Empty, true));
-
-                try
+                switch (scriptType)
                 {
-                    switch (cell.CellType)
-                    {
-                        case CellType.CSharp:
-                            foreach (var script in Interpreter.SplitScripts(scriptContent))
-                                Interpreter.Parse(script);
-                            break;
-                        case CellType.Python:
-                            Interpreter.Parse("Import(Python)");
-                            Interpreter.Parse($"""""
+                    case CellType.CSharp:
+                        foreach (var script in Interpreter.SplitScripts(scriptContent))
+                            Interpreter.Parse(script);
+                        break;
+                    case CellType.Python:
+                        Interpreter.Parse("Import(Python)");
+                        Interpreter.Parse($"""""
                         Python.Main.Parse("""
                         {scriptContent}
                         """);
                         """"");
-                            break;
-                        case CellType.Markdown:
-                        case CellType.CacheOutput:
-                        default:
-                            throw new ArgumentException($"Invalid cell type: {cell.CellType}");
-                    }
+                        break;
+                    case CellType.Markdown:
+                    case CellType.CacheOutput:
+                    default:
+                        throw new ArgumentException($"Invalid cell type: {scriptType}");
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"""
-                        Some serious error happened during interpretative execution using scripting engines and it's not handled properly by the scripting context. This indicates an error within the implementation of script-evaluation routines.
-                        Details:
-                        {e}
-                        """);
-                }
-                CurrentExecutingCell = null;
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"""
+                    Some serious error happened during interpretative execution using scripting engines and it's not handled properly by the scripting context. This indicates an error within the implementation of script-evaluation routines.
+                    Details:
+                    {e}
+                    """);
+            }
+            CurrentExecutingCell = null;
         }
         #endregion
 
