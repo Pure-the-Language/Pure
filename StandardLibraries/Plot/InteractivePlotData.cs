@@ -71,7 +71,7 @@ namespace Graphing
             writer.Write(data.Options.Interactive);
             writer.Write(data.Options.OutputImage);
             writer.Write(data.Options.DrawTitle);
-            writer.Write(data.Options.DrawAxies);
+            writer.Write(data.Options.DrawAxes);
             writer.Write(data.Options.Title);
             writer.Write(data.Options.XAxis);
             writer.Write(data.Options.YAxis);
@@ -112,7 +112,7 @@ namespace Graphing
                 Interactive = reader.ReadBoolean(),
                 OutputImage = reader.ReadString(),
                 DrawTitle = reader.ReadBoolean(),
-                DrawAxies = reader.ReadBoolean(),
+                DrawAxes = reader.ReadBoolean(),
                 Title = reader.ReadString(),
                 XAxis = reader.ReadString(),
                 YAxis = reader.ReadString(),

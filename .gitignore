@@ -176,10 +176,14 @@ DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
+# Pure build/publish results
 # Click-Once directory
 publish/
 # On Linux it's case sensitive
-Publish
+Publish/
+# Automatic zips
+Packages/
+Builds/
 
 # Publish Web Output
 *.[Pp]ublish.xml

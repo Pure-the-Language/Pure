@@ -1,75 +1,20 @@
 # Use command line toggle --incremental to skip deleting publish folder and skip creating archive, thus making build faster.
+Write-Host "Publish for final packaging build..."
 $PrevPath = Get-Location
-
-Write-Host "Publish for Final Packaging build."
 Set-Location $PSScriptRoot
 
 $PublishFolder = "$PSScriptRoot\..\Publish"
-$WindowsPublishFolder = "$PublishFolder\Windows"
 $LibraryPublishFolder = "$PublishFolder\Libraries"
-$NugetPublishFolder = "$PublishFolder\Nugets"
 
 # Delete current data
 if ($Args[0] -ne '--incremental') {
     Remove-Item $PublishFolder -Recurse -Force
 }
 
-# Publish Executables
-$PublishExecutables = @(
-    "Frontends\Pure\Pure.csproj"
-)
-foreach ($Item in $PublishExecutables) {
-    dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $PublishFolder
-}
-# Publish Windows-only Executables
-if ($IsWindows) {
-    $PublishWindowsExecutables = @(
-        "Frontends\Notebook\Notebook.csproj"
-    )
-    foreach ($Item in $PublishWindowsExecutables) {
-        # In .Net 8, those windows-specific builds might interfere with other non-windows build
-        dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $WindowsPublishFolder
-    }
-}
-# Publish Loose Libraries
-$PublishLibraries = @(
-    "StandardLibraries\Vector\Vector.csproj"
-    "StandardLibraries\Python\Python.csproj"
-    "StandardLibraries\ODBC\ODBC.csproj"
-    "StandardLibraries\Pipeline\Pipeline.csproj"
-    "StandardLibraries\Razor\Razor.csproj"
-    "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
-    "StandardLibraries\CLI\CLI.csproj"
-    "StandardLibraries\Plot\Plot.csproj"
-)
-foreach ($Item in $PublishLibraries)
-{
-    dotnet publish $PSScriptRoot\..\$Item --use-current-runtime --output $LibraryPublishFolder
-}
-# Publish Windows-only Library Components (executable)
-if ($IsWindows) {
-    $PublishWindowsLibraryComponents = @(
-        "StandardLibraries\PlotWindow\PlotWindow.csproj"
-    )
-    foreach ($Item in $PublishWindowsLibraryComponents) {
-        dotnet publish $PSScriptRoot\..\$Item --runtime win-x64 --self-contained --output $WindowsPublishFolder
-    }
-}
-# Publish Nugets
-$PublishNugets = @(
-    "Core\Core.csproj"
-
-    "StandardLibraries\Vector\Vector.csproj"
-    "StandardLibraries\Python\Python.csproj"
-    "StandardLibraries\ODBC\ODBC.csproj"
-    "StandardLibraries\Pipeline\Pipeline.csproj"
-    "StandardLibraries\Razor\Razor.csproj"
-    "StandardLibraries\CentralSnippets\CentralSnippets.csproj"
-    "StandardLibraries\CLI\CLI.csproj"
-)
-foreach ($Item in $PublishNugets) {
-    dotnet pack $PSScriptRoot\..\$Item --output $NugetPublishFolder
-}
+# Build components
+. $PSScriptRoot\BuildCore.ps1
+. $PSScriptRoot\BuildLibraries.ps1
+. $PSScriptRoot\BuildFrameworks.ps1
 
 # Validation
 $pureExePath = Join-Path $PublishFolder "Pure.exe"

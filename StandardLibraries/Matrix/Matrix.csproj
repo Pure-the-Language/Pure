@@ -1,14 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>0.1.0</Version>
-		<Nullable>disable</Nullable>
+		<Nullable>enable</Nullable>
+		<Version>0.1.1</Version>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 		<PublishReadyToRun>true</PublishReadyToRun>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<RootNamespace>Math</RootNamespace>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\CorePackage\CorePackage.csproj" />
+	  <ProjectReference Include="..\Vector\Vector.csproj" />
+	</ItemGroup>
 
 </Project>

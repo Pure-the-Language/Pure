@@ -1,4 +1,5 @@
 ﻿using Graphing;
+using ScottPlot;
 using System.IO;
 
 namespace PlotWindow
@@ -32,11 +33,10 @@ namespace PlotWindow
             InteractivePlotData data = InteractivePlotData.LoadData(configurationsFile);
 
             // Initialize plot
-            ScottPlot.Plot plt = Plotters.InitializePlot(data.PlotType, data.X, data.Ys, data.Options);
+            Plot plt = Plotters.InitializePlot(data.PlotType, data.X, data.Ys, data.Options);
 
             // Show
-            new ScottPlot.WpfPlotViewer(plt)
-                .ShowDialog();
+            ShowPlot(plt);
         }
         private static void PlotAsCLI(string[] args)
         {
@@ -53,15 +53,14 @@ namespace PlotWindow
             };
 
             // Initialize plot
-            ScottPlot.Plot plt = Plotters.InitializePlot(data.PlotType, data.X, data.Ys, data.Options);
+            Plot plot = Plotters.InitializePlot(data.PlotType, data.X, data.Ys, data.Options);
 
             // Show
-            new ScottPlot.WpfPlotViewer(plt)
-                .ShowDialog();
+            ShowPlot(plot);
         }
         #endregion
 
-        #region ROutines
+        #region Routines
         private static (double[] X, List<double[]> Ys) GetData(string csvFile)
         {
             List<double> x = new();
@@ -93,6 +92,16 @@ namespace PlotWindow
             if (configurations.Length == 0)
                 options.Interactive = true;
             return options;
+        }
+        #endregion
+
+        #region Helpers
+        private static void ShowPlot(Plot plot)
+        {
+            ScottPlot.WPF.WpfPlot wpfPlot = new();
+            wpfPlot.Reset(plot);
+            System.Windows.Window win = new() { Content = wpfPlot };
+            win.ShowDialog();
         }
         #endregion
     }

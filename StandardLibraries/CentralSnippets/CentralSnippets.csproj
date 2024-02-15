@@ -8,6 +8,7 @@
 	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	<PublishReadyToRun>true</PublishReadyToRun>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<RootNamespace>Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
