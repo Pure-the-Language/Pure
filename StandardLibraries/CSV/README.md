@@ -5,6 +5,7 @@ Pure's own take on CSV parsing, combining benefits of both [Csv by Steve](https:
 ## TODO
 
 - [ ] https://github.com/Pure-the-Language/Pure/issues/34
+- [ ] Currently the name of this module (CSV) conflicts with a dll that some of other standard Pure library depends on. The ideal solution is just to purge that dependancy completely.
 
 ## Changelog
 
