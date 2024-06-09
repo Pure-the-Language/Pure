@@ -69,7 +69,8 @@
                 <MenuItem Header="Convert Cell to Code (F12)"/>
             </MenuItem>
             <MenuItem Header="Runtime">
-                <MenuItem Header="Arguments..." Click="SetArgumentsMenuItem_Click"/>
+                <MenuItem Header="Preload..." Click="PreloadScriptsMenuItem_Click" ToolTip="Load and parse a selected script from external source file (.cs)."/>
+                <MenuItem Header="Arguments..." Click="SetArgumentsMenuItem_Click" ToolTip="Supply arguments for the program, allowing accessing arguments using `Arguments` global variable."/>
                 <Separator/>
                 <MenuItem Header="Execute Cell (F5)" Click="ExecuteCellMenuItem_Click"/>
                 <MenuItem Header="Execute All" Click="ExecuteAllMenuItem_Click"/>
