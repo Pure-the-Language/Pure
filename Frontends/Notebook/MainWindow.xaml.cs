@@ -301,7 +301,10 @@ namespace Notebook
                 string filepath = openFileDialog.FileName;
                 string extension = Path.GetExtension(filepath);
                 if (extension == ".cs")
+                {
+                    RunningIndicatorVisibility = Visibility.Visible;
                     Task.Run(() => ExecuteScriptThreaded(File.ReadAllText(filepath), CellType.CSharp));
+                }
             }
         }
         private void SetArgumentsMenuItem_Click(object sender, RoutedEventArgs e)
