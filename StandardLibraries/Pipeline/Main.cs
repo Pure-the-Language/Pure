@@ -22,7 +22,6 @@ namespace Pipeline
         }
         #endregion
 
-
         #region Main Interface Method (Fluent API)
         /// <summary>
         /// Continue or running the pipeline with next invokation

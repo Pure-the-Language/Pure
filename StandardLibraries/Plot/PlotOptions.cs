@@ -41,7 +41,7 @@
 
         #region Plot Customization
         public bool DrawTitle { get; set; } = false;
-        public bool DrawAxies { get; set; } = false;
+        public bool DrawAxes { get; set; } = false;
 
         public string Title { get; set; } = "Untitled";
         public string XAxis { get; set; } = "X Axis";
